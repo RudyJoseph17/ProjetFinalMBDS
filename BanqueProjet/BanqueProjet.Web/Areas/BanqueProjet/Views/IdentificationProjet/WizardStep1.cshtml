@@ -1,0 +1,63 @@
+﻿@model BanqueProjet.Web.Models.DdpViewModel
+@{
+    ViewData["Title"] = "Étape 1 – Informations générales";
+    var step = (int)ViewData["Step"];
+}
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Wizard" method="post">
+    <input type="hidden" name="step" value="@step" />
+
+    <div class="mb-3">
+        <label asp-for="Projets.NomProjet" class="form-label">Nom du projet</label>
+        <input asp-for="Projets.NomProjet" class="form-control" />
+        <span asp-validation-for="Projets.NomProjet" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Projets.Ministere" class="form-label">Ministère</label>
+        <input asp-for="Projets.Ministere" class="form-control" />
+        <span asp-validation-for="Projets.Ministere" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Projets.Section" class="form-label">Section</label>
+        <input asp-for="Projets.Section" class="form-control" />
+        <span asp-validation-for="Projets.Section" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Projets.CodePip" class="form-label">Code PIP</label>
+        <input asp-for="Projets.CodePip" class="form-control" />
+        <span asp-validation-for="Projets.CodePip" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Projets.CodeBailleur" class="form-label">Code bailleur</label>
+        <input asp-for="Projets.CodeBailleur" class="form-control" />
+        <span asp-validation-for="Projets.CodeBailleur" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Projets.CodeBailleur" class="form-label">Code bailleur</label>
+        <input asp-for="Projets.CodeBailleur" class="form-control" />
+        <span asp-validation-for="Projets.CodeBailleur" class="text-danger"></span>
+    </div>
+
+    <div class="d-flex justify-content-between mt-4">
+        <button type="submit" name="action" value="Prev"
+                class="btn btn-secondary" disabled>
+            Précédent
+        </button>
+        <button type="submit" name="action" value="Next"
+                class="btn btn-primary">
+            Suivant
+        </button>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

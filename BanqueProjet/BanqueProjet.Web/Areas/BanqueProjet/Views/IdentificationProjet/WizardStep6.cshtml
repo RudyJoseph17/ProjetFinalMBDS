@@ -1,0 +1,85 @@
+﻿@model BanqueProjet.Web.Models.DdpViewModel
+@{
+    ViewData["Title"] = "Étape 5 – Bailleurs de fonds";
+    var step = (int)ViewData["Step"];
+}
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Wizard" method="post">
+    <input type="hidden" name="step" value="@step" />
+
+    <div id="bailleurs-list">
+        <h4>Liste des bailleurs</h4>
+            @for (int i = 1; i < Model.Projets.BailleursDeFonds.Count; i++)
+            {
+                <div class="bailleur-item mb-3">
+                    <div class="form-row">
+                        <div class="col">
+                            <label asp-for="Projets.BailleursDeFonds[@i].NomRepresentant "></label>
+                            <input asp-for="Projets.BailleursDeFonds[@i].NomRepresentant " class="form-control" />
+                            <span asp-validation-for="Projets.BailleursDeFonds[@i].NomRepresentant " class="text-danger"></span>
+                        </div>
+                        <div class="col">
+                            <label asp-for="Projets.BailleursDeFonds[@i].TelephoneRepresentant"></label>
+                            <input asp-for="Projets.BailleursDeFonds[@i].TelephoneRepresentant" class="form-control" />
+                            <span asp-validation-for="Projets.BailleursDeFonds[@i].TelephoneRepresentant" class="text-danger"></span>
+                        </div>
+                        <div class="col">
+                            <label asp-for="Projets.BailleursDeFonds[@i].CourrielRepresentant"></label>
+                            <input asp-for="Projets.BailleursDeFonds[@i].CourrielRepresentant" class="form-control" />
+                            <span asp-validation-for="Projets.BailleursDeFonds[@i].CourrielRepresentant" class="text-danger"></span>
+                        </div>
+                        <div class="col-auto align-self-end">
+                            <button type="button" class="btn btn-danger remove-bailleur">Supprimer</button>
+                        </div>
+                    </div>
+                </div>
+            }
+    </div>
+
+    <button id="add-bailleur" type="button" class="btn btn-sm btn-outline-primary mt-2">
+        + Ajouter un bailleur
+    </button>
+
+    <div class="d-flex justify-content-between mt-4">
+        <button type="submit" name="action" value="Prev" class="btn btn-secondary">Précédent</button>
+        <button type="submit" name="action" value="Next" class="btn btn-primary">Suivant</button>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        function handleAdd(btnSelector, listSelector, tmplSelector) {
+            $(btnSelector).on('click', function () {
+                var count = $(listSelector).children('.bailleur-item').length;
+                var html = $(tmplSelector).html().replace(/__index__/g, count);
+                $(listSelector).append(html);
+            });
+        }
+        function handleRemove(itemSelector, btnSelector) {
+            $(document).on('click', btnSelector, function () {
+                $(this).closest(itemSelector).remove();
+            });
+        }
+        $(function () {
+            handleAdd('#add-bailleur', '#bailleurs-list', '#bailleur-template');
+            handleRemove('.bailleur-item', '.remove-bailleur');
+        });
+    </script>
+
+    @* Template caché sans index dans les labels *@
+    <div id="bailleur-template" class="d-none">
+        <div class="bailleur-item mb-3">
+            <div class="form-row">
+                <input name="Projets.BailleursDeFonds[__index__].IdIdentificationProjet" type="hidden" value="@Model.Projets.IdIdentificationProjet" />
+                <div class="col"><label>Nom du représentant du bailleur </label><input name="Projets.BailleursDeFonds[__index__].NomRepresentant" class="form-control" /></div>
+                <div class="col"><label>Téléphone du représentant du bailleur </label><input name="Projets.BailleursDeFonds[__index__].TelephoneRepresentant" class="form-control" /></div>
+                <div class="col"><label>Courriel du représentant du bailleur </label><input name="Projets.BailleursDeFonds[__index__].CourrielRepresentant" class="form-control" /></div>
+                <div class="col-auto align-self-end"><button type="button" class="btn btn-danger remove-bailleur">Supprimer</button></div>
+            </div>
+        </div>
+    </div>
+}

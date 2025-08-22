@@ -1,0 +1,64 @@
+﻿@model IEnumerable<BanqueProjet.Application.Dtos.IdentificationProjetDto>
+@{
+    ViewData["Title"] = "Projets du MPCE";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var projetsMpce = (Model ?? Enumerable.Empty<BanqueProjet.Application.Dtos.IdentificationProjetDto>())
+                     .Where(p => string.Equals(p.Ministere, "MPCE", StringComparison.OrdinalIgnoreCase));
+}
+
+<h1>Projets du MPCE</h1>
+
+<p>
+    <a asp-area="BanqueProjet"
+       asp-controller="IdentificationProjet"
+       asp-action="Wizard"
+       asp-route-step="1"
+       class="btn btn-primary">
+        Nouveau Projet
+    </a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nom du projet</th>
+            <th>Ministère</th>
+            <th>Section</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var projet in projetsMpce)
+        {
+            <tr>
+                <td>
+                    <a asp-action="Details"
+                       asp-route-id="@projet.IdIdentificationProjet">
+                        @projet.NomProjet
+                    </a>
+                </td>
+                <td>@projet.Ministere</td>
+                <td>@projet.Section</td>
+                <td>
+                    <a asp-action="Edit"
+                       asp-route-id="@projet.IdIdentificationProjet"
+                       class="btn btn-warning btn-sm">
+                        Modifier
+                    </a>
+                    <a asp-action="Delete"
+                       asp-route-id="@projet.IdIdentificationProjet"
+                       class="btn btn-danger btn-sm">
+                        Supprimer
+                    </a>
+                </td>
+            </tr>
+        }
+        @if (!projetsMpce.Any())
+        {
+            <tr>
+                <td colspan="4" class="text-center">Aucun projet trouvé pour le MPCE.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+

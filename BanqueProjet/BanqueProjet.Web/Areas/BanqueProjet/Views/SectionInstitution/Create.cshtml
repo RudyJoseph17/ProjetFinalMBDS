@@ -1,0 +1,24 @@
+﻿@model SectionInstitutionViewModel
+@{
+    ViewData["Title"] = "Créer une section d'institution";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Create">
+    <div class="form-group">
+        <label asp-for="IdSectionInstitution"></label>
+        <input asp-for="IdSectionInstitution" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="IdInstitutionSectorielle"></label>
+        <input asp-for="IdInstitutionSectorielle" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="NomSection"></label>
+        <input asp-for="NomSection" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-success">Créer</button>
+    <a asp-action="Index" class="btn btn-secondary">Annuler</a>
+</form>
+

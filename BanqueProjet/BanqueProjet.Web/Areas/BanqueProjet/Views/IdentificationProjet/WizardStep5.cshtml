@@ -1,0 +1,120 @@
+﻿@model BanqueProjet.Web.Models.DdpViewModel
+@{
+    ViewData["Title"] = "Étape 4 – Aspect juridique";
+    var step = (int)ViewData["Step"];
+}
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Wizard" method="post">
+    <input type="hidden" name="step" value="@step" />
+
+    <div id="tCouts-list">
+        <h4>Cout total</h4>
+        @for (int i = 0; i < Model.Projets.AspectsJuridiques.Count; i++)
+        {
+            <div class="aspect-item mb-3">
+                <div class="form-row">
+                    <div class="col">
+                        <label asp-for="Projets.AspectsJuridiques[@i].DescAspectsJuridiques"></label>
+                        <input asp-for="Projets.AspectsJuridiques[@i].DescAspectsJuridiques" class="form-control" />
+                        <span asp-validation-for="Projets.AspectsJuridiques[@i].DescAspectsJuridiques" class="text-danger"></span>
+                    </div>
+                    <div class="col-auto align-self-end">
+                        <button type="button" class="btn btn-danger remove-aspect">Supprimer</button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <button id="add-tCout" type="button" class="btn btn-sm btn-outline-primary mt-2">
+        + Ajouter un cout total
+    </button>
+
+    <div id="coutAnnuelsProjets-list">
+        <h4>Cout total</h4>
+        @for (int i = 0; i < Model.Projets.CoutAnnuelsProjets.Count; i++)
+        {
+            <div class="coutAnnuelsProjet-item mb-3">
+                <div class="form-row">
+                    <div class="col">
+                        <label asp-for="Projets.CoutAnnuelsProjets[@i].ExerciceFiscaleDebut"></label>
+                        <input asp-for="Projets.CoutAnnuelsProjets[@i].ExerciceFiscaleDebut" class="form-control" />
+                        <span asp-validation-for="Projets.CoutAnnuelsProjets[@i].ExerciceFiscaleDebut" class="text-danger"></span>
+                    </div>
+                    <div class="col">
+                        <label asp-for="Projets.CoutAnnuelsProjets[@i].SourcesDeFinancementCoutAn"></label>
+                        <input asp-for="Projets.CoutAnnuelsProjets[@i].SourcesDeFinancementCoutAn" class="form-control" />
+                        <span asp-validation-for="Projets.CoutAnnuelsProjets[@i].SourcesDeFinancementCoutAn" class="text-danger"></span>
+                    </div>
+                    <div class="col">
+                        <label asp-for="Projets.CoutAnnuelsProjets[@i].MontantAnnuel"></label>
+                        <input asp-for="Projets.CoutAnnuelsProjets[@i].MontantAnnuel" class="form-control" />
+                        <span asp-validation-for="Projets.CoutAnnuelsProjets[@i].MontantAnnuel" class="text-danger"></span>
+                    </div>
+                    <div class="col-auto align-self-end">
+                        <button type="button" class="btn btn-danger remove-coutAnnuelsProjet">Supprimer</button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <button id="add-coutAnnuelsProjet" type="button" class="btn btn-sm btn-outline-primary mt-2">
+        + Ajouter un cout annuel
+    </button>
+
+    <div class="d-flex justify-content-between mt-4">
+        <button type="submit" name="action" value="Prev" class="btn btn-secondary">Précédent</button>
+        <button type="submit" name="action" value="Next" class="btn btn-primary">Suivant</button>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        function handleAdd(btnSelector, listSelector, tmplSelector) {
+            $(btnSelector).on('click', function () {
+                var count = $(listSelector).children('.tCout-item', '.coutAnnuelsProjet-item').length;
+                var html = $(tmplSelector).html().replace(/__index__/g, count);
+                $(listSelector).append(html);
+            });
+        }
+        function handleRemove(itemSelector, btnSelector) {
+            $(document).on('click', btnSelector, function () {
+                $(this).closest(itemSelector).remove();
+            });
+        }
+        $(function () {
+            handleAdd('#add-tCout', '#tCouts-list', '#tCout-template');
+            handleRemove('.tCout-item', '.remove-tCout');
+            handleAdd('#add-coutAnnuelsProjet', '#coutAnnuelsProjets-list', '#coutAnnuelsProjet-template');
+            handleRemove('.coutAnnuelsProjet-item', '.remove-coutAnnuelsProjet');
+        });
+    </script>
+
+    <div id="tCout-template" class="d-none">
+        <div class="tCout-item mb-3">
+            <div class="form-row">
+                <input name="Projets.AspectsJuridiques[__index__].IdIdentificationProjet" type="hidden" value="@Model.Projets.IdIdentificationProjet" />
+                <div class="col"><label>Cout total du projet </label><input name="Projets.AspectsJuridiques[__index__].DescAspectsJuridiques" type="number" class="form-control" /></div>
+                <div class="col-auto align-self-end"><button type="button" class="btn btn-danger remove-tCout">Supprimer</button></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="coutAnnuelsProjet-template" class="d-none">
+        <div class="coutAnnuelsProjet-item mb-3">
+            <div class="form-row">
+                <input name="Projets.CoutAnnuelsProjets[__index__].IdIdentificationProjet" type="hidden" value="@Model.Projets.IdIdentificationProjet" />
+                <div class="col"><label>Exercice de prevision</label><input name="Projets.CoutAnnuelsProjets[__index__].ExerciceFiscalePrevisionTot" class="form-control" /></div>
+                <div class="col"><label>Source de financement'</label><input name="Projets.CoutAnnuelsProjets[__index__].SourcesDeFinancementCoutAn" class="form-control" /></div>
+                <div class="col"><label>Montant annuel</label><input name="Projets.CoutAnnuelsProjets[__index__].MontantAnnuel" type="number" class="form-control" /></div>
+                <div class="col-auto align-self-end"><button type="button" class="btn btn-danger remove-coutAnnuelsProjet">Supprimer</button></div>
+            </div>
+        </div>
+    </div>
+}
+

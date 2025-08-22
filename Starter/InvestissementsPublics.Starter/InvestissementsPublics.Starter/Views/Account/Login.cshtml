@@ -1,0 +1,24 @@
+﻿@model InvestissementsPublics.Starter.Models.Account.LoginViewModel
+
+<h2>Connexion</h2>
+
+<form asp-action="Login" method="post">
+    <input type="hidden" asp-for="ReturnUrl" />
+    <div class="mb-3">
+        <label asp-for="UserName" class="form-label"></label>
+        <input asp-for="UserName" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="Password" class="form-label"></label>
+        <input asp-for="Password" type="password" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Se connecter</button>
+</form>
+
+@* Affichage des erreurs *@
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger mt-3">
+        Merci de vérifier vos identifiants.
+    </div>
+}

@@ -1,0 +1,31 @@
+{
+  "ProjetInvestissement": {
+    "create": {
+      "name": "AJOUTER_PROJET_INVEST",
+      "params": ["Code", "Titre", "MontantTotal"]
+    },
+    "update": {
+      "name": "MAJ_PROJET_INVEST",
+      "params": ["Id", "Code", "Titre", "MontantTotal"]
+    },
+    "delete": {
+      "name": "SUPPRIMER_PROJET_INVEST",
+      "params": ["Id"]
+    }
+  },
+
+  "AutreEntite": {
+    "create": {
+      "name": "AJOUTER_AUTRE",
+      "params": ["Nom", "Valeur"]
+    },
+    "update": {
+      "name": "MAJ_AUTRE",
+      "params": ["Id", "Nom", "Valeur"]
+    },
+    "delete": {
+      "name": "SUPPRIMER_AUTRE",
+      "params": ["Id"]
+    }
+  }
+}

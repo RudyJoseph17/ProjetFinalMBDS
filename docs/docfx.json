@@ -1,0 +1,35 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": [
+            "BanqueProjet/**/*.csproj",
+            "Programmation/**/*.csproj",
+            "SuiviEvaluation/**/*.csproj",
+            "TableauxDeBord/**/*.csproj",
+            "Shared/**/*.csproj"
+          ],
+          "exclude": ["**/bin/**", "**/obj/**"]
+        }
+      ],
+      "dest": "api",
+      "disableGitFeatures": false
+    }
+  ],
+  "build": {
+    "content": [
+      { "files": ["**/*.md", "toc.yml"], "src": "articles" },
+      { "files": ["api/**.yml"] }
+    ],
+    "resource": [ { "files": [ "images/**" ] } ],
+    "overwrite": [ { "files": [ "apidoc/**.md" ] } ],
+    "dest": "_site",
+    "globalMetadata": {
+      "_appTitle": "Investissements Publics",
+      "_appFooter": "© 2025 - Investissements Publics",
+      "_enableSearch": true
+    },
+    "template": [ "default" ]
+  }
+}

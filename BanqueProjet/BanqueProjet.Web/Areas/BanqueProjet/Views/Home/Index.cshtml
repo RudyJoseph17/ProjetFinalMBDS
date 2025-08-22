@@ -1,0 +1,115 @@
+﻿@*
+  Views/Shared/_ViewStart.cshtml définit déjà :
+  Layout = "_Layout.cshtml"
+*@
+@model BanqueProjet.Web.Models.DashboardStatsViewModel
+
+@{
+    ViewData["Title"] = "Accueil";
+
+    // Récupération sûre des JSON fournis par le contrôleur
+    var ministeresJson = ViewData["Ministeres"]?.ToString() ?? "[]";
+    var countsJson = ViewData["Counts"]?.ToString() ?? "[]";
+}
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Bienvenue sur le module de Banque de projets</h1>
+</div>
+
+<div class="row">
+    <!-- Total Projets -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Projets Totaux</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@((Model?.TotalProjets) ?? 0)</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Projets Validés (prévu pour futur usage) -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Projets Validés</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@((Model?.ProjetsValides) ?? 0)</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart -->
+<div class="row">
+    <div class="col-xl-12">
+        <h2 class="h5 text-gray-800 mb-3">Nombre de projets par ministère</h2>
+
+        @* Afficher un message si on n'a pas de données *@
+        @if (ministeresJson == "[]" || countsJson == "[]")
+        {
+            <div class="alert alert-info">Aucune donnée disponible pour le graphique.</div>
+        }
+        else
+        {
+            <div style="height:420px;">
+                <canvas id="projetsMinistereChart" style="width:100%; height:100%;"></canvas>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/vendor/chart.js/Chart.min.js"></script>
+
+    <script>
+        // Données JSON sûres fournies par Razor (déclarées en haut de la vue)
+        const ministeres = @Html.Raw(ministeresJson);
+        const counts = @Html.Raw(countsJson);
+
+        // Vérifie les données avant de créer le chart
+        if (Array.isArray(ministeres) && Array.isArray(counts) && ministeres.length > 0) {
+            const ctx = document.getElementById('projetsMinistereChart')?.getContext('2d');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ministeres,
+                        datasets: [{
+                            label: 'Nombre de projets',
+                            data: counts,
+                            backgroundColor: 'rgba(78, 115, 223, 0.85)',
+                            borderColor: 'rgba(78, 115, 223, 1)',
+                            borderWidth: 1,
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: { precision: 0 },
+                                title: { display: true, text: 'Nombre de projets' }
+                            },
+                            x: { title: { display: true, text: 'Ministères' } }
+                        },
+                        plugins: { legend: { display: false }, tooltip: { enabled: true } }
+                    }
+                });
+            }
+        }
+    </script>
+}

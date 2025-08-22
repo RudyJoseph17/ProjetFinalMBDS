@@ -1,0 +1,151 @@
+﻿@model BanqueProjet.Web.Models.DdpViewModel
+@{
+    ViewData["Title"] = "Étape 1 – Activités";
+    var step = (int)ViewData["Step"];
+}
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Wizard" method="post">
+    <input type="hidden" name="step" value="@step" />
+
+    <div id="activites-list">
+        <h4>Liste des activités</h4>
+        @for (int i = 0; i < Model.Projets.Activites.Count; i++)
+        {
+            <div class="activite-item mb-3">
+                <input name="Projets.Activites[@i].IdIdentificationProjet" type="hidden" value="@Model.Projets.IdIdentificationProjet" />
+
+                <div class="row mb-2">
+                    <div class="col">
+                        <label class="form-label">Numéro de l'activité</label>
+                        <input asp-for="Projets.Activites[@i].NumeroActivites" class="form-control" />
+                        <span asp-validation-for="Projets.Activites[@i].NumeroActivites" class="text-danger"></span>
+                    </div>
+                    <div class="col">
+                        <label class="form-label">Nom de l'activité</label>
+                        <input asp-for="Projets.Activites[@i].NomActivite" class="form-control" />
+                        <span asp-validation-for="Projets.Activites[@i].NomActivite" class="text-danger"></span>
+                    </div>
+                    <div class="col-auto d-flex align-items-end">
+                        <button type="button" class="btn btn-danger remove-activite">Supprimer</button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <button id="add-activite" type="button" class="btn btn-sm btn-outline-primary mt-2">
+        + Ajouter une activité
+    </button>
+
+    <div id="activitesAnuelles-list">
+        <h4>Activites annuelles</h4>
+        @for (int i = 0; i < Model.Projets.ActivitesAnuelles.Count; i++)
+        {
+            <div class="activitesAnuelle-item mb-3">
+                <div class="form-row">
+                    <div class="col">
+                        <label asp-for="Projets.ActivitesAnuelles[@i].DescriptionActivite"></label>
+                        <input asp-for="Projets.ActivitesAnuelles[@i].DescriptionActivite" class="form-control" />
+                        <span asp-validation-for="Projets.ActivitesAnuelles[@i].DescriptionActivite" class="text-danger"></span>
+                    </div>
+                    <div class="col">
+                        <label asp-for="Projets.ActivitesAnuelles[@i].CoutAnnuel"></label>
+                        <input asp-for="Projets.ActivitesAnuelles[@i].CoutAnnuel" class="form-control" />
+                        <span asp-validation-for="Projets.ActivitesAnuelles[@i].CoutAnnuel" class="text-danger"></span>
+                    </div>
+                    <div class="col">
+                        <label asp-for="Projets.ActivitesAnuelles[@i].DateDebut"></label>
+                        <input asp-for="Projets.ActivitesAnuelles[@i].DateDebut" class="form-control" />
+                        <span asp-validation-for="Projets.ActivitesAnuelles[@i].DateDebut" class="text-danger"></span>
+                    </div>
+                    <div class="col">
+                        <label asp-for="Projets.ActivitesAnuelles[@i].DateFin"></label>
+                        <input asp-for="Projets.ActivitesAnuelles[@i].DateFin" class="form-control" />
+                        <span asp-validation-for="Projets.ActivitesAnuelles[@i].DateFin" class="text-danger"></span>
+                    </div>
+                    <div class="col-auto align-self-end">
+                        <button type="button" class="btn btn-danger remove-activitesAnuelle">Supprimer</button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <button id="add-activitesAnuelle" type="button" class="btn btn-sm btn-outline-primary mt-2">
+        + Ajouter une activité annuelle
+    </button>
+
+    <div class="d-flex justify-content-between mt-4">
+        <button type="submit" name="action" value="Prev"
+                class="btn btn-secondary" @(step == 1 ? "disabled" : "")>
+            Précédent
+        </button>
+        <button type="submit" name="action" value="Next" class="btn btn-primary">Suivant</button>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        function handleAdd(btnSelector, listSelector, tmplSelector) {
+            $(btnSelector).on('click', function () {
+                var count = $(listSelector).children('.activite-item', '.activitesAnuelle-item').length;
+                var html = $(tmplSelector).html().replace(/__index__/g, count);
+                $(listSelector).append(html);
+            });
+        }
+        function handleRemove(itemSelector, btnSelector) {
+            $(document).on('click', btnSelector, function () {
+                $(this).closest(itemSelector).remove();
+            });
+        }
+        $(function () {
+            handleAdd('#add-activite', '#activites-list', '#activite-template');
+            handleRemove('.activite-item', '.remove-activite');
+            handleAdd('#add-activitesAnuelle', '#activitesAnuelles-list', '#activitesAnuelle-template');
+            handleRemove('.activitesAnuelle-item', '.remove-activitesAnuelle');
+        });
+    </script>
+
+    @* Template caché sans index dans les labels *@
+    <div id="activite-template" class="d-none">
+        <div class="activite-item mb-3">
+            <input name="Projets.Activites[__index__].IdIdentificationProjet" type="hidden" value="@Model.Projets.IdIdentificationProjet" />
+            <div class="row mb-2">
+                <div class="col">
+                    <label class="form-label">Numéro de l'activité</label>
+                    <input name="Projets.Activites[__index__].NumeroActivites" type="number" class="form-control" />
+                    <span class="text-danger field-validation-valid"
+                          data-valmsg-for="Projets.Activites[__index__].NumeroActivites"
+                          data-valmsg-replace="true"></span>
+                </div>
+                <div class="col">
+                    <label class="form-label">Nom de l'activité</label>
+                    <input name="Projets.Activites[__index__].NomActivite" class="form-control" />
+                    <span class="text-danger field-validation-valid"
+                          data-valmsg-for="Projets.Activites[__index__].NomActivite"
+                          data-valmsg-replace="true"></span>
+                </div>
+                <div class="col-auto d-flex align-items-end">
+                    <button type="button" class="btn btn-danger remove-activite">Supprimer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="activitesAnuelle-template" class="d-none">
+        <div class="activitesAnuelle-item mb-3">
+            <div class="form-row">
+                <input name="Projets.ActivitesAnuelles[__index__].IdIdentificationProjet" type="hidden" value="@Model.Projets.IdIdentificationProjet" />
+                <div class="col"><label>Description activite</label><input name="Projets.ActivitesAnuelles[__index__].DescriptionActivite" class="form-control" /></div>
+                <div class="col"><label>Cout annuel</label><input name="Projets.ActivitesAnuelles[__index__].CoutAnnuel" type="number" class="form-control" /></div>
+                <div class="col"><label>Date de debut</label><input name="Projets.ActivitesAnuelles[__index__].DateDebut" type="date" class="form-control" /></div>
+                <div class="col"><label>Date de fin</label><input name="Projets.ActivitesAnuelles[__index__].DateFin " type="date" class="form-control" /></div>
+                <div class="col-auto align-self-end"><button type="button" class="btn btn-danger remove-activitesAnuelle">Supprimer</button></div>
+            </div>
+        </div>
+    </div>
+}

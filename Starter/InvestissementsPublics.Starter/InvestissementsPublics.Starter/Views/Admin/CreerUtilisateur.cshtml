@@ -1,0 +1,40 @@
+﻿@model InvestissementsPublics.Starter.Models.Account.UtilisateurViewModel
+@{
+    ViewData["Title"] = "Créer un utilisateur";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="CreerUtilisateur" method="post">
+    @Html.AntiForgeryToken()
+    <div class="mb-3">
+        <label asp-for="UserName" class="form-label"></label>
+        <input asp-for="UserName" class="form-control" />
+        <span asp-validation-for="UserName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Email" class="form-label"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Password" class="form-label"></label>
+        <input asp-for="Password" type="password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="SelectedRole" class="form-label"></label>
+        <select asp-for="SelectedRole" asp-items="Model.AvailableRoles" class="form-select"></select>
+        <span asp-validation-for="SelectedRole" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Créer</button>
+    <a asp-action="Utilisateurs" class="btn btn-secondary">Annuler</a>
+</form>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

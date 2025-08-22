@@ -1,0 +1,46 @@
+﻿<!-- Views/GrilleDdp/Create.cshtml -->
+@model BanqueProjet.Web.Models.GrilleDDPViewModel
+@{
+    ViewData["Title"] = "Créer Grille DDP";
+}
+<h2>Créer Grille DDP</h2>
+<form asp-action="Create" method="post">
+    <div class="mb-4">
+        <h3>Identification du Projet</h3>
+        <partial name="_Identification" model="Model.GDdpIdentificationProjets" />
+    </div>
+    <div class="mb-4">
+        <h3>Stratégie de Gestion</h3>
+        <partial name="_Strategie" model="Model.GDdpStrategieGestion" />
+    </div>
+    <div class="mb-4">
+        <h3>Résumé du Projet</h3>
+        <partial name="_Resume" model="Model.GDdpResumeProjet" />
+    </div>
+    <div class="mb-4">
+        <h3>Études de Préfaisabilité</h3>
+        <partial name="_EtudesPrefaisabilite" model="Model.GDdpEtudePreFaisabilite" />
+    </div>
+    <div class="mb-4">
+        <h3>Calendrier Financier</h3>
+        <partial name="_CalendrierFinancier" model="Model.GDdpCalendrierFinancier" />
+    </div>
+    <div class="mb-4">
+        <h3>Calendrier d’Exécution</h3>
+        <partial name="_CalendrierExecution" model="Model.GDdpCalendrierExecution" />
+    </div>
+    <div class="mb-4">
+        <h3>Aspects Légaux</h3>
+        <partial name="_AspectsLegaux" model="Model.GDdpAspectsLegaux" />
+    </div>
+    <div class="mb-4">
+        <h3>Commentaires Généraux</h3>
+        <partial name="_CommentairesGeneraux" model="Model.GDdpCommentaireGeneral" />
+    </div>
+    <div class="mb-4">
+        <h3>Avis</h3>
+        <partial name="_Avi" model="Model.GDdpAvis" />
+    </div>
+    <button type="submit" class="btn btn-success">Créer</button>
+    <a asp-action="Index" class="btn btn-secondary">Annuler</a>
+</form>

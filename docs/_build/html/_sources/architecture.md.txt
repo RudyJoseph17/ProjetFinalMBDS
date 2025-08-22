@@ -1,0 +1,17 @@
+# Architecture
+
+Explication de l’architecture de ton projet :
+
+## Modules principaux
+
+- **BanqueProjet** : Web, API, Application, Infrastructure
+- **Programmation** : Web, API, Application, Infrastructure
+- **SuiviEvaluation** : Web, API, Application, Infrastructure
+- **TableauxDeBord** : Web, API, Application, Infrastructure
+- **Shared.Domain** : entités communes, authentification, rôles
+
+## Flux
+
+- Starter → API modules
+- API → Couche Métier (Application)
+- Application → Infrastructure et Shared.Domain

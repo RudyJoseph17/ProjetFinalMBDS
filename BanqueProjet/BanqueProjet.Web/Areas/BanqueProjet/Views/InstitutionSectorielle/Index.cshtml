@@ -1,0 +1,54 @@
+﻿
+@model IEnumerable<BanqueProjet.Web.Models.InstitutionSectorielleViewModel>
+@{
+    ViewData["Title"] = "Liste des Institutions Sectorielles";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nom Institution Sectorielle</th>
+            <th>Mission</th>
+            <th>Attributions</th>
+            <th>Section</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.NomInstitutionSectorielle</td>
+                <td>@item.MissionInstitutionSectorielle</td>
+                <td>@item.AttributionsInstitutionSectorielle</td>
+                <td>
+                    @if (item.NomsSections != null && item.NomsSections.Any())
+                    {
+                        <ul class="list-unstyled">
+                            @foreach (var nom in item.NomsSections)
+                            {
+                                <li>@nom</li>
+                            }
+                        </ul>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Delete" asp-route-id="@item.IdInstitutionSectorielle" class="btn btn-danger btn-sm">Supprimer</a>
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.IdInstitutionSectorielle" class="btn btn-danger btn-sm">Modifier</a>
+                </td>
+                <td>
+                    <a asp-controller="SectionInstitution"
+                       asp-action="Create"
+                       asp-route-institutionId="@item.IdInstitutionSectorielle"
+                       class="btn btn-primary btn-sm">
+                        Ajouter une section
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

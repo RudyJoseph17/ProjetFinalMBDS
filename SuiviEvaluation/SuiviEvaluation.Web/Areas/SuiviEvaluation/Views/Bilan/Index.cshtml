@@ -1,0 +1,76 @@
+﻿@model SuiviEvaluation.Web.Models.Bilan
+
+@{
+    ViewData["Title"] = "Bilan du Projet";
+}
+
+<h2>Bilan du Projet</h2>
+
+<h3>1. Évolution temporelle</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Date de démarrage</th>
+            <th>Date prévue d'achèvement</th>
+            <th>Temps écoulé</th>
+            <th>Temps restant</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var e in Model.Evolution)
+        {
+            <tr>
+                <td>@e.DateDeDemmarage?.ToShortDateString()</td>
+                <td>@e.DateAchevementPrevue?.ToShortDateString()</td>
+                <td>@e.TempsEcoule</td>
+                <td>@e.TempsRestant</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h3>2. Flux Financiers</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID Activité</th>
+            <th>Total Autorisé</th>
+            <th>Total Décaissé</th>
+            <th>Total Dépensé</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var flux in Model.FluxFinanciers)
+        {
+            <tr>
+                <td>@flux.IdActivites</td>
+                <td>@flux.TotalAutorisation</td>
+                <td>@flux.TotalDecaissement</td>
+                <td>@flux.TotalDepense</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h3>3. Quantités livrées</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Année</th>
+            <th>Quantité</th>
+            <th>Unité</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var q in Model.QuantitesLivrees)
+        {
+            <tr>
+                <td>@q.IdQuantiteLivreeParAnnee</td>
+                <td>@q.AnneeQuantiteLivree</td>
+                <td>@q.ValeurLivree</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Create" class="btn btn-primary">Ajouter Quantité Livrée</a>

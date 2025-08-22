@@ -1,0 +1,105 @@
+﻿@model BanqueProjet.Web.Models.DdpViewModel
+@{
+    ViewData["Title"] = "Étape 9 – Cadre logique";
+    var step = (int)ViewData["Step"];
+}
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Wizard" method="post">
+    <input type="hidden" name="step" value="@step" />
+
+    <h4>Cadre logique</h4>
+    <div id="tab-cadreLogique">
+        <input asp-for="Projets.IdIdentificationProjet" type="hidden" />
+        <input asp-for="CadreLogique.IdIdentificationProjet" type="hidden" />
+
+
+        <div class="form-group">
+            <label asp-for="CadreLogique.IntrantsResumeNarratif"></label>
+            <input asp-for="CadreLogique.IntrantsResumeNarratif" class="form-control" />
+            <span asp-validation-for="CadreLogique.IntrantsResumeNarratif" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="CadreLogique.ExtrantsResumeNarratif"></label>
+            <input asp-for="CadreLogique.ExtrantsResumeNarratif" class="form-control" />
+            <span asp-validation-for="CadreLogique.ExtrantsResumeNarratif" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="CadreLogique.ObjectifsSpecifiquesResumeNarratif"></label>
+            <input asp-for="CadreLogique.ObjectifsSpecifiquesResumeNarratif" class="form-control" />
+            <span asp-validation-for="CadreLogique.ObjectifsSpecifiquesResumeNarratif" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="CadreLogique.ObjectifGeneralResumeNarratif"></label>
+            <input asp-for="CadreLogique.ObjectifGeneralResumeNarratif" class="form-control" />
+            <span asp-validation-for="CadreLogique.ObjectifGeneralResumeNarratif" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="CadreLogique.IntrantsIov"></label>
+            <input asp-for="CadreLogique.IntrantsIov" class="form-control" />
+            <span asp-validation-for="CadreLogique.IntrantsIov" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="CadreLogique.ExtrantsIov"></label>
+            <input asp-for="CadreLogique.ExtrantsIov" class="form-control" />
+            <span asp-validation-for="CadreLogique.ExtrantsIov" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="CadreLogique.ObjectifsSpecifiquesIov"></label>
+            <input asp-for="CadreLogique.ObjectifsSpecifiquesIov" class="form-control" />
+            <span asp-validation-for="CadreLogique.ObjectifsSpecifiquesIov" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="CadreLogique.ObjectifGeneralIov"></label>
+            <input asp-for="CadreLogique.ObjectifGeneralIov" class="form-control" />
+            <span asp-validation-for="CadreLogique.ObjectifGeneralIov" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="CadreLogique.IntrantsSmov"></label>
+            <input asp-for="CadreLogique.IntrantsSmov" class="form-control" />
+            <span asp-validation-for="CadreLogique.IntrantsSmov" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="CadreLogique.ExtrantsSmov"></label>
+            <input asp-for="CadreLogique.ExtrantsSmov" class="form-control" />
+            <span asp-validation-for="CadreLogique.ExtrantsSmov" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="CadreLogique.ObjectifsSpecifiquesSmov"></label>
+            <input asp-for="CadreLogique.ObjectifsSpecifiquesSmov" class="form-control" />
+            <span asp-validation-for="CadreLogique.ObjectifsSpecifiquesSmov" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="CadreLogique.ObjectifGeneralSmov"></label>
+            <input asp-for="CadreLogique.ObjectifGeneralSmov" class="form-control" />
+            <span asp-validation-for="CadreLogique.ObjectifGeneralSmov" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="CadreLogique.IntrantsRisquesHypotheses"></label>
+            <input asp-for="CadreLogique.IntrantsRisquesHypotheses" class="form-control" />
+            <span asp-validation-for="CadreLogique.IntrantsRisquesHypotheses" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="CadreLogique.ExtrantsRisquesHypotheses"></label>
+            <input asp-for="CadreLogique.ExtrantsRisquesHypotheses" class="form-control" />
+            <span asp-validation-for="CadreLogique.ExtrantsRisquesHypotheses" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="CadreLogique.ObjectifsSpecifiquesRisquesHypotheses"></label>
+            <input asp-for="CadreLogique.ObjectifsSpecifiquesRisquesHypotheses" class="form-control" />
+            <span asp-validation-for="CadreLogique.ObjectifsSpecifiquesRisquesHypotheses" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="CadreLogique.ObjectifGeneralRisquesHypotheses"></label>
+            <input asp-for="CadreLogique.ObjectifGeneralRisquesHypotheses" class="form-control" />
+            <span asp-validation-for="CadreLogique.ObjectifGeneralRisquesHypotheses" class="text-danger"></span>
+        </div>
+
+
+    </div>
+
+    <div class="d-flex justify-content-between mt-4">
+        <button type="submit" name="action" value="Prev" class="btn btn-secondary">Précédent</button>
+        <button type="submit" name="action" value="Next" class="btn btn-primary">Suivant</button>
+    </div>
+</form>

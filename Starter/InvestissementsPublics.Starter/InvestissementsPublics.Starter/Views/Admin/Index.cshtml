@@ -1,0 +1,48 @@
+﻿@using InvestissementsPublics.Starter.Models.Account
+@model UtilisateurViewModel
+@{
+    ViewData["Title"] = Model.Id == null ? "Créer un utilisateur" : "Modifier un utilisateur";
+}
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="@ViewContext.RouteData.Values["action"]" method="post">
+    @if (!string.IsNullOrEmpty(Model.Id))
+    {
+        <input type="hidden" asp-for="Id" />
+    }
+
+    <div class="form-group">
+        <label asp-for="UserName"></label>
+        <input asp-for="UserName" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Email"></label>
+        <input asp-for="Email" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Nom"></label>
+        <input asp-for="Nom" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Prenom"></label>
+        <input asp-for="Prenom" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Institution"></label>
+        <input asp-for="Institution" class="form-control" />
+    </div>
+
+    @if (Model.Id == null)
+    {
+        <div class="form-group">
+            <label asp-for="Password"></label>
+            <input asp-for="Password" class="form-control" />
+        </div>
+    }
+
+    <button type="submit" class="btn btn-success">Valider</button>
+    <a asp-action="Utilisateurs" class="btn btn-secondary">Annuler</a>
+</form>
+
+<a class="btn btn-outline-primary" asp-action="Utilisateurs">Gérer les utilisateurs</a>
+

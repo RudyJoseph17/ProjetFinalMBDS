@@ -1,0 +1,6 @@
+@Shared.API_HostAddress = http://localhost:5102
+
+GET {{Shared.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

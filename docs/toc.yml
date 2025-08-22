@@ -1,0 +1,55 @@
+- name: Accueil
+  href: articles/index.md
+
+- name: Architecture
+  href: articles/architecture.md
+
+- name: Modules
+  items:
+    - name: Banque de Projets
+      href: articles/modules/banqueprojet.md
+      items:
+        - name: API Reference
+          href: api/BanqueProjet.Web.yml
+    - name: Programmation
+      href: articles/modules/programmation.md
+      items:
+        - name: API Reference
+          href: api/Programmation.Web.yml
+    - name: Suivi & Évaluation
+      href: articles/modules/suivievaluation.md
+      items:
+        - name: API Reference
+          href: api/SuiviEvaluation.Web.yml
+    - name: Tableaux de Bord
+      href: articles/modules/tableauxdebord.md
+      items:
+        - name: API Reference
+          href: api/TableauxDeBord.Web.yml
+    - name: Shared (Commun)
+      href: articles/modules/shared.md
+      items:
+        - name: API Reference
+          href: api/Shared.Domain.yml
+
+- name: Guides pratiques (HowTo)
+  items:
+    - name: Créer une FIOP
+      href: articles/howto/creer-fiop.md
+    - name: Ajouter un rôle
+      href: articles/howto/ajouter-role.md
+
+- name: Exploitation (Ops)
+  items:
+    - name: Installation & Dev local
+      href: articles/ops/installation.md
+    - name: Déploiement
+      href: articles/ops/deploiement.md
+    - name: Base Oracle
+      href: articles/ops/base-oracle.md
+
+- name: Décisions d’architecture (ADR)
+  href: adr/index.md
+
+- name: Contribuer
+  href: articles/contributing.md

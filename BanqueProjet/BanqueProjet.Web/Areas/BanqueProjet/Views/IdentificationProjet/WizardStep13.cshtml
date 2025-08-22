@@ -1,0 +1,85 @@
+﻿@model BanqueProjet.Web.Models.DdpViewModel
+@{
+    ViewData["Title"] = "Étape 12 – Dernieres donnees";
+    var step = (int)ViewData["Step"];
+}
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Wizard" method="post">
+    <input type="hidden" name="step" value="@step" />
+
+    <h4>Emplois crees</h4>
+    <div id="tab-EmploisCrees">
+        <input asp-for="Projets.IdIdentificationProjet" type="hidden" />
+        <input asp-for="EmploisCrees.IdIdentificationProjet" type="hidden" />
+
+        <div class="form-group">
+            <label asp-for="EmploisCrees.EmploiHommePendant"></label>
+            <input asp-for="EmploisCrees.EmploiHommePendant" class="form-control" />
+            <span asp-validation-for="EmploisCrees.EmploiHommePendant" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="EmploisCrees.EmploiFemmePendant"></label>
+            <input asp-for="EmploisCrees.EmploiFemmePendant" class="form-control" />
+            <span asp-validation-for="EmploisCrees.EmploiFemmePendant" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="EmploisCrees.EmploiHommeApres"></label>
+            <input asp-for="EmploisCrees.EmploiHommeApres" class="form-control" />
+            <span asp-validation-for="EmploisCrees.EmploiHommeApres" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="EmploisCrees.EmploiFemmeApres"></label>
+            <input asp-for="EmploisCrees.EmploiFemmeApres" class="form-control" />
+            <span asp-validation-for="EmploisCrees.EmploiFemmeApres" class="text-danger"></span>
+        </div>
+    </div>
+
+        <h4>Gestion de projet</h4>
+    <div id="tab-GestionProjet">
+            <input asp-for="Projets.IdIdentificationProjet" type="hidden" />
+            <input asp-for="GestionProjet.IdIdentificationProjet" type="hidden" />
+
+            <div class="form-group">
+                <label asp-for="EmploisCrees.EmploiHommePendant"></label>
+                <input asp-for="EmploisCrees.EmploiHommePendant" class="form-control" />
+                <span asp-validation-for="EmploisCrees.EmploiHommePendant" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="GestionProjet.DescriptionRole"></label>
+                <input asp-for="GestionProjet.DescriptionRole" class="form-control" />
+                <span asp-validation-for="GestionProjet.DescriptionRole" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="GestionProjet.CadreDeReferenceContrat"></label>
+                <input asp-for="GestionProjet.CadreDeReferenceContrat" class="form-control" />
+                <span asp-validation-for="GestionProjet.CadreDeReferenceContrat" class="text-danger"></span>
+            </div>
+    </div>
+
+    <h4>Suivi et controle</h4>
+    <div id="tab-cadreLogique">
+        <input asp-for="Projets.IdIdentificationProjet" type="hidden" />
+        <input asp-for="SuiviControle.IdIdentificationProjet" type="hidden" />
+
+        <div class="form-group">
+            <label asp-for="SuiviControle.DescriptionDesMethodes"></label>
+            <input asp-for="SuiviControle.DescriptionDesMethodes" class="form-control" />
+            <span asp-validation-for="SuiviControle.DescriptionDesMethodes" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="SuiviControle.IdentificationDesAgentsImpliques"></label>
+            <input asp-for="SuiviControle.IdentificationDesAgentsImpliques" class="form-control" />
+            <span asp-validation-for="SuiviControle.IdentificationDesAgentsImpliques" class="text-danger"></span>
+        </div>
+
+    </div>
+
+
+
+    <div class="d-flex justify-content-between mt-4">
+        <button type="submit" name="action" value="Prev" class="btn btn-secondary">Précédent</button>
+        <button type="submit" name="action" value="Next" class="btn btn-primary">Suivant</button>
+    </div>
+</form>

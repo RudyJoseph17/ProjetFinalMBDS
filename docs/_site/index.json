@@ -1,0 +1,12 @@
+{
+  "architecture.html": {
+    "href": "architecture.html",
+    "title": "| Investissements Publics",
+    "summary": "\\# Architecture de la solution \\*InvestissementsPublics.sln\\* La solution est organisée en plusieurs \\*\\*modules\\*\\* et \\*\\*couches\\*\\* pour séparer responsabilités et faciliter la maintenance. --- \\## Structure globale ```plaintext InvestissementsPublics.sln │ ├── Starter │ └── InvestissementsPublics.Starter (MVC + Auth) │ ├── BanqueProjet │ ├── BanqueProjet.Web │ ├── BanqueProjet.API │ ├── BanqueProjet.Application │ └── BanqueProjet.Infrastructure │ ├── Programmation │ ├── Programmation.Web │ ├── Programmation.API │ ├── Programmation.Application │ └── Programmation.Infrastructure │ ├── SuiviEvaluation │ ├── SuiviEvaluation.Web │ ├── SuiviEvaluation.API │ ├── SuiviEvaluation.Application │ └── SuiviEvaluation.Infrastructure │ ├── TableauxDeBord │ ├── TableauxDeBord.Web │ ├── TableauxDeBord.API │ ├── TableauxDeBord.Application │ └── TableauxDeBord.Infrastructure │ └── Shared &nbsp; └── Shared.Domain (entités communes, auth, rôles)"
+  },
+  "index.html": {
+    "href": "index.html",
+    "title": "| Investissements Publics",
+    "summary": "# Documentation technique - Investissements Publics Bienvenue dans la documentation technique du projet **InvestissementsPublics**. Ce site contient : - l'architecture de la solution, - des guides pratiques (HowTo), - la documentation API générée automatiquement (DocFX), - les décisions d'architecture (ADR), - les procédures d'exploitation et de déploiement. ## Démarrage rapide (pour développeur) 1. Cloner le dépôt : git clone https://github.com/RudyJoseph17/ProjetFinalMBDS.git cd C:\\\\Users\\\\rudyj\\\\MBDS\\\\9-STAGE\\_ET\\_PROJET\\_FINAL\\\\PROJET\\_FINAL\\\\"
+  }
+}

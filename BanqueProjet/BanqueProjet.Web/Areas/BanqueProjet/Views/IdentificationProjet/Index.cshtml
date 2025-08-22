@@ -1,0 +1,101 @@
+﻿@model IEnumerable<BanqueProjet.Application.Dtos.IdentificationProjetDto>
+@{
+    ViewData["Title"] = "Liste des Projets";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var currentFilter = ViewData["CurrentFilter"] as string;
+    var currentLetter = ViewData["CurrentLetter"] as string;
+}
+
+<h1>Liste des Projets</h1>
+
+<div class="mb-3 d-flex justify-content-between align-items-center">
+    <div>
+        <a asp-area="BanqueProjet"
+           asp-controller="IdentificationProjet"
+           asp-action="Wizard"
+           asp-route-step="1"
+           class="btn btn-primary">
+            Nouveau Projet
+        </a>
+        <a asp-area="BanqueProjet"
+           asp-controller="IdentificationProjet"
+           asp-action="IndexMPCE"
+           class="btn btn-secondary ml-2">
+            Projets MPCE
+        </a>
+    </div>
+    <div>
+        <form asp-action="Index" method="get" class="form-inline">
+            <div class="input-group">
+                <input type="search"
+                       name="searchString"
+                       value="@currentFilter"
+                       class="form-control"
+                       placeholder="Rechercher un projet..." />
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-outline-secondary">
+                        <i class="fas fa-search"></i> Rechercher
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<nav aria-label="Filtre alphabétique" class="mb-3">
+    <ul class="pagination justify-content-center flex-wrap">
+        <li class="page-item @(string.IsNullOrEmpty(currentLetter) ? "active" : "")">
+            <a class="page-link" asp-action="Index" asp-route-letter="">Tous</a>
+        </li>
+        @foreach (char c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+        {
+            var letter = c.ToString();
+            <li class="page-item @(currentLetter == letter ? "active" : "")">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-letter="@letter"
+                   asp-route-searchString="@currentFilter">
+                    @letter
+                </a>
+            </li>
+        }
+    </ul>
+</nav>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nom du projet</th>
+            <th>Ministère</th>
+            <th>Section</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var projet in Model ?? Enumerable.Empty<BanqueProjet.Application.Dtos.IdentificationProjetDto>())
+        {
+            <tr>
+                <td>
+                    <a asp-action="Details"
+                       asp-route-id="@projet?.IdIdentificationProjet">
+                        @(projet?.NomProjet ?? "--")
+                    </a>
+                </td>
+                <td>@(projet?.Ministere ?? "--")</td>
+                <td>@(projet?.Section ?? "--")</td>
+                <td>
+                    <a asp-action="Edit"
+                       asp-route-id="@projet?.IdIdentificationProjet"
+                       class="btn btn-warning btn-sm">
+                        Modifier
+                    </a>
+                    <a asp-action="Delete"
+                       asp-route-id="@projet?.IdIdentificationProjet"
+                       class="btn btn-danger btn-sm">
+                        Supprimer
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
