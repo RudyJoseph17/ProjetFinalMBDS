@@ -1,24 +1,80 @@
 ﻿@model BanqueProjet.Web.Models.DdpViewModel
 @{
-    ViewData["Title"] = "Étape 2 – Aspects légaux";
+    ViewData["Title"] = "Étape 3 sur 6 – Justification du projet";
     var step = (int)ViewData["Step"];
 }
 <h2>@ViewData["Title"]</h2>
 <form asp-action="Wizard" method="post">
     <input type="hidden" name="step" value="@step" />
 
+    <div class="mb-3">
+        <label asp-for="Projets.JustificationProjet " class="form-label">Justification du projet</label>
+        <input asp-for="Projets.JustificationProjet" class="form-control" />
+        <span asp-validation-for="Projets.JustificationProjet" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Projets.EtudePrefaisabilite" class="form-label">Résumé du rapport de l'étude de préfaisabilité</label>
+        <input asp-for="Projets.EtudePrefaisabilite" class="form-control" />
+        <span asp-validation-for="Projets.EtudePrefaisabilite" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Projets.EtudeFaisabilite" class="form-label">Résumé du rapport de l'étude de faisabilité'</label>
+        <input asp-for="Projets.EtudeFaisabilite" class="form-control" />
+        <span asp-validation-for="Projets.EtudeFaisabilite" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Projets.ObjectifGeneralProjet" class="form-label">Objectif général du projet</label>
+        <input asp-for="Projets.ObjectifGeneralProjet" class="form-control" />
+        <span asp-validation-for="Projets.ObjectifGeneralProjet" class="text-danger"></span>
+    </div>
+
+    <div id="objectifSpecs-list">
+        <h4>Objectifs specifiques</h4>
+        @for (int i = 0; i < Model.Projets.ObjectifsSpecifiques.Count; i++)
+
+        {
+            <div class="objectifSpecs-item mb-3">
+                <div class="form-row">
+                    <div class="col">
+                        <label asp-for="Projets.ObjectifsSpecifiques[@i].ObjectifsSpecifiques"></label>
+                        <input asp-for="Projets.ObjectifsSpecifiques[@i].ObjectifsSpecifiques" class="form-control" />
+                        <span asp-validation-for="Projets.ObjectifsSpecifiques[@i].ObjectifsSpecifiques" class="text-danger"></span>
+                    </div>
+                    <div class="col-auto align-self-end">
+                        <button type="button" class="btn btn-danger remove-objectifSpec">Supprimer</button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Projets.PopulationVisee" class="form-label">Population visée par le projet</label>
+        <input asp-for="Projets.PopulationVisee" class="form-control" />
+        <span asp-validation-for="Projets.PopulationVisee" class="text-danger"></span>
+    </div>
+
     <div id="aspects-list">
         <h4>Liste des aspects légaux</h4>
-        @for (int i = 0; i < Model.Projets.AspectsJuridiques.Count; i++)
+        @for (int i = 1; i < Model.Projets.AspectsJuridiques.Count; i++)
         {
             <div class="card mb-2 p-2">
-                <label class="form-label">AspectsJuridiques @(i + 1)</label>
+                <label class="form-label">Catégorie @(i + 1)</label>
                 <input asp-for="Projets.AspectsJuridiques[@i].CategorieAspect" class="form-control" />
                 <span asp-validation-for="Projets.AspectsJuridiques[@i].CategorieAspect" class="text-danger"></span>
             </div>
+
+            <div class="card mb-2 p-2">
+                <label class="form-label">Description de l'aspect @(i + 1)</label>
+                <input asp-for="Projets.AspectsJuridiques[@i].DescAspectsJuridiques" class="form-control" />
+                <span asp-validation-for="Projets.AspectsJuridiques[@i].DescAspectsJuridiques" class="text-danger"></span>
+            </div>
         }
         <button id="add-aspect" type="button" class="btn btn-sm btn-outline-primary mt-2">
-            + Ajouter un aspect legal
+            + Ajouter un aspect juridique
         </button>
     </div>
 
@@ -51,12 +107,42 @@
         });
     </script>
 
+    <script>
+        function handleAdd(btnSelector, listSelector, tmplSelector) {
+            $(btnSelector).on('click', function () {
+                var count = $(listSelector).children('.objectifSpec-item').length;
+                var html = $(tmplSelector).html().replace(/__index__/g, count);
+                $(listSelector).append(html);
+            });
+        }
+        function handleRemove(itemSelector, btnSelector) {
+            $(document).on('click', btnSelector, function () {
+                $(this).closest(itemSelector).remove();
+            });
+        }
+        $(function () {
+            handleAdd('#add-objectifSpec', '#objectifSpecs-list', '#objectifSpec-template');
+            handleRemove('.objectifSpec-item', '.remove-objectifSpec');
+        });
+    </script>
+
     <div id="aspect-template" class="d-none">
         <div class="aspect-item mb-3">
             <div class="form-row">
-                <input name="Projets.AspectsLegaux[__index__].IdIdentificationProjet" type="hidden" value="@Model.Projets.IdIdentificationProjet" />
-                <div class="col"><label>Aspect Légal du projet </label><input name="Projets.AspectsJuridiques[__index__].AspectsJuridiques" class="form-control" /></div>
+                <input name="Projets.AspectsJuridiques[__index__].IdIdentificationProjet" type="hidden" value="@Model.Projets.IdIdentificationProjet" />
+                <div class="col"><label>Catégorie</label><input name="Projets.AspectsJuridiques[__index__].CategorieAspect" class="form-control" /></div>
+                <div class="col"><label>Description de l'aspect</label><input name="Projets.AspectsJuridiques[__index__].DescAspectsJuridiques" class="form-control" /></div>
                 <div class="col-auto align-self-end"><button type="button" class="btn btn-danger remove-aspect">Supprimer</button></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="objectifSpec-template" class="d-none">
+        <div class="objectifSpec-item mb-3">
+            <div class="form-row">
+                <input name="Projets.ObjectifsSpecifiques[__index__].IdIdentificationProjet" type="hidden" value="@Model.Projets.IdIdentificationProjet" />
+                <div class="col"><label>Objectif spécifique du projet </label><input name="Projets.ObjectifsSpecifiques[__index__].ObjectifsSpecifiques" class="form-control" /></div>
+                <div class="col-auto align-self-end"><button type="button" class="btn btn-danger remove-objectifSpec">Supprimer</button></div>
             </div>
         </div>
     </div>

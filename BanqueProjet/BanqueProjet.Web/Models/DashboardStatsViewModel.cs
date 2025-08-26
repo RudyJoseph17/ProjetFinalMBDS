@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using BanqueProjet.Application.Dtos;
+using System.Collections.Generic;
 
 namespace BanqueProjet.Web.Models
 {
@@ -9,7 +10,8 @@ namespace BanqueProjet.Web.Models
 
         // Champs pour futur usage (validés)
         public int ProjetsValides { get; set; } = 0;
-        public List<string> NomsProjetsValides { get; set; } = new List<string>();
+        public List<string> NomsProjetsValides { get; set; } = new();
+        public IEnumerable<ProjetsBPDto> Projets { get; set; } = new List<ProjetsBPDto>();
 
         // (Optionnel) autres champs à ajouter plus tard
     }

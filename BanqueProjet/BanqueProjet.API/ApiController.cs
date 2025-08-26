@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using BanqueProjet.Application.Interfaces;
 using BanqueProjet.Application.Dtos;
+using Shared.Domain.Interface;
+using Shared.Domain.Dtos;
 
 namespace BanqueProjet.API.Controllers
 {

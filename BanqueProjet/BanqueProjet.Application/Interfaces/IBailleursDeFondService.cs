@@ -9,9 +9,9 @@ namespace BanqueProjet.Application.Interfaces
 {
     public interface IBailleursDeFondService
     {
-        Task AjouterAsync(BailleursDeFondDto BailleursDeFond);
-        Task MettreAJourAsync(BailleursDeFondDto BailleursDeFond);
-        Task SupprimerAsync(string IdBailleursDeFonds);
-        Task<List<BailleursDeFondDto>> ObtenirTousAsync();
+        Task AjouterAsync(BailleursDeFondsDto BailleursDeFond);
+        Task MettreAJourAsync(BailleursDeFondsDto BailleursDeFond);
+        Task SupprimerAsync(byte IdBailleursDeFonds);
+        Task<List<BailleursDeFondsDto>> ObtenirTousAsync();
     }
 }

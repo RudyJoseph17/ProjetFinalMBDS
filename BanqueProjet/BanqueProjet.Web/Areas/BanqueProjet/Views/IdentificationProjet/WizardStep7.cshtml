@@ -1,149 +1,19 @@
-﻿@model BanqueProjet.Web.Models.DdpViewModel
+﻿// Views/BanqueProjet/IdentificationProjet/Confirmation.cshtml
+@model BanqueProjet.Application.Dtos.ProjetsBPDto
 @{
-    ViewData["Title"] = "Étape 6 – Livrables, effets et impacts";
-    var step = (int)ViewData["Step"];
+    ViewData["Title"] = "Confirmation de création";
 }
-<h2>@ViewData["Title"]</h2>
-
-<form asp-action="Wizard" method="post">
-    <input type="hidden" name="step" value="@step" />
-
-    <div id="livrables-list">
-        <h4>Liste des livrables</h4>
-        @for (int i = 0; i < Model.Projets.LivrablesProjets.Count; i++)
-        {
-            <div class="activite-item mb-3">
-                <div class="form-row">
-                    <div class="col">
-                        <label asp-for="Projets.LivrablesProjets[@i].DefinitionLivrablesDuProjet"></label>
-                        <input asp-for="Projets.LivrablesProjets[@i].DefinitionLivrablesDuProjet" class="form-control" />
-                        <span asp-validation-for="Projets.LivrablesProjets[@i].DefinitionLivrablesDuProjet" class="text-danger"></span>
-                    </div>
-                    <div class="col">
-                        <label asp-for="Projets.LivrablesProjets[@i].QuantiteDeLivrable"></label>
-                        <input asp-for="Projets.LivrablesProjets[@i].QuantiteDeLivrable" class="form-control" />
-                        <span asp-validation-for="Projets.LivrablesProjets[@i].QuantiteDeLivrable" class="text-danger"></span>
-                    </div>
-                    <div class="col-auto align-self-end">
-                        <button type="button" class="btn btn-danger remove-livrable">Supprimer</button>
-                    </div>
-                </div>
-            </div>
-        }
+<div class="container mt-5">
+    <div class="alert alert-success" role="alert">
+        <h4 class="alert-heading">Projet enregistré avec succès !</h4>
+        <p>Le projet <strong>@Model.IdIdentificationProjet</strong> a bien été créé.</p>
     </div>
-
-    <button id="add-livrable" type="button" class="btn btn-sm btn-outline-primary mt-2">
-        + Ajouter un livrable
-    </button>
-
-    <div id="effets-list">
-        <h4>Liste des effets</h4>
-        @for (int i = 0; i < Model.Projets.EffetsProjets.Count; i++)
-        {
-            <div class="aspect-item mb-3">
-                <div class="form-row">
-                    <div class="col">
-                        <label asp-for="Projets.EffetsProjets[@i].EffetDuProjet"></label>
-                        <input asp-for="Projets.EffetsProjets[@i].EffetDuProjet" class="form-control" />
-                        <span asp-validation-for="Projets.EffetsProjets[@i].EffetDuProjet" class="text-danger"></span>
-                    </div>
-                    <div class="col-auto align-self-end">
-                        <button type="button" class="btn btn-danger remove-effet">Supprimer</button>
-                    </div>
-                </div>
-            </div>
-        }
+    <div class="mt-4">
+        <a asp-action="Details" asp-route-projetId="@Model.IdIdentificationProjet" asp-route-cadreId="0" class="btn btn-primary">
+            Voir les détails
+        </a>
+        <a asp-action="Index" class="btn btn-secondary">
+            Retour à la liste des projets
+        </a>
     </div>
-
-    <button id="add-effet" type="button" class="btn btn-sm btn-outline-primary mt-2">
-        + Ajouter un effet
-    </button>
-
-    <div id="impacts-list">
-        <h4>Liste des impacts</h4>
-        @for (int i = 0; i < Model.Projets.ImpactsDesProjets.Count; i++)
-        {
-            <div class="impact-item mb-3">
-                <div class="form-row">
-                    <div class="col">
-                        <label asp-for="Projets.ImpactsDesProjets[@i].DescImpactsDuProjet"></label>
-                        <input asp-for="Projets.ImpactsDesProjets[@i].DescImpactsDuProjet" class="form-control" />
-                        <span asp-validation-for="Projets.ImpactsDesProjets[@i].DescImpactsDuProjet" class="text-danger"></span>
-                    </div>
-                    <div class="col-auto align-self-end">
-                        <button type="button" class="btn btn-danger remove-impact">Supprimer</button>
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
-
-    <button id="add-impact" type="button" class="btn btn-sm btn-outline-primary mt-2">
-        + Ajouter un impact
-    </button>
-
-    <div class="d-flex justify-content-between mt-4">
-        <button type="submit" name="action" value="Prev" class="btn btn-secondary">Précédent</button>
-        <button type="submit" name="action" value="Next" class="btn btn-primary">Suivant</button>
-    </div>
-</form>
-
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-    <script>
-        function handleAdd(btnSelector, listSelector, tmplSelector) {
-            $(btnSelector).on('click', function () {
-                var count = $(listSelector).children('.livrable-item', '.effet-item', '.impact-item').length;
-                var html = $(tmplSelector).html().replace(/__index__/g, count);
-                $(listSelector).append(html);
-            });
-        }
-        function handleRemove(itemSelector, btnSelector) {
-            $(document).on('click', btnSelector, function () {
-                $(this).closest(itemSelector).remove();
-            });
-        }
-        $(function () {
-            handleAdd('#add-livrable', '#livrables-list', '#livrable-template');
-            handleRemove('.livrable-item', '.remove-livrable');
-            handleAdd('#add-effet', '#effets-list', '#effet-template');
-            handleRemove('.effet-item', '.remove-effet');
-            handleAdd('#add-impact', '#impacts-list', '#impact-template');
-            handleRemove('.impact-item', '.remove-impact');
-        });
-    </script>
-
-    @* Template caché sans index dans les labels *@
-    <div id="livrable-template" class="d-none">
-        <div class="livrable-item mb-3">
-            <div class="form-row">
-                <input name="Projets.LivrablesProjets[__index__].IdIdentificationProjet" type="hidden" value="@Model.Projets.IdIdentificationProjet" />
-                <div class="col"><label>Definition du livrable</label><input name="Projets.LivrablesProjets[__index__].DefinitionLivrablesDuProjet" class="form-control" /></div>
-                <div class="col"><label>Quantite associee</label><input name="Projets.LivrablesProjets[__index__].QuantiteDeLivrable" type="number" class="form-control" /></div>
-                <div class="col-auto align-self-end"><button type="button" class="btn btn-danger remove-livrable">Supprimer</button></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="effet-template" class="d-none">
-        <div class="effet-item mb-3">
-            <div class="form-row">
-                <input name="Projets.EffetsProjets[__index__].IdIdentificationProjet" type="hidden" value="@Model.Projets.IdIdentificationProjet" />
-                <div class="col"><label>Effet du projet </label><input name="Projets.EffetsProjets[__index__].EffetDuProjet" class="form-control" /></div>
-                <div class="col-auto align-self-end"><button type="button" class="btn btn-danger remove-effet">Supprimer</button></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="impact-template" class="d-none">
-        <div class="impact-item mb-3">
-            <div class="form-row">
-                <input name="Projets.ImpactsDesProjets[__index__].IdIdentificationProjet" type="hidden" value="@Model.Projets.IdIdentificationProjet" />
-                <div class="col"><label>Impact du projet </label><input name="Projets.ImpactsDesProjets[__index__].DescImpactsDuProjet" class="form-control" /></div>
-                <div class="col-auto align-self-end"><button type="button" class="btn btn-danger remove-impact">Supprimer</button></div>
-            </div>
-        </div>
-    </div>
-}
+</div>

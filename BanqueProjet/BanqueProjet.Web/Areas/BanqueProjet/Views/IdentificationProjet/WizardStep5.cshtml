@@ -1,68 +1,149 @@
 ﻿@model BanqueProjet.Web.Models.DdpViewModel
 @{
-    ViewData["Title"] = "Étape 4 – Aspect juridique";
+    ViewData["Title"] = "Étape 5 sur 6 – Parties prenantes-effets-impacts-indicateurs de resultats";
     var step = (int)ViewData["Step"];
 }
 <h2>@ViewData["Title"]</h2>
 
 <form asp-action="Wizard" method="post">
     <input type="hidden" name="step" value="@step" />
+    <div id="partiesPrenantes-list">
+        <h2>Liste des parties prenantes</h2>
+        @for (int i = 1; i < Model.Projets.PartiesPrenantes.Count; i++)
 
-    <div id="tCouts-list">
-        <h4>Cout total</h4>
-        @for (int i = 0; i < Model.Projets.AspectsJuridiques.Count; i++)
+        {
+            <div class="card mb-2 p-2">
+                <label class="form-label">Nom de la firme @(i + 1)</label>
+                <input asp-for="Projets.PartiesPrenantes[@i].NomFirme" class="form-control" />
+                <span asp-validation-for="Projets.PartiesPrenantes[@i].NomFirme" class="text-danger"></span>
+            </div>
+            <div class="card mb-2 p-2">
+                <label class="form-label">Numéro de téléphone de la firme @(i + 1)</label>
+                <input asp-for="Projets.PartiesPrenantes[@i].TelephoneFirme" class="form-control" />
+                <span asp-validation-for="Projets.PartiesPrenantes[@i].TelephoneFirme" class="text-danger"></span>
+            </div>
+            <div class="card mb-2 p-2">
+                <label class="form-label">Courriel de la firme @(i + 1)</label>
+                <input asp-for="Projets.PartiesPrenantes[@i].CourrielFirme" class="form-control" />
+                <span asp-validation-for="Projets.PartiesPrenantes[@i].CourrielFirme" class="text-danger"></span>
+            </div>
+            <div class="card mb-2 p-2">
+                <label class="form-label">Role de la firme @(i + 1)</label>
+                <input asp-for="Projets.PartiesPrenantes[@i].RoleFirme" class="form-control" />
+                <span asp-validation-for="Projets.PartiesPrenantes[@i].RoleFirme" class="text-danger"></span>
+            </div>
+        }
+        <button type="button" id="add-partiesPrenantes" class="btn btn-secondary">Ajouter une partie prenante</button>
+    </div>
+
+    <div id="livrables-list">
+        <h4>Liste des livrables</h4>
+        @for (int i = 0; i < Model.Projets.LivrablesProjets.Count; i++)
+
+        {
+            <div class="activite-item mb-3">
+                <div class="form-row">
+                    <div class="col">
+                        <label asp-for="Projets.LivrablesProjets[@i].DefinitionLivrablesDuProjet">Definition du livrable</label>
+                        <input asp-for="Projets.LivrablesProjets[@i].DefinitionLivrablesDuProjet" class="form-control" />
+                        <span asp-validation-for="Projets.LivrablesProjets[@i].DefinitionLivrablesDuProjet" class="text-danger"></span>
+                    </div>
+                    <div class="col">
+                        <label asp-for="Projets.LivrablesProjets[@i].ValeurLivree ">Valeur du livrable</label>
+                        <input asp-for="Projets.LivrablesProjets[@i].ValeurLivree " class="form-control" />
+                        <span asp-validation-for="Projets.LivrablesProjets[@i].ValeurLivree " class="text-danger"></span>
+                    </div>
+                    <div class="col-auto align-self-end">
+                        <button type="button" class="btn btn-danger remove-livrable">Supprimer</button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <button id="add-livrable" type="button" class="btn btn-sm btn-outline-primary mt-2">
+        + Ajouter un livrable
+    </button>
+
+    <div id="effets-list">
+        <h4>Liste des effets</h4>
+        @for (int i = 0; i < Model.Projets.EffetsProjets.Count; i++)
+
         {
             <div class="aspect-item mb-3">
                 <div class="form-row">
                     <div class="col">
-                        <label asp-for="Projets.AspectsJuridiques[@i].DescAspectsJuridiques"></label>
-                        <input asp-for="Projets.AspectsJuridiques[@i].DescAspectsJuridiques" class="form-control" />
-                        <span asp-validation-for="Projets.AspectsJuridiques[@i].DescAspectsJuridiques" class="text-danger"></span>
+                        <label asp-for="Projets.EffetsProjets[@i].EffetDuProjet"></label>
+                        <input asp-for="Projets.EffetsProjets[@i].EffetDuProjet" class="form-control" />
+                        <span asp-validation-for="Projets.EffetsProjets[@i].EffetDuProjet" class="text-danger"></span>
                     </div>
                     <div class="col-auto align-self-end">
-                        <button type="button" class="btn btn-danger remove-aspect">Supprimer</button>
+                        <button type="button" class="btn btn-danger remove-effet">Supprimer</button>
                     </div>
                 </div>
             </div>
         }
     </div>
 
-    <button id="add-tCout" type="button" class="btn btn-sm btn-outline-primary mt-2">
-        + Ajouter un cout total
+    <button id="add-effet" type="button" class="btn btn-sm btn-outline-primary mt-2">
+        + Ajouter un effet
     </button>
 
-    <div id="coutAnnuelsProjets-list">
-        <h4>Cout total</h4>
-        @for (int i = 0; i < Model.Projets.CoutAnnuelsProjets.Count; i++)
+    <div id="impacts-list">
+        <h4>Liste des impacts</h4>
+        @for (int i = 0; i < Model.Projets.ImpactsDesProjets.Count; i++)
+
         {
-            <div class="coutAnnuelsProjet-item mb-3">
+            <div class="impact-item mb-3">
                 <div class="form-row">
                     <div class="col">
-                        <label asp-for="Projets.CoutAnnuelsProjets[@i].ExerciceFiscaleDebut"></label>
-                        <input asp-for="Projets.CoutAnnuelsProjets[@i].ExerciceFiscaleDebut" class="form-control" />
-                        <span asp-validation-for="Projets.CoutAnnuelsProjets[@i].ExerciceFiscaleDebut" class="text-danger"></span>
-                    </div>
-                    <div class="col">
-                        <label asp-for="Projets.CoutAnnuelsProjets[@i].SourcesDeFinancementCoutAn"></label>
-                        <input asp-for="Projets.CoutAnnuelsProjets[@i].SourcesDeFinancementCoutAn" class="form-control" />
-                        <span asp-validation-for="Projets.CoutAnnuelsProjets[@i].SourcesDeFinancementCoutAn" class="text-danger"></span>
-                    </div>
-                    <div class="col">
-                        <label asp-for="Projets.CoutAnnuelsProjets[@i].MontantAnnuel"></label>
-                        <input asp-for="Projets.CoutAnnuelsProjets[@i].MontantAnnuel" class="form-control" />
-                        <span asp-validation-for="Projets.CoutAnnuelsProjets[@i].MontantAnnuel" class="text-danger"></span>
+                        <label asp-for="Projets.ImpactsDesProjets[@i].DescImpactsDuProjet"></label>
+                        <input asp-for="Projets.ImpactsDesProjets[@i].DescImpactsDuProjet" class="form-control" />
+                        <span asp-validation-for="Projets.ImpactsDesProjets[@i].DescImpactsDuProjet" class="text-danger"></span>
                     </div>
                     <div class="col-auto align-self-end">
-                        <button type="button" class="btn btn-danger remove-coutAnnuelsProjet">Supprimer</button>
+                        <button type="button" class="btn btn-danger remove-impact">Supprimer</button>
                     </div>
                 </div>
             </div>
         }
     </div>
 
-    <button id="add-coutAnnuelsProjet" type="button" class="btn btn-sm btn-outline-primary mt-2">
-        + Ajouter un cout annuel
+    <button id="add-impact" type="button" class="btn btn-sm btn-outline-primary mt-2">
+        + Ajouter un impact
     </button>
+
+    <div id="indicateurs-list">
+        <h4>Indicateurs de résultats</h4>
+        @for (int i = 0; i < Model.Projets.IndicateursDeResultats.Count; i++)
+
+        {
+            <div class="indicateur-item mb-3">
+                <div class="form-row">
+                    <div class="col">
+                        <label asp-for="Projets.IndicateursDeResultats[@i].DefinitionIndicateursDeResu"></label>
+                        <input asp-for="Projets.IndicateursDeResultats[@i].DefinitionIndicateursDeResu" class="form-control" />
+                        <span asp-validation-for="Projets.IndicateursDeResultats[@i].DefinitionIndicateursDeResu" class="text-danger"></span>
+                    </div>
+                    <div class="col">
+                        <label asp-for="Projets.IndicateursDeResultats[@i].QuantiteAssocieAIndicateur"></label>
+                        <input asp-for="Projets.IndicateursDeResultats[@i].QuantiteAssocieAIndicateur" class="form-control" />
+                        <span asp-validation-for="Projets.IndicateursDeResultats[@i].QuantiteAssocieAIndicateur" class="text-danger"></span>
+                    </div>
+                    <div class="col-auto align-self-end">
+                        <button type="button" class="btn btn-danger remove-activite">Supprimer</button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <button id="add-indicateur" type="button" class="btn btn-sm btn-outline-primary mt-2">
+        + Ajouter un indicateur de resultat
+    </button>
+
+
+
 
     <div class="d-flex justify-content-between mt-4">
         <button type="submit" name="action" value="Prev" class="btn btn-secondary">Précédent</button>
@@ -77,7 +158,7 @@
     <script>
         function handleAdd(btnSelector, listSelector, tmplSelector) {
             $(btnSelector).on('click', function () {
-                var count = $(listSelector).children('.tCout-item', '.coutAnnuelsProjet-item').length;
+                var count = $(listSelector).children('.partiesPrenante-item').length;
                 var html = $(tmplSelector).html().replace(/__index__/g, count);
                 $(listSelector).append(html);
             });
@@ -88,33 +169,108 @@
             });
         }
         $(function () {
-            handleAdd('#add-tCout', '#tCouts-list', '#tCout-template');
-            handleRemove('.tCout-item', '.remove-tCout');
-            handleAdd('#add-coutAnnuelsProjet', '#coutAnnuelsProjets-list', '#coutAnnuelsProjet-template');
-            handleRemove('.coutAnnuelsProjet-item', '.remove-coutAnnuelsProjet');
+            handleAdd('#add-partiesPrenante', '#partiesPrenantes-list', '#partiesPrenante-template');
+            handleRemove('.partiesPrenante-item', '.remove-partiesPrenante');
         });
     </script>
 
-    <div id="tCout-template" class="d-none">
-        <div class="tCout-item mb-3">
+    <script>
+        function handleAdd(btnSelector, listSelector, tmplSelector) {
+            $(btnSelector).on('click', function () {
+                var count = $(listSelector).children('.livrable-item', '.effet-item', '.impact-item').length;
+                var html = $(tmplSelector).html().replace(/__index__/g, count);
+                $(listSelector).append(html);
+            });
+        }
+        function handleRemove(itemSelector, btnSelector) {
+            $(document).on('click', btnSelector, function () {
+                $(this).closest(itemSelector).remove();
+            });
+        }
+        $(function () {
+            handleAdd('#add-livrable', '#livrables-list', '#livrable-template');
+            handleRemove('.livrable-item', '.remove-livrable');
+            handleAdd('#add-effet', '#effets-list', '#effet-template');
+            handleRemove('.effet-item', '.remove-effet');
+            handleAdd('#add-impact', '#impacts-list', '#impact-template');
+            handleRemove('.impact-item', '.remove-impact');
+        });
+    </script>
+
+    <script>
+        function handleAdd(btnSelector, listSelector, tmplSelector) {
+            $(btnSelector).on('click', function () {
+                var count = $(listSelector).children('.indicateur-item').length;
+                var html = $(tmplSelector).html().replace(/__index__/g, count);
+                $(listSelector).append(html);
+            });
+        }
+        function handleRemove(itemSelector, btnSelector) {
+            $(document).on('click', btnSelector, function () {
+                $(this).closest(itemSelector).remove();
+            });
+        }
+        $(function () {
+            handleAdd('#add-indicateur', '#indicateurs-list', '#indicateur-template');
+            handleRemove('.indicateur-item', '.remove-indicateur');
+        });
+    </script>
+
+    <div id="aspect-template" class="d-none">
+        <div class="aspect-item mb-3">
             <div class="form-row">
-                <input name="Projets.AspectsJuridiques[__index__].IdIdentificationProjet" type="hidden" value="@Model.Projets.IdIdentificationProjet" />
-                <div class="col"><label>Cout total du projet </label><input name="Projets.AspectsJuridiques[__index__].DescAspectsJuridiques" type="number" class="form-control" /></div>
-                <div class="col-auto align-self-end"><button type="button" class="btn btn-danger remove-tCout">Supprimer</button></div>
+                <input name="Projets.PartiesPrenantes[__index__].IdIdentificationProjet" type="hidden" value="@Model.Projets.IdIdentificationProjet" />
+                <div class="col"><label>Nom de la firme</label><input name="Projets.PartiesPrenante[__index__].NomFirme" class="form-control" /></div>
+                <div class="col"><label>Telephone de la firme</label><input name="Projets.PartiesPrenantes[__index__].TelephoneFirme" class="form-control" /></div>
+                <div class="col"><label>Courriel de la firme</label><input name="Projets.PartiesPrenantes[__index__].CourrielFirme " class="form-control" /></div>
+                <div class="col"><label>Role de la firme</label><input name="Projets.PartiesPrenantes[__index__].RoleFirme" class="form-control" /></div>
+                <div class="col-auto align-self-end"><button type="button" class="btn btn-danger remove-PartiesPrenante">Supprimer</button></div>
             </div>
         </div>
     </div>
 
-    <div id="coutAnnuelsProjet-template" class="d-none">
-        <div class="coutAnnuelsProjet-item mb-3">
+    <div id="indicateur-template" class="d-none">
+        <div class="indicateur-item mb-3">
             <div class="form-row">
-                <input name="Projets.CoutAnnuelsProjets[__index__].IdIdentificationProjet" type="hidden" value="@Model.Projets.IdIdentificationProjet" />
-                <div class="col"><label>Exercice de prevision</label><input name="Projets.CoutAnnuelsProjets[__index__].ExerciceFiscalePrevisionTot" class="form-control" /></div>
-                <div class="col"><label>Source de financement'</label><input name="Projets.CoutAnnuelsProjets[__index__].SourcesDeFinancementCoutAn" class="form-control" /></div>
-                <div class="col"><label>Montant annuel</label><input name="Projets.CoutAnnuelsProjets[__index__].MontantAnnuel" type="number" class="form-control" /></div>
-                <div class="col-auto align-self-end"><button type="button" class="btn btn-danger remove-coutAnnuelsProjet">Supprimer</button></div>
+                <input name="Projets.IndicateursDeResultats[__index__].IdIdentificationProjet" type="hidden" value="@Model.Projets.IdIdentificationProjet" />
+                <div class="col"><label>Définition indicateur de résultat</label><input name="Projets.IndicateursDeResultats[__index__].DefinitionIndicateursDeResu" class="form-control" /></div>
+                <div class="col"><label>Quantité associée à l'indicateur'</label><input name="Projets.IndicateursDeResultats[__index__].QuantiteAssocieAIndicateur" type="number" class="form-control" /></div>
+                <div class="col-auto align-self-end"><button type="button" class="btn btn-danger remove-indicateur">Supprimer</button></div>
             </div>
         </div>
     </div>
+
+    <div id="livrable-template" class="d-none">
+        <div class="livrable-item mb-3">
+            <div class="form-row">
+                <input name="Projets.LivrablesProjets[__index__].IdIdentificationProjet" type="hidden" value="@Model.Projets.IdIdentificationProjet" />
+                <div class="col"><label>Definition du livrable</label><input name="Projets.LivrablesProjets[__index__].DefinitionLivrablesDuProjet" class="form-control" /></div>
+                <div class="col"><label>Quantite associee</label><input name="Projets.LivrablesProjets[__index__].QuantiteDeLivrable" type="number" class="form-control" /></div>
+                <div class="col-auto align-self-end"><button type="button" class="btn btn-danger remove-livrable">Supprimer</button></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="effet-template" class="d-none">
+        <div class="effet-item mb-3">
+            <div class="form-row">
+                <input name="Projets.EffetsProjets[__index__].IdIdentificationProjet" type="hidden" value="@Model.Projets.IdIdentificationProjet" />
+                <div class="col"><label>Effet du projet </label><input name="Projets.EffetsProjets[__index__].EffetDuProjet" class="form-control" /></div>
+                <div class="col-auto align-self-end"><button type="button" class="btn btn-danger remove-effet">Supprimer</button></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="impact-template" class="d-none">
+        <div class="impact-item mb-3">
+            <div class="form-row">
+                <input name="Projets.ImpactsDesProjets[__index__].IdIdentificationProjet" type="hidden" value="@Model.Projets.IdIdentificationProjet" />
+                <div class="col"><label>Impact du projet </label><input name="Projets.ImpactsDesProjets[__index__].DescImpactsDuProjet" class="form-control" /></div>
+                <div class="col-auto align-self-end"><button type="button" class="btn btn-danger remove-impact">Supprimer</button></div>
+            </div>
+        </div>
+    </div>
+
+
 }
 

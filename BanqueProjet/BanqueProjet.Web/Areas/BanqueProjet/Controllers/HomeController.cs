@@ -9,6 +9,9 @@ using Microsoft.Extensions.Logging;
 using BanqueProjet.Web.Models;
 using BanqueProjet.Application.Dtos;
 using BanqueProjet.Application.Interfaces;
+using Shared.Domain.Interface;
+using Shared.Domain.Dtos;
+using AutoMapper;
 
 namespace BanqueProjet.Web.Areas.BanqueProjet.Controllers
 {
@@ -17,13 +20,16 @@ namespace BanqueProjet.Web.Areas.BanqueProjet.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IIdentificationProjetService _projetService;
+        private readonly IMapper _mapper;
 
         public HomeController(
             ILogger<HomeController> logger,
-            IIdentificationProjetService projetService)
+            IIdentificationProjetService projetService,
+            IMapper mapper)
         {
             _logger = logger;
             _projetService = projetService;
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         /// <summary>
@@ -32,19 +38,22 @@ namespace BanqueProjet.Web.Areas.BanqueProjet.Controllers
         public async Task<IActionResult> Index()
         {
             // Récupération asynchrone de tous les projets
-            var projets = await _projetService.ObtenirTousAsync()
+            var identList = await _projetService.ObtenirTousAsync()
                              ?? new List<IdentificationProjetDto>();
+
+            // 2) mapper en ProjetsBPDto (la vue attend IEnumerable<ProjetsBPDto>)
+            var projets = _mapper.Map<List<ProjetsBPDto>>(identList) ?? new List<ProjetsBPDto>();
 
             // Statistiques pour les cards
             var total = projets.Count;
             var validesCount = 0;
             var nomsProjetsValides = new List<string>();
             // Exemple futur si le DTO a une propriété Statut :
-            // validesCount = projets.Count(p => p.Statut == "Valide");
-            // nomsProjetsValides = projets
-            //     .Where(p => p.Statut == "Valide")
-            //     .Select(p => p.NomProjet)
-            //     .ToList();
+            //validesCount = projets.Count(p => p.Statut == "Valide");
+            //nomsProjetsValides = projets
+            //    .Where(p => p.Statut == "Valide")
+            //    .Select(p => p.NomProjet)
+            //    .ToList();
 
             // Préparation des données pour Chart.js : nombre de projets par ministère
             var projetsParMinistere = projets

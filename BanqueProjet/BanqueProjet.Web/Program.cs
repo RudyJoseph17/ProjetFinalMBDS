@@ -12,6 +12,15 @@ using Shared.Domain.ApplicationUsers;
 ////using Shared.Infrastructure.Notifications;
 using Shared.Infrastructure.Persistence;
 using BanqueProjet.Infrastructure.Persistence;
+using Shared.Domain.Interface;
+using BanqueProjet.Application.Mapping;
+using AutoMapper;
+using Shared.Infrastructure.Data;
+using BanqueProjet.Application.Mapping;
+using Shared.Infrastructure.Mapping;
+
+
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -55,30 +64,35 @@ builder.Services.AddControllersWithViews();
 // Notification
 ////builder.Services.AddScoped<INotificationService, NotificationService>();
 
+// 2. Scan et enregistrement des profiles AutoMapper
+// Enregistrer le DbContext EF Core
+builder.Services.AddDbContext<SharedDbContext>(opts =>
+    opts.UseOracle(connectionString)
+);
+
+// Enregistrer AutoMapper (tous vos profiles)
+builder.Services.AddAutoMapper(
+    typeof(SharedMappingProfile).Assembly,
+    typeof(ProjetProfile).Assembly
+);
+builder.Services.AddAutoMapper(typeof(ProjetProfile).Assembly);
 builder.Services.AddScoped<IIdentificationProjetService, IdentificationProjetService>();
+builder.Services.AddScoped<IProjetsBPService, ProjetsBPService>();
+builder.Services.AddScoped<IActiviteService, ActiviteService>();
+builder.Services.AddScoped<IActiviteBPService, ActiviteBPService>();
 builder.Services.AddScoped<IDdpCadreLogiqueService, DdpCadreLogiqueService>();
-//builder.Services.AddScoped<IAspectsInstirutionnelService, AspectsInstirutionnelService>();
-//builder.Services.AddScoped<IEchelonTerritorialeService, EchelonTerritorialeService>();
-//builder.Services.AddScoped<IEmploisCreesService, EmploisCreesService>();
-//builder.Services.AddScoped<IDureeProjetService, DureeProjetService>();
-builder.Services.AddScoped<IGestionDeProjetService, GestionDeProjetService>();
+builder.Services.AddScoped<IAspectsJuridiquesService, AspectsJuridiquesService>();
 builder.Services.AddScoped<ILocalisationGeographiqueProjService, LocalisationGeographiqueProjService>();
-//builder.Services.AddScoped<ISuiviEtControleService, SuiviEtControleService>();
-//builder.Services.AddScoped<IGrilleDdpAviService, GrilleDdpAviService>();
-//builder.Services.AddScoped<IGrilleDdpIdentificationProjetService, GrilleDdpIdentificationProjetService>();
-//builder.Services.AddScoped<IGrilleDdpAspectsLegauxService, GrilleDdpAspectsLegauxService>();
-//builder.Services.AddScoped<IGrilleDdpResumeProjetService, GrilleDdpResumeProjetService>();
-//builder.Services.AddScoped<IGrilleDdpEtudesPrefaisabiliteService, GrilleDdpEtudesPrefaisabiliteService>();
-//builder.Services.AddScoped<IGrilleDdpStrategieGestionProjetService, GrilleDdpStrategieGestionProjetService>();
-//builder.Services.AddScoped<IGrilleDdpCommentairesGenerauxService, GrilleDdpCommentairesGenerauxService>();
-//builder.Services.AddScoped<IGrilleDdpCalendrierFinancierProjetService, GrilleDdpCalendrierFinancierProjetService>();
-//builder.Services.AddScoped<IGrilleDdpCalendrierExecutionService, GrilleDdpCalendrierExecutionService>();
-//builder.Services.AddScoped<IPrevisionService, PrevisionService>();
-//builder.Services.AddScoped<IActiviteService, ActiviteService>();
-//builder.Services.AddScoped<IAspectsLegauxService, AspectsLegauxService>();
-//builder.Services.AddScoped<ICoutAnnuelService, CoutAnnuelService>();
-//builder.Services.AddScoped<ICoutTotalProjetService, CoutTotalProjetService>();
-//builder.Services.AddScoped<IAspectsInstitutionnelleService, AspectsInstitutionnelleService>();
+builder.Services.AddScoped<IActivitesAnnuellesService, ActivitesAnnuellesService>();
+builder.Services.AddScoped<IBailleursDeFondService, BailleursDeFondService>();
+builder.Services.AddScoped<IPartiesPrenantesService, PartiesPrenantesService>();
+builder.Services.AddScoped<ICoutAnnuelDuProjetService, CoutAnnuelDuProjetService>();
+builder.Services.AddScoped<IEffetsDuProjetService, EffetsDuProjetService>();
+builder.Services.AddScoped<IImpactsDuProjetService, ImpactsDuProjetService>();
+builder.Services.AddScoped<IIndicateursDeResultatService, IndicateursDeResultatService>();
+builder.Services.AddScoped<IInformationsFinancieresService, InformationsFinancieresService>();
+builder.Services.AddScoped<IDefinitionLivrablesDuProjetService, DefinitionLivrablesDuProjetService>();
+builder.Services.AddScoped<IObjectifsSpecifiquesService, ObjectifsSpecifiquesService>();
 
 
 builder.Logging.ClearProviders();
@@ -91,6 +105,24 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+using (var scope = app.Services.CreateScope())
+{
+    var mapper = scope.ServiceProvider.GetRequiredService<AutoMapper.IMapper>();
+    try
+    {
+        mapper.ConfigurationProvider.AssertConfigurationIsValid(); // lance une exception si config invalide
+    }
+    catch (AutoMapperConfigurationException ex)
+    {
+        // log détaillé et rethrow pour voir l'erreur au démarrage
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "AutoMapper configuration invalid: {Message}", ex.Message);
+        throw;
+    }
+}
+
+
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -112,5 +144,4 @@ app.MapControllerRoute(
 
 
 app.MapDefaultControllerRoute();
-
 app.Run();

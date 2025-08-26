@@ -11,7 +11,7 @@ namespace BanqueProjet.Application.Interfaces
     {
         Task AjouterAsync(IndicateursDeResultatDto indicateursDeResultats);
         Task MettreAJourAsync(IndicateursDeResultatDto indicateursDeResultats);
-        Task SupprimerAsync(string IdIndicateursDeResultats);
+        Task SupprimerAsync(byte IdIndicateursDeResultats);
         Task<List<IndicateursDeResultatDto>> ObtenirTousAsync();
     }
 }

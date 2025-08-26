@@ -10,10 +10,14 @@ using Shared.Domain.Helpers;
 using BanqueProjet.Web.Models;
 using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Shared.Infrastructure.Persistence;
 using Shared.Domain.ApplicationUsers;
 using Humanizer;
 using Microsoft.AspNetCore.Identity;
 using BanqueProjet.Infrastructure.Persistence;
+using Shared.Domain.Interface;
+using Shared.Domain.Dtos;
+using AutoMapper;
 ////using InvestissementsPublics.Starter.ApplicationUsers;
 
 namespace BanqueProjet.Web.Areas.BanqueProjet.Controllers
@@ -22,35 +26,59 @@ namespace BanqueProjet.Web.Areas.BanqueProjet.Controllers
     public class IdentificationProjetController : Controller
     {
         private readonly IIdentificationProjetService _projetService;
-        private readonly IDdpCadreLogiqueService _cadreService;
+        private readonly IActiviteBPService _activiteBPService;
+        private readonly IActivitesAnnuellesService _activitesAnnuellesService;
+        private readonly IBailleursDeFondService _bailleursDeFondsService;
+        private readonly IDdpCadreLogiqueService _cadreLogiqueService;
         private readonly IAspectsJuridiquesService _aspectsJuridiquesService;
-        private readonly IGestionDeProjetService _gestionProjetService;
-        private readonly ILocalisationGeographiqueProjService _LocalisationGeographiqueService;
-        private readonly ISuiviEtControleService _SuiviControleService;
-        //private readonly INotificationService _notif;
-        ////private readonly UserManager<ApplicationUser> _userMgr;
+        private readonly IPartiesPrenantesService _partiesPrenantesService;
+        private readonly ILocalisationGeographiqueProjService _localisationGeographiqueService;
+        private readonly ICoutAnnuelDuProjetService _coutannuelProjetService;
+        private readonly IEffetsDuProjetService _effetsProjetService;
+        private readonly IImpactsDuProjetService _impactsProjetsService;
+        private readonly IIndicateursDeResultatService _indicateursResultatsService;
+        private readonly IInformationsFinancieresService _informationsFinancieresService;
+        private readonly IDefinitionLivrablesDuProjetService _livrablesProjetService;
+        private readonly IObjectifsSpecifiquesService _objectifsSpecifiquesService;
         private readonly ILogger<IdentificationProjetController> _logger;
-        private const int TotalSteps = 13;
+        private readonly IMapper _mapper;
+        private const int TotalSteps = 6;
 
         public IdentificationProjetController(
-            IIdentificationProjetService projetService,
-            IDdpCadreLogiqueService cadreService,
-            IAspectsJuridiquesService aspectsJuridiquesService,
-            IGestionDeProjetService gestionProjetService,
+            IIdentificationProjetService ProjetService,
+            IActiviteBPService ActiviteBPService,
+            IActivitesAnnuellesService ActivitesAnnuellesService,
+            IBailleursDeFondService BailleursDeFondsService,
+            IDdpCadreLogiqueService CadreLogiqueService,
+            IAspectsJuridiquesService AspectsJuridiquesService,
+            IPartiesPrenantesService PartiesPrenantesService,
             ILocalisationGeographiqueProjService LocalisationGeographiqueService,
-            //ISuiviEtControleService SuiviControleService,
-            //INotificationService notif,
-            ////UserManager<ApplicationUser> userMgr,
+            ICoutAnnuelDuProjetService CoutannuelProjetService,
+            IEffetsDuProjetService EffetsProjetService,
+            IImpactsDuProjetService ImpactsProjetsService,
+            IIndicateursDeResultatService IndicateursResultatsService,
+            IInformationsFinancieresService InformationsFInancieresService,
+            IDefinitionLivrablesDuProjetService LivrablesProjetService,
+            IObjectifsSpecifiquesService ObjectifsSpecifiquesService,
+            IMapper mapper,
             ILogger<IdentificationProjetController> logger)
         {
-            _projetService = projetService;
-            _cadreService = cadreService;
-            _aspectsJuridiquesService = aspectsJuridiquesService;
-            _gestionProjetService = gestionProjetService;
-            _LocalisationGeographiqueService = LocalisationGeographiqueService;
-            //_SuiviControleService = SuiviControleService;
-            ////_userMgr = userMgr;
-            //_notif = notif;
+            _projetService = ProjetService;
+            _activiteBPService = ActiviteBPService;
+            _activitesAnnuellesService = ActivitesAnnuellesService;
+            _bailleursDeFondsService = BailleursDeFondsService;
+            _cadreLogiqueService = CadreLogiqueService;
+            _aspectsJuridiquesService = AspectsJuridiquesService;
+            _partiesPrenantesService = PartiesPrenantesService;
+            _localisationGeographiqueService = LocalisationGeographiqueService;
+            _coutannuelProjetService = CoutannuelProjetService;
+            _effetsProjetService = EffetsProjetService;
+            _impactsProjetsService = ImpactsProjetsService;
+            _indicateursResultatsService = IndicateursResultatsService;
+            _informationsFinancieresService = InformationsFInancieresService;
+            _livrablesProjetService = LivrablesProjetService;
+            _objectifsSpecifiquesService = ObjectifsSpecifiquesService;
+            _mapper = mapper;
             _logger = logger;
         }
 
@@ -68,17 +96,20 @@ namespace BanqueProjet.Web.Areas.BanqueProjet.Controllers
                 var newId = IdGenerator.GenererIdPour(nameof(IdentificationProjetDto.IdIdentificationProjet));
                 model = new DdpViewModel
                 {
-                    Projets = new IdentificationProjetDto { IdIdentificationProjet = newId },
+                    Projets = new ProjetsBPDto { IdIdentificationProjet = newId },
+                    ActiviteBP = new ActiviteBPDto { IdIdentificationProjet = newId },
+                    ActiviteAnuelle = new ActivitesAnnuellesDto { IdIdentificationProjet = newId },
+                    BailleursDeFonds = new BailleursDeFondsDto { IdIdentificationProjet = newId },
                     CadreLogique = new DdpCadreLogiqueDto { IdIdentificationProjet = newId },
-                    AspectsJuridiques = new AspectsJuridiquesDto { IdIdentificationProjet = newId },
-                    DureeProjet = new DureeProjetDto { IdIdentificationProjet = newId },
-                    Echelon = new EchelonTerritorialeDto { IdIdentificationProjet = newId },
-                    EmploisCrees = new EmploisCreesDto { IdIdentificationProjet = newId },
-                    GestionProjet = new GestionDeProjetDto { IdIdentificationProjet = newId },
+                    AspectsJuridiques = new AspectsJuridiquesDto { IdIdentificationProjet = newId } ,
+                    PartiesPrenantesProjets = new PartiesPrenantesDto { IdIdentificationProjet = newId },
                     LocalisationGeographique = new LocalisationGeographiqueProjDto { IdIdentificationProjet = newId },
-                    //SuiviControle = new SuiviEtControleDto { IdIdentificationProjet = newId },
-
-
+                    CoutAnnuelProjet = new CoutAnnuelDuProjetDto { IdIdentificationProjet = newId },
+                    EffetsProjets = new EffetsDuProjetDto { IdIdentificationProjet = newId },
+                    ImpactsDuProjets = new ImpactsDuProjetDto { IdIdentificationProjet = newId },
+                    IndicateursResultats = new IndicateursDeResultatDto { IdIdentificationProjet = newId },
+                    DefinitionLivrables = new DefinitionLivrablesDuProjetDto { IdIdentificationProjet = newId },
+                    ObjectifsSpecifiques = new ObjectifsSpecifiquesDto { IdIdentificationProjet = newId }
                 };
             }
 
@@ -133,13 +164,20 @@ namespace BanqueProjet.Web.Areas.BanqueProjet.Controllers
 
                 // 1. Création du projet
                 await _projetService.AjouterAsync(model.Projets);
-
-                // 2. Création du cadre logique
-                await _cadreService.AjouterAsync(model.CadreLogique);
-
+                await _activiteBPService.AjouterAsync(model.ActiviteBP);
+                await _activitesAnnuellesService.AjouterAsync(model.ActiviteAnuelle);
+                await _bailleursDeFondsService.AjouterAsync(model.BailleursDeFonds);
+                await _cadreLogiqueService.AjouterAsync(model.CadreLogique);
                 await _aspectsJuridiquesService.AjouterAsync(model.AspectsJuridiques);
-
-                await _LocalisationGeographiqueService.AjouterAsync(model.LocalisationGeographique);
+                await _partiesPrenantesService.AjouterAsync(model.PartiesPrenantesProjets);
+                await _localisationGeographiqueService.AjouterAsync(model.LocalisationGeographique);
+                await _coutannuelProjetService.AjouterAsync(model.CoutAnnuelProjet);
+                await _effetsProjetService.AjouterAsync(model.EffetsProjets);
+                await _impactsProjetsService.AjouterAsync(model.ImpactsDuProjets);
+                await _indicateursResultatsService.AjouterAsync(model.IndicateursResultats);
+                await _informationsFinancieresService.AjouterAsync(model.InformationsFinancieresBP);
+                await _livrablesProjetService.AjouterAsync(model.DefinitionLivrables);
+                await _objectifsSpecifiquesService.AjouterAsync(model.ObjectifsSpecifiques);
 
                 //await _SuiviControleService.AjouterAsync(model.SuiviControle);
 
@@ -150,9 +188,9 @@ namespace BanqueProjet.Web.Areas.BanqueProjet.Controllers
 
             ViewBag.ActiviteList = new SelectList(
         model.Projets.Activites,
-        nameof(ActiviteDto.IdActivites),
-        nameof(ActiviteDto.NomActivite),
-        model.Prevision.IdActivites
+        nameof(ActiviteBPDto.IdActivites),
+        nameof(ActiviteBPDto.NomActivite),
+        model.InformationsFinancieresBP.IdActivites
     );
 
             // Fallback: redisplay current step
@@ -162,44 +200,33 @@ namespace BanqueProjet.Web.Areas.BanqueProjet.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string searchString, string letter)
         {
-            // Conserver les filtres pour la vue
             ViewData["CurrentFilter"] = searchString;
             ViewData["CurrentLetter"] = letter;
 
-            // Récupérer tous les projets (DTO)
-            var projets = await _projetService.ObtenirTousAsync();
+            var identList = await _projetService.ObtenirTousAsync()
+                             ?? new List<IdentificationProjetDto>();
 
-            // Filtrer par searchString si non vide
+            _logger.LogInformation("identList count = {count}", identList?.Count ?? -1);
+            _logger.LogInformation("_mapper is null? {isNull}", _mapper == null);
+
+            // mapper vers ProjetsBPDto
+            var projets = _mapper.Map<List<ProjetsBPDto>>(identList);
+
             if (!string.IsNullOrWhiteSpace(searchString))
             {
                 projets = projets
-                    .Where(p => p.NomProjet != null
-                             && p.NomProjet.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                    .Where(p => p.NomProjet != null &&
+                                p.NomProjet.Contains(searchString, StringComparison.OrdinalIgnoreCase))
                     .ToList();
             }
 
-            // Filtrer par lettre si non vide
             if (!string.IsNullOrWhiteSpace(letter))
             {
                 projets = projets
-                    .Where(p => !string.IsNullOrEmpty(p.NomProjet)
-                             && p.NomProjet.StartsWith(letter, StringComparison.OrdinalIgnoreCase))
+                    .Where(p => !string.IsNullOrEmpty(p.NomProjet) &&
+                                p.NomProjet.StartsWith(letter, StringComparison.OrdinalIgnoreCase))
                     .ToList();
             }
-
-            ////var directs = await _userMgr.GetUsersInRoleAsync("DirecteurUEP");
-            ////foreach (var d in directs)
-            ////{
-            ////    foreach (var projet in projets)
-            ////    {
-            ////        var msg = $"Nouveau projet « {projet.NomProjet} » soumis par un analyste UEP.";
-            ////        await _notif.NotifyAsync(d.Id, "Nouveau projet UEP", msg);
-            ////        await _notif.NotifyByEmailAsync(d.Id, "Nouveau projet UEP", msg);
-            ////    }
-            ////}
-
-
-
 
             return View(projets);
         }
@@ -262,22 +289,22 @@ namespace BanqueProjet.Web.Areas.BanqueProjet.Controllers
             return Ok(new { status = "saved", section = sectionName });
         }
 
-        [HttpGet]
-        public async Task<IActionResult> IndexMPCE()
-        {
-            // 1. Récupère tous les projets DTO
-            var tousLesProjets = await _projetService.ObtenirTousAsync();
-            //    (ou GetAllDtosAsync selon votre service)
+        //[HttpGet]
+        //public async Task<IActionResult> IndexMPCE()
+        //{
+        //    // 1. Récupère tous les projets DTO
+        //    var tousLesProjets = await _projetService.ObtenirTousAsync();
+        //    //    (ou GetAllDtosAsync selon votre service)
 
-            // 2. Filtre ceux dont le Ministère est "MPCE"
-            var projetsMpce = tousLesProjets
-                .Where(p =>
-                    string.Equals(p.Ministere, "MPCE", StringComparison.OrdinalIgnoreCase))
-                .ToList();
+        //    // 2. Filtre ceux dont le Ministère est "MPCE"
+        //    var projetsMpce = tousLesProjets
+        //        .Where(p =>
+        //            string.Equals(p.Ministere, "MPCE", StringComparison.OrdinalIgnoreCase))
+        //        .ToList();
 
-            // 3. Retourne la vue IndexMPCE.cshtml
-            return View("IndexMPCE", projetsMpce);
-        }
+        //    // 3. Retourne la vue IndexMPCE.cshtml
+        //    return View("IndexMPCE", projetsMpce);
+        //}
     }
 }
 

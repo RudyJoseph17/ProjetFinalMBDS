@@ -1,8 +1,10 @@
-﻿@model IEnumerable<BanqueProjet.Application.Dtos.IdentificationProjetDto>
+﻿@model IEnumerable<BanqueProjet.Application.Dtos.ProjetsBPDto >
 @{
     ViewData["Title"] = "Projets du MPCE";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var projetsMpce = (Model ?? Enumerable.Empty<BanqueProjet.Application.Dtos.IdentificationProjetDto>())
+
+    var projetsMpce = (Model ?? Enumerable.Empty<BanqueProjet.Application.Dtos.ProjetsBPDto>())
+
                      .Where(p => string.Equals(p.Ministere, "MPCE", StringComparison.OrdinalIgnoreCase));
 }
 

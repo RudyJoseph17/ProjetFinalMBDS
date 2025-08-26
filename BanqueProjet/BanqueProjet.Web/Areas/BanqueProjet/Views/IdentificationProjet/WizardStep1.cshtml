@@ -1,6 +1,6 @@
 ﻿@model BanqueProjet.Web.Models.DdpViewModel
 @{
-    ViewData["Title"] = "Étape 1 – Informations générales";
+    ViewData["Title"] = "Étape 1 sur 6 – Informations générales";
     var step = (int)ViewData["Step"];
 }
 <h2>@ViewData["Title"]</h2>
@@ -39,9 +39,33 @@
     </div>
 
     <div class="mb-3">
-        <label asp-for="Projets.CodeBailleur" class="form-label">Code bailleur</label>
-        <input asp-for="Projets.CodeBailleur" class="form-control" />
-        <span asp-validation-for="Projets.CodeBailleur" class="text-danger"></span>
+        <label asp-for="Projets.NomDirecteurDeProjet" class="form-label">Nom du directur de projet</label>
+        <input asp-for="Projets.NomDirecteurDeProjet" class="form-control" />
+        <span asp-validation-for="Projets.NomDirecteurDeProjet" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Projets.TelephoneDirecteurDeProjet " class="form-label">Téléphone du directeurde projet</label>
+        <input asp-for="Projets.TelephoneDirecteurDeProjet " class="form-control" />
+        <span asp-validation-for="Projets.TelephoneDirecteurDeProjet " class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Projets.CourrielDirecteurDeProjet" class="form-label">Adresse mail du directeurde projet</label>
+        <input asp-for="Projets.CourrielDirecteurDeProjet" class="form-control" />
+        <span asp-validation-for="Projets.CourrielDirecteurDeProjet" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Projets.DateInscription " class="form-label">Date d'inscription du projet'</label>
+        <input asp-for="Projets.DateInscription " class="form-control" />
+        <span asp-validation-for="Projets.DateInscription" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Projets.DateMiseAJour" class="form-label">Date de mise à jour</label>
+        <input asp-for="Projets.DateMiseAJour" class="form-control" />
+        <span asp-validation-for="Projets.DateMiseAJour" class="text-danger"></span>
     </div>
 
     <div class="d-flex justify-content-between mt-4">

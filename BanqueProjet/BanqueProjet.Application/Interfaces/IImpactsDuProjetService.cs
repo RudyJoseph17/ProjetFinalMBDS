@@ -11,7 +11,7 @@ namespace BanqueProjet.Application.Interfaces
     {
         Task AjouterAsync(ImpactsDuProjetDto impactsProjet);
         Task MettreAJourAsync(ImpactsDuProjetDto impactsProjet);
-        Task SupprimerAsync(string IdImpactsProjet);
+        Task SupprimerAsync(byte IdImpactsProjet);
         Task<List<ImpactsDuProjetDto>> ObtenirTousAsync();
     }
 }

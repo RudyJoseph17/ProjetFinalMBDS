@@ -1,42 +1,40 @@
-﻿using DotNetEnv;
+﻿using System;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using DotNetEnv;
 using Microsoft.AspNetCore.Identity;
-using InvestissementsPublics.Starter.Data;
-using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
-using Programmation.Infrastructure.Data;
 using BanqueProjet.Infrastructure.Data;
-using SuiviEvaluation.Infrastructure.Data;
-using SuiviEvaluation.Application.Interfaces;
-using BanqueProjet.Application.Interfaces;
-using Shared.Domain.ApplicationUsers;
-////using Shared.Infrastructure.Notifications;
-using Shared.Infrastructure.Persistence;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Shared.Infrastructure.Data;
+using Shared.Infrastructure.Persistence;
+using Shared.Domain.Interface;
+using Shared.Domain.ApplicationUsers;
+using BanqueProjet.Application.Mapping; // si ProjetProfile est ici
+using BanqueProjet.Application.Interfaces;
 using BanqueProjet.Infrastructure.Persistence;
-using InvestissementsPublics.Starter.ApplicationUsers;
 using InvestissementsPublics.Starter.Data;
+using InvestissementsPublics.Starter.ApplicationUsers;
+using Shared.Infrastructure.Mapping;       // si SharedMappingProfile est ici
+// ajoute d'autres usings de profiles si besoin
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1) Charger les variables d'environnement depuis .env
+// Charger .env
 DotNetEnv.Env.Load();
 
-// 2) Lire les variables
+// Lire variables env et construire la connection string
 var user = Environment.GetEnvironmentVariable("ORACLE_DB_USER");
 var password = Environment.GetEnvironmentVariable("ORACLE_DB_PASSWORD");
 var host = Environment.GetEnvironmentVariable("ORACLE_DB_HOST");
 var port = Environment.GetEnvironmentVariable("ORACLE_DB_PORT");
 var service = Environment.GetEnvironmentVariable("ORACLE_DB_SERVICE");
 
-// 3) Construire la chaîne de connexion Oracle
-var connectionString =
-    $"User Id={user};Password={password};Data Source={host}:{port}/{service};Pooling=true;";
+var connectionString = $"User Id={user};Password={password};Data Source={host}:{port}/{service};Pooling=true;";
 Console.WriteLine("🔧 Connection string utilisée : " + connectionString);
 
-// 4) Enregistrer les services MVC et les ApplicationParts
+// MVC + ApplicationParts + Razor runtime compilation
 builder.Services
     .AddControllersWithViews()
     .AddApplicationPart(typeof(BanqueProjet.Web.Areas.BanqueProjet.Controllers.HomeController).Assembly)
@@ -47,122 +45,90 @@ builder.Services
 
 builder.Services.AddRazorPages();
 
-//5) Enregistrer ApplicationDbContext(Identity)
+// DbContexts (un seul enregistrement par DbContext)
 builder.Services.AddDbContext<ApplicationDbContext>(opts =>
     opts.UseOracle(connectionString));
 
-// 6) **Enregistrer ProjetDbContext** en réutilisant `connectionString`
-//    (au lieu de GetConnectionString, qui était null)
+builder.Services.AddDbContext<SharedDbContext>(opts =>
+    opts.UseOracle(connectionString, b => b.MigrationsAssembly("Shared.Infrastructure")));
 
-// …
-
-// 5) Enregistrer le contexte Identity : ApplicationDbContext
-//builder.Services.AddDbContext<ApplicationDbContext>(opts =>
-//    opts.UseOracle(
-//        connectionString,
-//        b => b.MigrationsAssembly("InvestissementsPublics.Starter")
-//    )
-//);
-// 6) Configurer Identity sur ce contexte
-//builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-//    .AddEntityFrameworkStores<ApplicationDbContext>()
-//    .AddDefaultTokenProviders();
-
-
-
-builder.Services.
-AddDbContext<Programmation.Infrastructure.Data.ProgrammationDbContext>(opts =>
-    opts.UseOracle(
-        connectionString,
-        b => b.MigrationsAssembly("Programmation.Infrastructure"))
-);
+builder.Services.AddDbContext<Programmation.Infrastructure.Data.ProgrammationDbContext>(opts =>
+    opts.UseOracle(connectionString, b => b.MigrationsAssembly("Programmation.Infrastructure")));
 
 builder.Services.AddDbContext<BanqueProjet.Infrastructure.Data.BanquePDbContext>(opts =>
-    opts.UseOracle(
-        connectionString,
-        b => b.MigrationsAssembly("BanqueProjet.Infrastructure"))
-);
+    opts.UseOracle(connectionString, b => b.MigrationsAssembly("BanqueProjet.Infrastructure")));
 
 builder.Services.AddDbContext<SuiviEvaluation.Infrastructure.Data.EvaluationDbContext>(opts =>
-    opts.UseOracle(
-        connectionString,
-        b => b.MigrationsAssembly("SuiviEvaluation.Infrastructure"))
-);
+    opts.UseOracle(connectionString, b => b.MigrationsAssembly("SuiviEvaluation.Infrastructure")));
 
-builder.Services.AddDbContext<Shared.Infrastructure.Data.SharedDbContext>(opts =>
-    opts.UseOracle(
-        connectionString,
-        b => b.MigrationsAssembly("Shared.Infrastructure"))
-);
-
-
-// 7) Configurer Identity
+// Identity (sur ApplicationDbContext)
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-// 8) Cookie settings
-builder.Services.ConfigureApplicationCookie(opts =>
-{
-    opts.LoginPath = "/Account/Login";
-    opts.LogoutPath = "/Account/Logout";
-    opts.ExpireTimeSpan = TimeSpan.FromHours(2);
-});
+// AutoMapper : enregistrement UNIQUE, avant d'enregistrer les services qui utilisent IMapper.
+// On indique ici les types marquant les assemblies contenant les Profiles (plus fiable que AppDomain scan si assemblies sont séparées).
+builder.Services.AddAutoMapper(
+    typeof(SharedMappingProfile), // remplace par le type réel du profile si diffèrent
+    typeof(ProjetProfile)         // idem
+);
 
-// Email sender (votre implémentation SMTP/SendGrid)
-builder.Services.AddTransient<Shared.Domain.ApplicationUsers.IEmailSender, SmtpEmailSender>();
-
-
-// Notification
-////builder.Services.AddScoped<INotificationService, NotificationService>();
-
+// Enregistrement des services (pas de doublons)
 builder.Services.AddScoped<IIdentificationProjetService, IdentificationProjetService>();
+builder.Services.AddScoped<IProjetsBPService, ProjetsBPService>();
+builder.Services.AddScoped<IActiviteService, ActiviteService>();
+builder.Services.AddScoped<IActiviteBPService, ActiviteBPService>();
 builder.Services.AddScoped<IDdpCadreLogiqueService, DdpCadreLogiqueService>();
 builder.Services.AddScoped<IAspectsJuridiquesService, AspectsJuridiquesService>();
-//builder.Services.AddScoped<IEchelonTerritorialeService, EchelonTerritorialeService>();
-//builder.Services.AddScoped<IEmploisCreesService, EmploisCreesService>();
-//builder.Services.AddScoped<IDureeProjetService, DureeProjetService>();
-builder.Services.AddScoped<IGestionDeProjetService, GestionDeProjetService>();
 builder.Services.AddScoped<ILocalisationGeographiqueProjService, LocalisationGeographiqueProjService>();
-//builder.Services.AddScoped<ISuiviEtControleService, SuiviEtControleService>();
-//builder.Services.AddScoped<IGrilleDdpAviService, GrilleDdpAviService>();
-//builder.Services.AddScoped<IGrilleDdpIdentificationProjetService, GrilleDdpIdentificationProjetService>();
-//builder.Services.AddScoped<IGrilleDdpAspectsLegauxService, GrilleDdpAspectsLegauxService>();
-//builder.Services.AddScoped<IGrilleDdpResumeProjetService, GrilleDdpResumeProjetService>();
-//builder.Services.AddScoped<IGrilleDdpEtudesPrefaisabiliteService, GrilleDdpEtudesPrefaisabiliteService>();
-//builder.Services.AddScoped<IGrilleDdpStrategieGestionProjetService, GrilleDdpStrategieGestionProjetService>();
-//builder.Services.AddScoped<IGrilleDdpCommentairesGenerauxService, GrilleDdpCommentairesGenerauxService>();
-//builder.Services.AddScoped<IGrilleDdpCalendrierFinancierProjetService, GrilleDdpCalendrierFinancierProjetService>();
-//builder.Services.AddScoped<IGrilleDdpCalendrierExecutionService, GrilleDdpCalendrierExecutionService>();
-//builder.Services.AddScoped<IPrevisionService, PrevisionService>();
-//builder.Services.AddScoped<IActiviteService, ActiviteService>();
-//builder.Services.AddScoped<ICoutAnnuelService, CoutAnnuelService>();
+builder.Services.AddScoped<IActivitesAnnuellesService, ActivitesAnnuellesService>();
+builder.Services.AddScoped<IBailleursDeFondService, BailleursDeFondService>();
+builder.Services.AddScoped<IPartiesPrenantesService, PartiesPrenantesService>();
+builder.Services.AddScoped<ICoutAnnuelDuProjetService, CoutAnnuelDuProjetService>();
+builder.Services.AddScoped<IEffetsDuProjetService, EffetsDuProjetService>();
+builder.Services.AddScoped<IImpactsDuProjetService, ImpactsDuProjetService>();
+builder.Services.AddScoped<IIndicateursDeResultatService, IndicateursDeResultatService>();
+builder.Services.AddScoped<IInformationsFinancieresService, InformationsFinancieresService>();
+builder.Services.AddScoped<IDefinitionLivrablesDuProjetService, DefinitionLivrablesDuProjetService>();
+builder.Services.AddScoped<IObjectifsSpecifiquesService, ObjectifsSpecifiquesService>();
 
+
+// Logging
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 
 var app = builder.Build();
 
-// 9) Seed des rôles / users
-using var scope = app.Services.CreateScope();
-await IdentitySeeder.SeedAsync(
-    scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>(),
-    scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>());
+// Seed (création des rôles/users) - crée un scope et utilise GetRequiredService
+using (var scope = app.Services.CreateScope())
+{
+    await IdentitySeeder.SeedAsync(
+        scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>(),
+        scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>());
+}
 
-// 10) Pipeline HTTP
-app.UseExceptionHandler("/Home/Error");
+// Pipeline HTTP
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
+app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// 11) Routing avec Areas
 app.MapRazorPages();
 
 app.MapControllerRoute(
     name: "areas",
-    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+);
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}"
+);
 
 app.Run();

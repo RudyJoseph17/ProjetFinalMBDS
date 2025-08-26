@@ -7,6 +7,8 @@ using BanqueProjet.Infrastructure.Data;
 using DotNetEnv;
 using BanqueProjet.Application.Interfaces;
 using BanqueProjet.Infrastructure.Persistence;
+using Shared.Domain.Interface;
+using Shared.Infrastructure.Persistence;
 
 
 
