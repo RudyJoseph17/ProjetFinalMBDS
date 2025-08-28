@@ -1,122 +1,55 @@
-﻿@model SuiviEvaluation.Web.Models.Bilan
+﻿@model SuiviEvaluation.Web.Models.BilanViewModel
 
 @{
-    ViewData["Title"] = "Ajouter un Bilan Complet";
-    var evolutionIndex = 0;
-    var fluxIndex = 0;
-    var quantiteIndex = 0;
+    ViewData["Title"] = "Créer une Programmation";
+    var currentStep = ViewData["CurrentStep"] != null ? (int)ViewData["CurrentStep"] : 1;
 }
 
-<h2>Ajouter un Bilan Complet</h2>
+<h2>Nouvelle Programmation - Étape @currentStep sur 3</h2>
 
 <form asp-action="Create" method="post">
-    <h3>1. Évolutions temporelles</h3>
-    <div id="evolution-container">
-        @for (int i = 0; i < Model.Evolution.Count(); i++)
+    <input type="hidden" name="currentStep" value="@currentStep" />
+
+    @if (currentStep == 1)
+    {
+        <h4>Étape 1 : Informations financières</h4>
+        <div class="form-group">
+            <label>Montant décaissé</label>
+            <input asp-for="BilanFinancier.MontantDecaissement" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label>Source de financement</label>
+            <input asp-for="BilanFinancier.SourcesFinancement" class="form-control" />
+        </div>
+    }
+    else if (currentStep == 2)
+    {
+        <h4>Étape 2 : Quantité livrée</h4>
+        <div class="form-group">
+            <label>Valeur prévue</label>
+            <input asp-for="QuantiteLivreeParAnnee.QuantiteLivree" class="form-control" />
+        </div>
+    }
+    else if (currentStep == 3)
+    {
+        <h4>Étape 3 : Confirmation</h4>
+        <p>Merci de vérifier vos données avant enregistrement.</p>
+        <ul>
+            <li><strong>Montant :</strong> @Model.BilanFinancier?.MontantDecaissement</li>
+            <li><strong>Source :</strong> @Model.BilanFinancier?.SourcesFinancement</li>
+            <li><strong>Valeur :</strong> @Model.QuantiteLivreeParAnnee?.QuantiteLivree</li>
+        </ul>
+    }
+
+    <div class="form-group mt-3">
+        <button type="submit" class="btn btn-primary">
+            @(currentStep == 3 ? "Enregistrer" : "Suivant")
+        </button>
+
+        @if (currentStep > 1)
         {
-            <div class="evolution-item border p-2 mb-2">
-                <label>Date de démarrage</label>
-                <input asp-for="Evolution[@i].DateDeDemmarage" class="form-control" type="date" />
-                <label>Date d’achèvement prévue</label>
-                <input asp-for="Evolution[@i].DateAchevementPrevue" class="form-control" type="date" />
-                <button type="button" class="btn btn-danger btn-sm mt-2 remove-evolution">Supprimer</button>
-            </div>
+            <a asp-action="Create" asp-route-currentStep="@(currentStep - 1)" class="btn btn-secondary">Précédent</a>
         }
     </div>
-    <button type="button" class="btn btn-primary btn-sm" id="add-evolution">Ajouter une évolution</button>
-
-    <h3>2. Flux Financiers</h3>
-    <div id="flux-container">
-        @for (int i = 0; i < Model.FluxFinanciers.Count(); i++)
-        {
-            <div class="flux-item border p-2 mb-2">
-                <label>Total autorisation</label>
-                <input asp-for="FluxFinanciers[@i].TotalAutorisation" class="form-control" />
-                <label>Total décaissement</label>
-                <input asp-for="FluxFinanciers[@i].TotalDecaissement" class="form-control" />
-                <label>Total dépense</label>
-                <input asp-for="FluxFinanciers[@i].TotalDepense" class="form-control" />
-                <button type="button" class="btn btn-danger btn-sm mt-2 remove-flux">Supprimer</button>
-            </div>
-        }
-    </div>
-    <button type="button" class="btn btn-primary btn-sm" id="add-flux">Ajouter un flux</button>
-
-    <h3>3. Quantités Livrées</h3>
-    <div id="quantite-container">
-        @for (int i = 0; i < Model.QuantitesLivrees.Count(); i++)
-        {
-            <div class="quantite-item border p-2 mb-2">
-                <label>Année</label>
-                <input asp-for="QuantitesLivrees[@i].IdQuantiteLivreeParAnnee" class="form-control" />
-                <label>Quantité</label>
-                <input asp-for="QuantitesLivrees[@i].AnneeQuantiteLivree" class="form-control" />
-                <label>Unité</label>
-                <input asp-for="QuantitesLivrees[@i].ValeurLivree" class="form-control" />
-                <button type="button" class="btn btn-danger btn-sm mt-2 remove-quantite">Supprimer</button>
-            </div>
-        }
-    </div>
-    <button type="button" class="btn btn-primary btn-sm" id="add-quantite">Ajouter une quantité</button>
-
-    <br /><br />
-    <button type="submit" class="btn btn-success">Enregistrer</button>
-    <a asp-action="Index" class="btn btn-secondary">Annuler</a>
 </form>
 
-@section Scripts {
-    <script>
-        let evolutionIndex = @Model.Evolution.Count();
-        let fluxIndex = @Model.FluxFinanciers.Count();
-        let quantiteIndex = @Model.QuantitesLivrees.Count();
-
-        document.getElementById('add-evolution').addEventListener('click', function () {
-            const container = document.getElementById('evolution-container');
-            container.insertAdjacentHTML('beforeend',
-                `<div class="evolution-item border p-2 mb-2">
-                            <label>Date de démarrage</label>
-                            <input name="Evolution[${evolutionIndex}].DateDeDemmarage" class="form-control" type="date" />
-                            <label>Date d’achèvement prévue</label>
-                            <input name="Evolution[${evolutionIndex}].DateAchevementPrevue" class="form-control" type="date" />
-                            <button type="button" class="btn btn-danger btn-sm mt-2 remove-evolution">Supprimer</button>
-                        </div>`);
-            evolutionIndex++;
-        });
-
-        document.getElementById('add-flux').addEventListener('click', function () {
-            const container = document.getElementById('flux-container');
-            container.insertAdjacentHTML('beforeend',
-                `<div class="flux-item border p-2 mb-2">
-                            <label>Total autorisation</label>
-                            <input name="FluxFinanciers[${fluxIndex}].TotalAutorisation" class="form-control" />
-                            <label>Total décaissement</label>
-                            <input name="FluxFinanciers[${fluxIndex}].TotalDecaissement" class="form-control" />
-                            <label>Total dépense</label>
-                            <input name="FluxFinanciers[${fluxIndex}].TotalDepense" class="form-control" />
-                            <button type="button" class="btn btn-danger btn-sm mt-2 remove-flux">Supprimer</button>
-                        </div>`);
-            fluxIndex++;
-        });
-
-        document.getElementById('add-quantite').addEventListener('click', function () {
-            const container = document.getElementById('quantite-container');
-            container.insertAdjacentHTML('beforeend',
-                `<div class="quantite-item border p-2 mb-2">
-                            <label>Année</label>
-                            <input name="QuantitesLivrees[${quantiteIndex}].Annee" class="form-control" />
-                            <label>Quantité</label>
-                            <input name="QuantitesLivrees[${quantiteIndex}].Quantite" class="form-control" />
-                            <label>Unité</label>
-                            <input name="QuantitesLivrees[${quantiteIndex}].Unite" class="form-control" />
-                            <button type="button" class="btn btn-danger btn-sm mt-2 remove-quantite">Supprimer</button>
-                        </div>`);
-            quantiteIndex++;
-        });
-
-        document.addEventListener('click', function (e) {
-            if (e.target.matches('.remove-evolution')) e.target.closest('.evolution-item').remove();
-            if (e.target.matches('.remove-flux')) e.target.closest('.flux-item').remove();
-            if (e.target.matches('.remove-quantite')) e.target.closest('.quantite-item').remove();
-        });
-    </script>
-}

@@ -10,6 +10,6 @@ namespace SuiviEvaluation.Web.Models
        
         public List<FluxFinancierDto> FluxFinanciers { get; set; }
 
-        public List<QuantiteLivreParAnneeDto> QuantitesLivrees { get; set; }
+        public List<QuantiteLivreeParAnneeDto> QuantitesLivrees { get; set; }
     }
 }

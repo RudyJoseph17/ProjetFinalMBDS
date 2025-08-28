@@ -12,8 +12,7 @@ namespace SuiviEvaluation.Application.Dtos
     public class EvolutionTemporelleDuProjetDto
     {
         public byte? IdEvolutionTemporelle { get; set; }
-        public byte? IdIdentificationProjet { get; set; }
-        public string? CodeInterne { get; set; }
+        public string? IdIdentificationProjet { get; set; }
         public DateTime? DateDeDemmarage { get; set; }
         public DateTime? DateAchevementPrevue { get; set; }
         public byte? TempsEcoule { get; set; }

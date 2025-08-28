@@ -292,17 +292,17 @@ namespace BanqueProjet.Web.Areas.BanqueProjet.Controllers
         //[HttpGet]
         //public async Task<IActionResult> IndexMPCE()
         //{
-        //    // 1. Récupère tous les projets DTO
+        //    //1.Récupère tous les projets DTO
         //    var tousLesProjets = await _projetService.ObtenirTousAsync();
-        //    //    (ou GetAllDtosAsync selon votre service)
+        //    //(ou GetAllDtosAsync selon votre service)
 
-        //    // 2. Filtre ceux dont le Ministère est "MPCE"
+        //     //2.Filtre ceux dont le Ministère est "MPCE"
         //    var projetsMpce = tousLesProjets
         //        .Where(p =>
         //            string.Equals(p.Ministere, "MPCE", StringComparison.OrdinalIgnoreCase))
         //        .ToList();
 
-        //    // 3. Retourne la vue IndexMPCE.cshtml
+        //    //3.Retourne la vue IndexMPCE.cshtml
         //    return View("IndexMPCE", projetsMpce);
         //}
     }

@@ -16,7 +16,11 @@ using BanqueProjet.Application.Interfaces;
 using BanqueProjet.Infrastructure.Persistence;
 using InvestissementsPublics.Starter.Data;
 using InvestissementsPublics.Starter.ApplicationUsers;
-using Shared.Infrastructure.Mapping;       // si SharedMappingProfile est ici
+using Shared.Infrastructure.Mapping;
+using SuiviEvaluation.Application.Interfaces;
+using Programmation.Application.Interface;
+using SuiviEvaluation.Infrastructure.Persistence;
+using Programmation.Infrastructure.Persistence;       // si SharedMappingProfile est ici
 // ajoute d'autres usings de profiles si besoin
 
 var builder = WebApplication.CreateBuilder(args);
@@ -91,6 +95,11 @@ builder.Services.AddScoped<IIndicateursDeResultatService, IndicateursDeResultatS
 builder.Services.AddScoped<IInformationsFinancieresService, InformationsFinancieresService>();
 builder.Services.AddScoped<IDefinitionLivrablesDuProjetService, DefinitionLivrablesDuProjetService>();
 builder.Services.AddScoped<IObjectifsSpecifiquesService, ObjectifsSpecifiquesService>();
+builder.Services.AddScoped<IQuantiteLivreParAnneeService, QuantiteLivreParAnneeService>();
+builder.Services.AddScoped<IQuantiteALivrerParAnneeService, QuantiteALivrerParAnneeService>();
+builder.Services.AddScoped<IPrevisionInformationFinanciereService, PrevisionInformationFinanciereService>();
+builder.Services.AddScoped<ISuiviInformationFinanciereService, SuiviInformationFinanciereService>();
+
 
 
 // Logging

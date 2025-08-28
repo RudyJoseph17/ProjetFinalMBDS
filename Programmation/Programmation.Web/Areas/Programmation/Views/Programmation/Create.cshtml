@@ -1,0 +1,54 @@
+﻿@model Programmation.Web.Models.ProgrammationViewModel
+
+@{
+    ViewData["Title"] = "Créer une Programmation";
+    var currentStep = ViewData["CurrentStep"] != null ? (int)ViewData["CurrentStep"] : 1;
+}
+
+<h2>Nouvelle Programmation - Étape @currentStep sur 3</h2>
+
+<form asp-action="Create" method="post">
+    <input type="hidden" name="currentStep" value="@currentStep" />
+
+    @if (currentStep == 1)
+    {
+            <h4>Étape 1 : Informations financières</h4>
+            <div class="form-group">
+                <label>Montant</label>
+                <input asp-for="PrevisionsFinancieres.MontantPrevu" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>Source de financement</label>
+                <input asp-for="PrevisionsFinancieres.SourcesFinancement" class="form-control" />
+            </div>
+    }
+    else if (currentStep == 2)
+    {
+            <h4>Étape 2 : Quantité à livrer</h4>
+            <div class="form-group">
+                <label>Valeur prévue</label>
+                <input asp-for="QuantiteALivrer.QuantiteALivrer" class="form-control" />
+            </div>
+    }
+    else if (currentStep == 3)
+    {
+            <h4>Étape 3 : Confirmation</h4>
+            <p>Merci de vérifier vos données avant enregistrement.</p>
+            <ul>
+                <li><strong>Montant :</strong> @Model.PrevisionsFinancieres?.MontantPrevu</li>
+                <li><strong>Source :</strong> @Model.PrevisionsFinancieres?.SourcesFinancement</li>
+                <li><strong>Valeur :</strong> @Model.QuantiteALivrer?.QuantiteALivrer</li>
+            </ul>
+    }
+
+    <div class="form-group mt-3">
+        <button type="submit" class="btn btn-primary">
+            @(currentStep == 3 ? "Enregistrer" : "Suivant")
+        </button>
+
+        @if (currentStep > 1)
+        {
+                <a asp-action="Create" asp-route-currentStep="@(currentStep - 1)" class="btn btn-secondary">Précédent</a>
+        }
+    </div>
+</form>

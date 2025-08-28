@@ -9,8 +9,10 @@ namespace SuiviEvaluation.Application.Interfaces
 {
     public interface IQuantiteLivreParAnneeService
     {
-        Task AddAsync(QuantiteLivreParAnneeDto quantiteLivre);
-        Task<IEnumerable<QuantiteLivreParAnneeDto>> GetAllAsync();
-        //Task<IEnumerable<QuantiteLivreParAnneeDto>> GetQuantiteLivreParAneeAsync();
+        Task AjouterAsync(QuantiteLivreeParAnneeDto quantiteLivreParAnnee);
+        Task MettreAJourAsync(QuantiteLivreeParAnneeDto quantiteLivreParAnnee);
+        Task SupprimerAsync(byte IdLivrablesProjet);
+        Task<List<QuantiteLivreeParAnneeDto>> ObtenirTousAsync();
+        Task<QuantiteLivreeParAnneeDto?> ObtenirParIdAsync(byte id);
     }
 }

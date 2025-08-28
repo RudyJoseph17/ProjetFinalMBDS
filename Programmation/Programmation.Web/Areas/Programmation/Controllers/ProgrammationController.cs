@@ -1,25 +1,30 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SuiviEvaluation.Application.Dtos;
-using SuiviEvaluation.Application.Interfaces;
-using SuiviEvaluation.Web.Models;
+using Microsoft.Extensions.Logging;
+using Programmation.Web.Models;
+using Programmation.Application.Dtos;
+using Programmation.Application.Interface;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace SuiviEvaluation.Web.Areas.SuiviEvaluation.Controllers
+namespace Programmation.Web.Controllers
 {
-    [Area("SuiviEvaluation")]
-    public class BilanController : Controller
+    [Area("Programmation")]
+    public class ProgrammationController : Controller
     {
         private const int TotalSteps = 3;
-        private readonly IQuantiteLivreParAnneeService _quantiteLivreeService;
-        private readonly ISuiviInformationFinanciereService _suiviService;
-        private readonly ILogger<BilanController> _logger;
+        private readonly IQuantiteALivrerParAnneeService _quantiteService;
+        private readonly IPrevisionInformationFinanciereService _previsionService;
+        private readonly ILogger<ProgrammationController> _logger;
 
-        public BilanController(
-            IQuantiteLivreParAnneeService quantiteLivreeService,
-            ISuiviInformationFinanciereService suiviService,
-            ILogger<BilanController> logger)
+        public ProgrammationController(
+            IQuantiteALivrerParAnneeService quantiteService,
+            IPrevisionInformationFinanciereService previsionService,
+            ILogger<ProgrammationController> logger)
         {
-            _quantiteLivreeService = quantiteLivreeService ?? throw new ArgumentNullException(nameof(quantiteLivreeService));
-            _suiviService = suiviService ?? throw new ArgumentNullException(nameof(suiviService));
+            _quantiteService = quantiteService ?? throw new ArgumentNullException(nameof(quantiteService));
+            _previsionService = previsionService ?? throw new ArgumentNullException(nameof(previsionService));
             _logger = logger;
         }
 
@@ -33,25 +38,25 @@ namespace SuiviEvaluation.Web.Areas.SuiviEvaluation.Controllers
 
             try
             {
-                var result = new List<BilanViewModel>();
+                var result = new List<ProgrammationViewModel>();
 
-                var evaluations = await _suiviService.ObtenirTousAsync();
-                foreach (var p in evaluations)
+                var previsions = await _previsionService.ObtenirTousAsync();
+                foreach (var p in previsions)
                 {
-                    result.Add(new BilanViewModel
+                    result.Add(new ProgrammationViewModel
                     {
-                        BilanFinancier = p,
-                        QuantiteLivreeParAnnee = new QuantiteLivreeParAnneeDto()
+                        PrevisionsFinancieres = p,
+                        QuantiteALivrer = new QuantiteALivrerParAnneeDto()
                     });
                 }
 
-                var quantites = await _quantiteLivreeService.ObtenirTousAsync();
+                var quantites = await _quantiteService.ObtenirTousAsync();
                 foreach (var q in quantites)
                 {
-                    result.Add(new BilanViewModel
+                    result.Add(new ProgrammationViewModel
                     {
-                        QuantiteLivreeParAnnee = q,
-                        BilanFinancier = new SuiviInformationFinanciereDto()
+                        QuantiteALivrer = q,
+                        PrevisionsFinancieres = new PrevisionInformationFinanciereDto()
                     });
                 }
 
@@ -61,7 +66,7 @@ namespace SuiviEvaluation.Web.Areas.SuiviEvaluation.Controllers
             {
                 _logger.LogError(ex, "Erreur lors du chargement de la liste Programmation");
                 TempData["Error"] = "Impossible de charger les données de programmation.";
-                return View(new List<BilanViewModel>());
+                return View(new List<ProgrammationViewModel>());
             }
         }
 
@@ -81,30 +86,30 @@ namespace SuiviEvaluation.Web.Areas.SuiviEvaluation.Controllers
                 // Prévision (priorité)
                 if (idInformationsFinancieres != null || idActivite != null)
                 {
-                    SuiviInformationFinanciereDto? bilanFinancier = null;
+                    PrevisionInformationFinanciereDto? prevision = null;
 
                     // Si on a un id (route) try cast & call ObtenirParIdAsync
                     var idInfoByte = ToByteSafe(idInformationsFinancieres);
                     if (idInfoByte.HasValue)
                     {
-                        bilanFinancier = await SafeObtenirPrevisionParId(idInfoByte.Value);
+                        prevision = await SafeObtenirPrevisionParId(idInfoByte.Value);
                     }
 
                     // fallback by IdActivite
-                    if (bilanFinancier == null && idActivite != null)
+                    if (prevision == null && idActivite != null)
                     {
-                        bilanFinancier = (await _suiviService.ObtenirTousAsync())
+                        prevision = (await _previsionService.ObtenirTousAsync())
                                         .FirstOrDefault(p => p.IdActivites == idActivite.Value);
                     }
 
-                    if (bilanFinancier == null) return NotFound();
+                    if (prevision == null) return NotFound();
 
-                    var vm = new BilanViewModel { BilanFinancier = bilanFinancier, QuantiteLivreeParAnnee = new QuantiteLivreeParAnneeDto() };
+                    var vm = new ProgrammationViewModel { PrevisionsFinancieres = prevision, QuantiteALivrer = new QuantiteALivrerParAnneeDto() };
                     return View(vm);
                 }
 
                 // Quantité : on a idIdentificationProjet + idLivrablesProjet
-                QuantiteLivreeParAnneeDto? quantite = null;
+                QuantiteALivrerParAnneeDto? quantite = null;
 
                 if (idLivrablesProjet != null)
                 {
@@ -124,7 +129,7 @@ namespace SuiviEvaluation.Web.Areas.SuiviEvaluation.Controllers
 
                 if (quantite == null)
                 {
-                    var all = await _quantiteLivreeService.ObtenirTousAsync();
+                    var all = await _quantiteService.ObtenirTousAsync();
                     quantite = all.FirstOrDefault(q =>
                         string.Equals(q.IdIdentificationProjet, idIdentificationProjet, StringComparison.OrdinalIgnoreCase)
                         && q.IdLivrablesProjet == idLivrablesProjet);
@@ -132,7 +137,7 @@ namespace SuiviEvaluation.Web.Areas.SuiviEvaluation.Controllers
 
                 if (quantite == null) return NotFound();
 
-                var vmQuant = new BilanViewModel { QuantiteLivreeParAnnee = quantite, BilanFinancier = new SuiviInformationFinanciereDto() };
+                var vmQuant = new ProgrammationViewModel { QuantiteALivrer = quantite, PrevisionsFinancieres = new PrevisionInformationFinanciereDto() };
                 return View(vmQuant);
             }
             catch (Exception ex)
@@ -151,10 +156,10 @@ namespace SuiviEvaluation.Web.Areas.SuiviEvaluation.Controllers
         {
             ViewData["TotalSteps"] = TotalSteps;
 
-            var vm = new BilanViewModel
+            var vm = new ProgrammationViewModel
             {
-                BilanFinancier = new SuiviInformationFinanciereDto(),
-                QuantiteLivreeParAnnee = new QuantiteLivreeParAnneeDto()
+                PrevisionsFinancieres = new PrevisionInformationFinanciereDto(),
+                QuantiteALivrer = new QuantiteALivrerParAnneeDto()
             };
             return View(vm);
         }
@@ -164,7 +169,7 @@ namespace SuiviEvaluation.Web.Areas.SuiviEvaluation.Controllers
         // -----------------------
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(BilanViewModel vm, string submitAction, int? currentStep)
+        public async Task<IActionResult> Create(ProgrammationViewModel vm, string submitAction, int? currentStep)
         {
             ViewData["TotalSteps"] = TotalSteps;
 
@@ -175,24 +180,24 @@ namespace SuiviEvaluation.Web.Areas.SuiviEvaluation.Controllers
             {
                 if (string.Equals(submitAction, "createPrevision", StringComparison.OrdinalIgnoreCase))
                 {
-                    await _suiviService.AjouterAsync(vm.BilanFinancier);
+                    await _previsionService.AjouterAsync(vm.PrevisionsFinancieres);
                     TempData["Success"] = "Prévision financière créée.";
                 }
                 else if (string.Equals(submitAction, "createQuantite", StringComparison.OrdinalIgnoreCase))
                 {
-                    await _quantiteLivreeService.AjouterAsync(vm.QuantiteLivreeParAnnee);
+                    await _quantiteService.AjouterAsync(vm.QuantiteALivrer);
                     TempData["Success"] = "Quantité à livrer créée.";
                 }
                 else
                 {
                     // fallback : tenter d'ajouter ce qui est renseigné
-                    if (vm.BilanFinancier != null && vm.BilanFinancier.IdActivites != 0)
+                    if (vm.PrevisionsFinancieres != null && vm.PrevisionsFinancieres.IdActivites != 0)
                     {
-                        await _suiviService.AjouterAsync(vm.BilanFinancier);
+                        await _previsionService.AjouterAsync(vm.PrevisionsFinancieres);
                     }
-                    if (vm.QuantiteLivreeParAnnee != null && !string.IsNullOrWhiteSpace(vm.QuantiteLivreeParAnnee.IdIdentificationProjet))
+                    if (vm.QuantiteALivrer != null && !string.IsNullOrWhiteSpace(vm.QuantiteALivrer.IdIdentificationProjet))
                     {
-                        await _quantiteLivreeService.AjouterAsync(vm.QuantiteLivreeParAnnee);
+                        await _quantiteService.AjouterAsync(vm.QuantiteALivrer);
                     }
                     TempData["Success"] = "Données créées.";
                 }
@@ -223,7 +228,7 @@ namespace SuiviEvaluation.Web.Areas.SuiviEvaluation.Controllers
                 // Prévision
                 if (idInformationsFinancieres != null || idActivite != null)
                 {
-                    SuiviInformationFinanciereDto? prevision = null;
+                    PrevisionInformationFinanciereDto? prevision = null;
                     var idInfoByte = ToByteSafe(idInformationsFinancieres);
                     if (idInfoByte.HasValue)
                     {
@@ -232,17 +237,17 @@ namespace SuiviEvaluation.Web.Areas.SuiviEvaluation.Controllers
 
                     if (prevision == null && idActivite != null)
                     {
-                        prevision = (await _suiviService.ObtenirTousAsync()).FirstOrDefault(p => p.IdActivites == idActivite.Value);
+                        prevision = (await _previsionService.ObtenirTousAsync()).FirstOrDefault(p => p.IdActivites == idActivite.Value);
                     }
 
                     if (prevision == null) return NotFound();
 
-                    var vm = new BilanViewModel { BilanFinancier = prevision, QuantiteLivreeParAnnee = new QuantiteLivreeParAnneeDto() };
+                    var vm = new ProgrammationViewModel { PrevisionsFinancieres = prevision, QuantiteALivrer = new QuantiteALivrerParAnneeDto() };
                     return View(vm);
                 }
 
                 // Quantité
-                QuantiteLivreeParAnneeDto? quantite = null;
+                QuantiteALivrerParAnneeDto? quantite = null;
                 if (idLivrablesProjet != null)
                 {
                     quantite = await SafeObtenirQuantiteParId(idLivrablesProjet.Value);
@@ -255,7 +260,7 @@ namespace SuiviEvaluation.Web.Areas.SuiviEvaluation.Controllers
 
                 if (quantite == null)
                 {
-                    var all = await _quantiteLivreeService.ObtenirTousAsync();
+                    var all = await _quantiteService.ObtenirTousAsync();
                     quantite = all.FirstOrDefault(q =>
                         string.Equals(q.IdIdentificationProjet, idIdentificationProjet, StringComparison.OrdinalIgnoreCase)
                         && q.IdLivrablesProjet == idLivrablesProjet);
@@ -263,7 +268,7 @@ namespace SuiviEvaluation.Web.Areas.SuiviEvaluation.Controllers
 
                 if (quantite == null) return NotFound();
 
-                var vmQuant = new BilanViewModel { QuantiteLivreeParAnnee = quantite, BilanFinancier = new SuiviInformationFinanciereDto() };
+                var vmQuant = new ProgrammationViewModel { QuantiteALivrer = quantite, PrevisionsFinancieres = new PrevisionInformationFinanciereDto() };
                 return View(vmQuant);
             }
             catch (Exception ex)
@@ -279,7 +284,7 @@ namespace SuiviEvaluation.Web.Areas.SuiviEvaluation.Controllers
         // -----------------------
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(BilanViewModel vm, string submitAction, int? currentStep)
+        public async Task<IActionResult> Edit(ProgrammationViewModel vm, string submitAction, int? currentStep)
         {
             ViewData["TotalSteps"] = TotalSteps;
 
@@ -290,20 +295,20 @@ namespace SuiviEvaluation.Web.Areas.SuiviEvaluation.Controllers
             {
                 if (string.Equals(submitAction, "editPrevision", StringComparison.OrdinalIgnoreCase))
                 {
-                    await _suiviService.MettreAJourAsync(vm.BilanFinancier);
+                    await _previsionService.MettreAJourAsync(vm.PrevisionsFinancieres);
                     TempData["Success"] = "Prévision mise à jour.";
                 }
                 else if (string.Equals(submitAction, "editQuantite", StringComparison.OrdinalIgnoreCase))
                 {
-                    await _quantiteLivreeService.MettreAJourAsync(vm.QuantiteLivreeParAnnee);
+                    await _quantiteService.MettreAJourAsync(vm.QuantiteALivrer);
                     TempData["Success"] = "Quantité mise à jour.";
                 }
                 else
                 {
-                    if (vm.BilanFinancier != null && vm.BilanFinancier.IdActivites != 0)
-                        await _suiviService.MettreAJourAsync(vm.BilanFinancier);
-                    if (vm.QuantiteLivreeParAnnee != null && !string.IsNullOrWhiteSpace(vm.QuantiteLivreeParAnnee.IdIdentificationProjet))
-                        await _quantiteLivreeService.MettreAJourAsync(vm.QuantiteLivreeParAnnee);
+                    if (vm.PrevisionsFinancieres != null && vm.PrevisionsFinancieres.IdActivites != 0)
+                        await _previsionService.MettreAJourAsync(vm.PrevisionsFinancieres);
+                    if (vm.QuantiteALivrer != null && !string.IsNullOrWhiteSpace(vm.QuantiteALivrer.IdIdentificationProjet))
+                        await _quantiteService.MettreAJourAsync(vm.QuantiteALivrer);
 
                     TempData["Success"] = "Données mises à jour.";
                 }
@@ -333,7 +338,7 @@ namespace SuiviEvaluation.Web.Areas.SuiviEvaluation.Controllers
             {
                 if (idInformationsFinancieres != null || idActivite != null)
                 {
-                    SuiviInformationFinanciereDto? prevision = null;
+                    PrevisionInformationFinanciereDto? prevision = null;
                     var idInfoByte = ToByteSafe(idInformationsFinancieres);
                     if (idInfoByte.HasValue)
                     {
@@ -342,23 +347,23 @@ namespace SuiviEvaluation.Web.Areas.SuiviEvaluation.Controllers
 
                     if (prevision == null && idActivite != null)
                     {
-                        prevision = (await _suiviService.ObtenirTousAsync()).FirstOrDefault(p => p.IdActivites == idActivite.Value);
+                        prevision = (await _previsionService.ObtenirTousAsync()).FirstOrDefault(p => p.IdActivites == idActivite.Value);
                     }
 
                     if (prevision == null) return NotFound();
 
-                    var vm = new BilanViewModel { BilanFinancier = prevision, QuantiteLivreeParAnnee = new QuantiteLivreeParAnneeDto() };
+                    var vm = new ProgrammationViewModel { PrevisionsFinancieres = prevision, QuantiteALivrer = new QuantiteALivrerParAnneeDto() };
                     return View(vm);
                 }
 
-                var all = await _quantiteLivreeService.ObtenirTousAsync();
+                var all = await _quantiteService.ObtenirTousAsync();
                 var quantite = all.FirstOrDefault(q =>
                     string.Equals(q.IdIdentificationProjet, idIdentificationProjet, StringComparison.OrdinalIgnoreCase)
                     && q.IdLivrablesProjet == idLivrablesProjet);
 
                 if (quantite == null) return NotFound();
 
-                var vmQuant = new BilanViewModel { QuantiteLivreeParAnnee = quantite, BilanFinancier = new SuiviInformationFinanciereDto() };
+                var vmQuant = new ProgrammationViewModel { QuantiteALivrer = quantite, PrevisionsFinancieres = new PrevisionInformationFinanciereDto() };
                 return View(vmQuant);
             }
             catch (Exception ex)
@@ -389,18 +394,18 @@ namespace SuiviEvaluation.Web.Areas.SuiviEvaluation.Controllers
                     var idInfoByte = ToByteSafe(idInformationsFinancieres);
                     if (idInfoByte.HasValue)
                     {
-                        await _suiviService.SupprimerAsync(idInfoByte.Value);
+                        await _previsionService.SupprimerAsync(idInfoByte.Value);
                         TempData["Success"] = "Prévision supprimée.";
                     }
                     else
                     {
-                        var prevision = (await _suiviService.ObtenirTousAsync()).FirstOrDefault(p => p.IdActivites == idActivite);
+                        var prevision = (await _previsionService.ObtenirTousAsync()).FirstOrDefault(p => p.IdActivites == idActivite);
                         if (prevision != null && prevision.IdInformationsFinancieres.HasValue)
                         {
                             var idToDelete = ToByteSafe(prevision.IdInformationsFinancieres);
                             if (idToDelete.HasValue)
                             {
-                                await _suiviService.SupprimerAsync(idToDelete.Value);
+                                await _previsionService.SupprimerAsync(idToDelete.Value);
                                 TempData["Success"] = "Prévision supprimée.";
                             }
                             else
@@ -419,7 +424,7 @@ namespace SuiviEvaluation.Web.Areas.SuiviEvaluation.Controllers
                     // Suppression quantité : ton service SupprimerAsync attend un byte IdLivrablesProjet
                     if (idLivrablesProjet != null)
                     {
-                        await _quantiteLivreeService.SupprimerAsync(idLivrablesProjet.Value);
+                        await _quantiteService.SupprimerAsync(idLivrablesProjet.Value);
                         TempData["Success"] = "Quantité supprimée.";
                     }
                     else
@@ -448,11 +453,11 @@ namespace SuiviEvaluation.Web.Areas.SuiviEvaluation.Controllers
             return (byte)value.Value;
         }
 
-        private async Task<SuiviInformationFinanciereDto?> SafeObtenirPrevisionParId(byte id)
+        private async Task<PrevisionInformationFinanciereDto?> SafeObtenirPrevisionParId(byte id)
         {
             try
             {
-                return await _suiviService.ObtenirParIdAsync(id);
+                return await _previsionService.ObtenirParIdAsync(id);
             }
             catch (Exception ex)
             {
@@ -461,11 +466,11 @@ namespace SuiviEvaluation.Web.Areas.SuiviEvaluation.Controllers
             }
         }
 
-        private async Task<QuantiteLivreeParAnneeDto?> SafeObtenirQuantiteParId(byte id)
+        private async Task<QuantiteALivrerParAnneeDto?> SafeObtenirQuantiteParId(byte id)
         {
             try
             {
-                return await _quantiteLivreeService.ObtenirParIdAsync(id);
+                return await _quantiteService.ObtenirParIdAsync(id);
             }
             catch (Exception ex)
             {
