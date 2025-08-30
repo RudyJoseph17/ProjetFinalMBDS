@@ -39,7 +39,7 @@ namespace BanqueProjet.Application.Dtos
 
 
         // Collections simplifiées ou DTOs correspondants
-        public List<ActiviteDto> Activites { get; set; } = new ();
+        public List<ActiviteBPDto> Activites { get; set; } = new ();
         public List<AspectsJuridiquesDto> AspectsJuridiques { get; set; } = new();
         public List<PartiesPrenantesDto> PartiesPrenantes { get; set; } = new();
         public List<IndicateursDeResultatDto> IndicateursDeResultats { get; set; } = new();
