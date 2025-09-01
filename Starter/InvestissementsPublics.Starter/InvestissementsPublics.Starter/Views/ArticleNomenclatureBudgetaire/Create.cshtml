@@ -1,0 +1,126 @@
+﻿@model Shared.Domain.Dtos.ArticleNomenclatureBudgetaireDto
+
+@{
+    ViewData["Title"] = "Ajouter un article";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Create" method="post" novalidate>
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        <label asp-for="NomArticleNomenclatureBudgetaire" class="form-label">
+            Nom de l’article
+        </label>
+        <input asp-for="NomArticleNomenclatureBudgetaire" class="form-control" />
+        <span asp-validation-for="NomArticleNomenclatureBudgetaire"
+              class="text-danger"></span>
+    </div>
+
+    <h4>Paragraphes</h4>
+    <div id="paragraphes">
+        @for (int i = 0; i < (Model.listParagrapheNomenclatureBudgetaire?.Count ?? 0); i++)
+        {
+            <div class="card mb-3 p-3 paragraphe-item">
+                <label asp-for="@Model.listParagrapheNomenclatureBudgetaire[i].NomParagrapheNomenclatureBudgetaire"
+                       class="form-label">
+                    Nom du paragraphe
+                </label>
+                <input asp-for="@Model.listParagrapheNomenclatureBudgetaire[i].NomParagrapheNomenclatureBudgetaire"
+                       class="form-control" />
+                <span asp-validation-for="@Model.listParagrapheNomenclatureBudgetaire[i].NomParagrapheNomenclatureBudgetaire"
+                      class="text-danger"></span>
+
+                <h5 class="mt-3">Alinéas</h5>
+                <div class="alineas">
+                    @for (int j = 0; j < (Model.listParagrapheNomenclatureBudgetaire[i].listAlineaNomenclatureBudgetaire?.Count ?? 0); j++)
+                    {
+                        <div class="mb-2 alinea-item">
+                            <label asp-for="@Model.listParagrapheNomenclatureBudgetaire[i].listAlineaNomenclatureBudgetaire[j].NomAlineaNomenclatureBudgetaire"
+                                   class="form-label">
+                                Nom de l’alinéa
+                            </label>
+                            <input asp-for="@Model.listParagrapheNomenclatureBudgetaire[i].listAlineaNomenclatureBudgetaire[j].NomAlineaNomenclatureBudgetaire"
+                                   class="form-control" />
+                            <span asp-validation-for="@Model.listParagrapheNomenclatureBudgetaire[i].listAlineaNomenclatureBudgetaire[j].NomAlineaNomenclatureBudgetaire"
+                                  class="text-danger"></span>
+                        </div>
+                    }
+                </div>
+                <button type="button" class="btn btn-link add-alinea">+ Alinéa</button>
+            </div>
+        }
+    </div>
+    <button type="button" id="add-paragraphe" class="btn btn-link">+ Paragraphe</button>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-success">Enregistrer</button>
+        <a asp-action="Index" class="btn btn-secondary ms-2">Annuler</a>
+    </div>
+</form>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script>
+        (function () {
+            // sécurité si la liste est null
+            let paraIndex = @(Model.listParagrapheNomenclatureBudgetaire?.Count ?? 0);
+
+            document.getElementById("add-paragraphe")
+                .addEventListener("click", function () {
+                    const container = document.getElementById("paragraphes");
+                    const html = `
+            <div class="card mb-3 p-3 paragraphe-item">
+              <label class="form-label" for="listParagrapheNomenclatureBudgetaire_${paraIndex}__NomParagrapheNomenclatureBudgetaire">
+                Nom du paragraphe
+              </label>
+              <input class="form-control"
+                     id="listParagrapheNomenclatureBudgetaire_${paraIndex}__NomParagrapheNomenclatureBudgetaire"
+                     name="listParagrapheNomenclatureBudgetaire[${paraIndex}].NomParagrapheNomenclatureBudgetaire" />
+              <h5 class="mt-3">Alinéas</h5>
+              <div class="alineas">
+                <div class="mb-2 alinea-item">
+                  <label class="form-label"
+                         for="listParagrapheNomenclatureBudgetaire_${paraIndex}__listAlineaNomenclatureBudgetaire_0__NomAlineaNomenclatureBudgetaire">
+                    Nom de l’alinéa
+                  </label>
+                  <input class="form-control"
+                         id="listParagrapheNomenclatureBudgetaire_${paraIndex}__listAlineaNomenclatureBudgetaire_0__NomAlineaNomenclatureBudgetaire"
+                         name="listParagrapheNomenclatureBudgetaire[${paraIndex}].listAlineaNomenclatureBudgetaire[0].NomAlineaNomenclatureBudgetaire" />
+                </div>
+              </div>
+              <button type="button" class="btn btn-link add-alinea">+ Alinéa</button>
+            </div>`;
+                    container.insertAdjacentHTML("beforeend", html);
+                    paraIndex++;
+                    // si vous utilisez la validation unobtrusive jQuery, reparsez le container:
+                    // if (window.jQuery && $.validator && $.validator.unobtrusive) {
+                    //     $.validator.unobtrusive.parse(container);
+                    // }
+                });
+
+            document.getElementById("paragraphes")
+                .addEventListener("click", function (e) {
+                    if (!e.target.classList.contains("add-alinea")) return;
+                    const paraDiv = e.target.closest(".paragraphe-item");
+                    const allParas = Array.from(document.querySelectorAll(".paragraphe-item"));
+                    const idx = allParas.indexOf(paraDiv);
+                    const aliCount = paraDiv.querySelectorAll(".alinea-item").length;
+                    const html = `
+            <div class="mb-2 alinea-item">
+              <label class="form-label">Nom de l’alinéa</label>
+              <input class="form-control"
+                     name="listParagrapheNomenclatureBudgetaire[${idx}].listAlineaNomenclatureBudgetaire[${aliCount}].NomAlineaNomenclatureBudgetaire" />
+            </div>`;
+                    paraDiv.querySelector(".alineas")
+                        .insertAdjacentHTML("beforeend", html);
+
+                    // idem, reparsing validation si besoin
+                    // if (window.jQuery && $.validator && $.validator.unobtrusive) {
+                    //     $.validator.unobtrusive.parse(paraDiv.querySelector(".alineas"));
+                    // }
+                });
+        })();
+    </script>
+}

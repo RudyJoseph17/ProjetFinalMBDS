@@ -1,0 +1,30 @@
+﻿@model Shared.Domain.Dtos.BailleurDeFondsDto
+
+@{
+    ViewData["Title"] = "Ajouter un bailleur";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Create" method="post" novalidate>
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        <label asp-for="NomBailleur" class="form-label">Nom du bailleur</label>
+        <input asp-for="NomBailleur" class="form-control" />
+        <span asp-validation-for="NomBailleur" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="TypeBailleur" class="form-label">Type bailleur</label>
+        <input asp-for="TypeBailleur" class="form-control" />
+        <span asp-validation-for="TypeBailleur" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Ajouter</button>
+    <a asp-action="Index" class="btn btn-secondary">Annuler</a>
+</form>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

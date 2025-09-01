@@ -1,0 +1,18 @@
+﻿using Shared.Domain.Dtos;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Shared.Domain.Interface
+{
+    public interface IProgrammeService
+    {
+        Task AjouterAsync(ProgrammeDto programme);
+        Task MettreAJourAsync(ProgrammeDto programme);
+        Task SupprimerAsync(int Idprogramme);
+        Task<List<ProgrammeDto>> ObtenirTousAsync();
+        Task<ProgrammeDto?> ObtenirParIdAsync(int Idprogramme);
+    }
+}

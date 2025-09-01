@@ -1,0 +1,48 @@
+﻿@model IEnumerable<Shared.Domain.Dtos.ArticleNomenclatureBudgetaireDto>
+
+@{
+    ViewData["Title"] = "Articles de la nomenclature budgétaire";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Ajouter un article</a>
+</p>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Aucun article trouvé.</div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Article</th>
+                <th># Paragraphes</th>
+                <th># Alinéas</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var art in Model)
+            {
+                var paraCount = art.listParagrapheNomenclatureBudgetaire.Count;
+                var aliCount = art.listParagrapheNomenclatureBudgetaire
+                .Sum(p => p.listAlineaNomenclatureBudgetaire.Count);
+                <tr>
+                    <td>@art.NomArticleNomenclatureBudgetaire</td>
+                    <td>@paraCount</td>
+                    <td>@aliCount</td>
+                    <td>
+                        <a asp-action="Details"
+                           asp-route-id="@art.IdArticleNomenclatureBudgetaire"
+                           class="btn btn-info btn-sm">Détails</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+

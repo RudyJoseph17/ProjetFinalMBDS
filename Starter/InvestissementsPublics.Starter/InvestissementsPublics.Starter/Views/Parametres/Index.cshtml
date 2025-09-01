@@ -38,39 +38,30 @@
                     </div>
 
 
-                    <!-- Content Row -->
-                    <div class="row">
-                <ul class="nav nav-tabs mb-3" id="paramTabs" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link active" id="institutions-tab" data-toggle="tab" href="#institutions" role="tab"
-                           aria-controls="institutions" aria-selected="true">
-                            Institutions
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="programmes-tab" data-toggle="tab" href="#programmes" role="tab"
-                           aria-controls="programmes" aria-selected="false">
-                            Programmes
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="articles-tab" data-toggle="tab" href="#articles" role="tab"
-                           aria-controls="articles" aria-selected="false">
-                            Articles Budgétaires
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="secteurs-tab" data-toggle="tab" href="#secteurs" role="tab"
-                           aria-controls="secteurs" aria-selected="false">
-                            Secteurs d’Activité
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="bailleurs-tab" data-toggle="tab" href="#bailleurs" role="tab"
-                           aria-controls="bailleurs" aria-selected="false">
-                            Bailleurs de Fonds
-                        </a>
-                    </li>
+                    <!-- Content Row  -->
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="InstitutionSectorielle" asp-action="Index">Institutions sectorielles</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Departement" asp-action="Index">Localisation géographique</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Programme" asp-action="Index">Programmes et sous-programmes</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="SecteurActivite" asp-action="Index">Secteurs d'activité</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="BailleurDeFonds" asp-action="Index">Bailleurs de fonds</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="ArticleNomenclatureBudgetaire" asp-action="Index">Nomenclature budgétaire</a>
+                </li>
 
                 <li class="nav-item">
                     <a class="nav-link" asp-controller="Admin" asp-action="Utilisateurs">Gestion des utilisateurs</a>
@@ -80,32 +71,6 @@
                     <a class="nav-link" asp-controller="Roles" asp-action="Index">Gestion des rôles</a>
                 </li>
 
-                </ul>
-
-                <!-- Tab panes -->
-                <div class="tab-content">
-
-                    <div class="tab-pane fade show active" id="institutions" role="tabpanel" aria-labelledby="institutions-tab">
-                        @Html.Partial("_InstitutionPartial")
-                    </div>
-
-                    <div class="tab-pane fade" id="programmes" role="tabpanel" aria-labelledby="programmes-tab">
-                        @Html.Partial("_ProgrammePartial")
-                    </div>
-
-                    <div class="tab-pane fade" id="articles" role="tabpanel" aria-labelledby="articles-tab">
-                        @Html.Partial("_ArticlePartial")
-                    </div>
-
-                    <div class="tab-pane fade" id="secteurs" role="tabpanel" aria-labelledby="secteurs-tab">
-                        @Html.Partial("_SecteurPartial")
-                    </div>
-
-                    <div class="tab-pane fade" id="bailleurs" role="tabpanel" aria-labelledby="bailleurs-tab">
-                        @Html.Partial("_BailleurPartial")
-                    </div>
-
-                </div>
             </div>
                       
                     </div>
@@ -180,21 +145,4 @@
             </div>
         </div>
     </div>
-
-    <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-    <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin-2.min.js"></script>
-
-    <!-- Page level plugins -->
-    <script src="vendor/chart.js/Chart.min.js"></script>
-
-    <!-- Page level custom scripts -->
-    <script src="js/demo/chart-area-demo.js"></script>
-    <script src="js/demo/chart-pie-demo.js"></script>
 

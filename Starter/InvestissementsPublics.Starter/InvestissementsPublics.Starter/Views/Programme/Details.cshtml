@@ -1,0 +1,32 @@
+﻿@model Shared.Domain.Dtos.ProgrammeDto
+
+@{
+    ViewData["Title"] = "Détails du programme";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<dl class="row">
+    <dt class="col-sm-2">Nom</dt>
+    <dd class="col-sm-10">@Model.Nomprogramme</dd>
+</dl>
+
+<h4>Sous-programmes</h4>
+@if (!Model.ListSousProgramme.Any())
+{
+    <p>Aucun sous-programme.</p>
+}
+else
+{
+    <ul>
+        @foreach (var s in Model.ListSousProgramme)
+        {
+            <li>@s.Nomsousprogramme</li>
+        }
+    </ul>
+}
+
+<p>
+    <a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
+</p>
+

@@ -1,0 +1,61 @@
+﻿@model Shared.Domain.Dtos.DepartementDto
+
+@{
+    ViewData["Title"] = "Détails du département";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<dl class="row">
+    <dt class="col-sm-2">Nom</dt>
+    <dd class="col-sm-10">@Model.NomDepartement</dd>
+</dl>
+
+<h4>Arrondissements</h4>
+@if (!Model.ListArrondissements.Any())
+{
+    <p>Aucun arrondissement.</p>
+}
+else
+{
+    <ul>
+        @foreach (var a in Model.ListArrondissements)
+        {
+            <li>
+                <strong>@a.NomArrondissement</strong>
+                @if (!a.ListCommunes.Any())
+                {
+                    <p><em>Aucune commune.</em></p>
+                }
+                else
+                {
+                    <ul>
+                        @foreach (var c in a.ListCommunes)
+                        {
+                            <li>
+                                <u>@c.NomCommune</u>
+                                @if (!c.ListSections.Any())
+                                {
+                                    <span> (aucune section)</span>
+                                }
+                                else
+                                {
+                                    <ul>
+                                        @foreach (var s in c.ListSections)
+                                        {
+                                            <li>@s.NomSectionCommunale</li>
+                                        }
+                                    </ul>
+                                }
+                            </li>
+                        }
+                    </ul>
+                }
+            </li>
+        }
+    </ul>
+}
+
+<p>
+    <a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
+</p>

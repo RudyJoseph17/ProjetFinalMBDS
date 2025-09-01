@@ -1,0 +1,166 @@
+﻿@model Shared.Domain.Dtos.DepartementDto
+
+@{
+    ViewData["Title"] = "Ajouter un département";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Create" method="post" novalidate>
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        <label asp-for="NomDepartement" class="form-label">Nom du département</label>
+        <input asp-for="NomDepartement" class="form-control" />
+        <span asp-validation-for="NomDepartement" class="text-danger"></span>
+    </div>
+
+    <h4>Arrondissements</h4>
+    <div id="arrondissements">
+        @for (int i = 0; i < Model.ListArrondissements.Count; i++)
+        {
+            <div class="card mb-3 p-3 arrondissement-item">
+                <label asp-for="ListArrondissements[i].NomArrondissement" class="form-label">
+                    Nom de l'arrondissement
+                </label>
+                <input asp-for="ListArrondissements[i].NomArrondissement" class="form-control" />
+                <span asp-validation-for="ListArrondissements[i].NomArrondissement" class="text-danger"></span>
+
+                <h5 class="mt-3">Communes</h5>
+                <div class="communes">
+                    @for (int j = 0; j < Model.ListArrondissements[i].ListCommunes.Count; j++)
+                    {
+                        <div class="ms-3 commune-item mb-2">
+                            <label asp-for="ListArrondissements[i].ListCommunes[j].NomCommune" class="form-label">
+                                Nom de la commune
+                            </label>
+                            <input asp-for="ListArrondissements[i].ListCommunes[j].NomCommune" class="form-control" />
+                            <span asp-validation-for="ListArrondissements[i].ListCommunes[j].NomCommune"
+                                  class="text-danger"></span>
+
+                            <h6 class="mt-2">Sections</h6>
+                            <div class="sections">
+                                @for (int k = 0; k < Model.ListArrondissements[i].ListCommunes[j].ListSections.Count; k++)
+                                {
+                                    <div class="ms-4 section-item mb-1">
+                                        <label asp-for="ListArrondissements[i].ListCommunes[j].ListSections[k].NomSectionCommunale"
+                                               class="form-label">
+                                            Nom de la section
+                                        </label>
+                                        <input asp-for="ListArrondissements[i].ListCommunes[j].ListSections[k].NomSectionCommunale"
+                                               class="form-control" />
+                                        <span asp-validation-for="ListArrondissements[i].ListCommunes[j].ListSections[k].NomSectionCommunale"
+                                              class="text-danger"></span>
+                                    </div>
+                                }
+                            </div>
+                            <button type="button" class="btn btn-link add-section">+ Section</button>
+                        </div>
+                    }
+                </div>
+                <button type="button" class="btn btn-link add-commune">+ Commune</button>
+            </div>
+        }
+    </div>
+    <button type="button" class="btn btn-link" id="add-arrondissement">+ Arrondissement</button>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-success">Enregistrer</button>
+        <a asp-action="Index" class="btn btn-secondary ms-2">Annuler</a>
+    </div>
+</form>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script>
+            (function(){
+                let arrIndex = @Model.ListArrondissements.Count;
+                document.getElementById("add-arrondissement")
+                    .addEventListener("click", function(){
+                        const html = `
+        <div class="card mb-3 p-3 arrondissement-item">
+          <label class="form-label" for="ListArrondissements_${arrIndex}__NomArrondissement">
+            Nom de l'arrondissement
+          </label>
+          <input class="form-control"
+                 id="ListArrondissements_${arrIndex}__NomArrondissement"
+                 name="ListArrondissements[${arrIndex}].NomArrondissement" />
+          <h5 class="mt-3">Communes</h5>
+          <div class="communes">
+            <div class="ms-3 commune-item mb-2">
+              <label class="form-label" for="ListArrondissements_${arrIndex}__ListCommunes_0__NomCommune">
+                Nom de la commune
+              </label>
+              <input class="form-control"
+                     id="ListArrondissements_${arrIndex}__ListCommunes_0__NomCommune"
+                     name="ListArrondissements[${arrIndex}].ListCommunes[0].NomCommune" />
+              <h6 class="mt-2">Sections</h6>
+              <div class="sections">
+                <div class="ms-4 section-item mb-1">
+                  <label class="form-label"
+                         for="ListArrondissements_${arrIndex}__ListCommunes_0__ListSections_0__NomSectionCommunale">
+                    Nom de la section
+                  </label>
+                  <input class="form-control"
+                         id="ListArrondissements_${arrIndex}__ListCommunes_0__ListSections_0__NomSectionCommunale"
+                         name="ListArrondissements[${arrIndex}].ListCommunes[0].ListSections[0].NomSectionCommunale" />
+                </div>
+              </div>
+              <button type="button" class="btn btn-link add-section">+ Section</button>
+            </div>
+          </div>
+          <button type="button" class="btn btn-link add-commune">+ Commune</button>
+        </div>`;
+                        document.getElementById("arrondissements")
+                                .insertAdjacentHTML("beforeend", html);
+                        arrIndex++;
+                    });
+
+                document.getElementById("arrondissements")
+                    .addEventListener("click", function(e){
+                        if (!e.target.matches(".add-commune,.add-section")) return;
+                        const card = e.target.closest(".arrondissement-item") ||
+                                     e.target.closest(".commune-item");
+                        if (e.target.matches(".add-commune")) {
+                            const arrIdx = Array.from(document.querySelectorAll(".arrondissement-item"))
+                                                .indexOf(card);
+                            let commHtml = `
+        <div class="ms-3 commune-item mb-2">
+          <label class="form-label">
+            Nom de la commune
+          </label>
+          <input class="form-control"
+                 name="ListArrondissements[${arrIdx}].ListCommunes[${card.querySelectorAll(".commune-item").length}].NomCommune" />
+          <h6 class="mt-2">Sections</h6>
+          <div class="sections">
+            <div class="ms-4 section-item mb-1">
+              <label class="form-label">Nom de la section</label>
+              <input class="form-control"
+                     name="ListArrondissements[${arrIdx}].ListCommunes[${card.querySelectorAll(".commune-item").length}].ListSections[0].NomSectionCommunale" />
+            </div>
+          </div>
+          <button type="button" class="btn btn-link add-section">+ Section</button>
+        </div>`;
+                            card.querySelector(".communes").insertAdjacentHTML("beforeend", commHtml);
+                        }
+                        else if (e.target.matches(".add-section")) {
+                            const commCard = e.target.closest(".commune-item");
+                            const arrCard = e.target.closest(".arrondissement-item");
+                            const arrIdx = Array.from(document.querySelectorAll(".arrondissement-item"))
+                                                .indexOf(arrCard);
+                            const commIdx = Array.from(arrCard.querySelectorAll(".commune-item"))
+                                                 .indexOf(commCard);
+                            const secCount = commCard.querySelectorAll(".section-item").length;
+                            const secHtml = `
+        <div class="ms-4 section-item mb-1">
+          <label class="form-label">Nom de la section</label>
+          <input class="form-control"
+                 name="ListArrondissements[${arrIdx}].ListCommunes[${commIdx}].ListSections[${secCount}].NomSectionCommunale" />
+        </div>`;
+                            commCard.querySelector(".sections")
+                                    .insertAdjacentHTML("beforeend", secHtml);
+                        }
+                    });
+            })();
+    </script>
+}

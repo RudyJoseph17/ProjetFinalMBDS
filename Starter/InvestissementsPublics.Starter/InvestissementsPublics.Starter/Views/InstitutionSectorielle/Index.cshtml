@@ -1,0 +1,43 @@
+﻿@model IEnumerable<Shared.Domain.Dtos.InstitutionSectorielleDto>
+
+@{
+    ViewData["Title"] = "Institutions sectorielles";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Ajouter une institution</a>
+</p>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Aucune institution trouvée.</div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Sigle</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var inst in Model)
+            {
+                <tr>
+                    <td>@inst.Nominstitution</td>
+                    <td>@inst.Sigleinstitution</td>
+
+                    <td>
+                        <a asp-action="Details"
+                           asp-route-id="@inst.Idinstitution"
+                           class="btn btn-info btn-sm">Détails</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+

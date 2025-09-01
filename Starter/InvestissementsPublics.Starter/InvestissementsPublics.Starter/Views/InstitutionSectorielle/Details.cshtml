@@ -1,0 +1,66 @@
+﻿@model Shared.Domain.Dtos.InstitutionSectorielleDto
+
+@{
+    ViewData["Title"] = "Détails de l’institution";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<dl class="row">
+    <dt class="col-sm-2">Nom</dt>
+    <dd class="col-sm-10">@Model.Nominstitution</dd>
+
+    <dt class="col-sm-2">Sigle</dt>
+    <dd class="col-sm-10">@Model.Sigleinstitution</dd>
+
+    <dt class="col-sm-2">Mission</dt>
+    <dd class="col-sm-10">@Model.Missioninstitution</dd>
+</dl>
+
+<h4>Attributions</h4>
+@if (!Model.ListAttributions.Any())
+{
+    <p>Aucune attribution.</p>
+}
+else
+{
+    <ul>
+        @foreach (var a in Model.ListAttributions)
+        {
+            <li>@a.DescriptionAttribution</li>
+        }
+    </ul>
+}
+
+<h4>Sections</h4>
+@if (!Model.ListSections.Any())
+{
+    <p>Aucune section.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Sigle</th>
+                <th>Adresse</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var s in Model.ListSections)
+            {
+                <tr>
+                    <td>@s.NomSection</td>
+                    <td>@s.SigleSection</td>
+                    <td>@s.AdresseSection</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<p>
+    <a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
+</p>
+

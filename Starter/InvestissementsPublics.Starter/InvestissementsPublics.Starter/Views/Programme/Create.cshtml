@@ -1,0 +1,71 @@
+﻿@model Shared.Domain.Dtos.ProgrammeDto
+
+@{
+    ViewData["Title"] = "Ajouter un programme";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Create" method="post" novalidate>
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        <label asp-for="Nomprogramme" class="form-label">Nom du programme</label>
+        <input asp-for="Nomprogramme" class="form-control" />
+        <span asp-validation-for="Nomprogramme" class="text-danger"></span>
+    </div>
+
+    <h4>Sous-programmes</h4>
+    <div id="sousProgrammes">
+        @for (int i = 1; i < Model.ListSousProgramme.Count; i++)
+        {
+            <div class="mb-3">
+                <label asp-for="ListSousProgramme[@i].Nomsousprogramme"
+                       class="form-label">
+                    Nom du sous-programme
+                </label>
+                <input asp-for="ListSousProgramme[@i].Nomsousprogramme"
+                       class="form-control" />
+                <span asp-validation-for="ListSousProgramme[@i].Nomsousprogramme"
+                      class="text-danger"></span>
+            </div>
+        }
+    </div>
+    <button type="button" id="add-sousprogramme" class="btn btn-link">
+        + Ajouter un sous-programme
+    </button>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-success">Enregistrer</button>
+        <a asp-action="Index" class="btn btn-secondary ms-2">Annuler</a>
+    </div>
+</form>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script>
+            (function(){
+                let index = @Model.ListSousProgramme.Count;
+                document.getElementById("add-sousprogramme")
+                    .addEventListener("click", function(){
+                        const container = document.getElementById("sousProgrammes");
+                        const template = `
+        <div class="mb-3">
+          <label class="form-label"
+                         for="ListSousProgramme_${index}__Nomsousprogramme">
+            Nom du sous-programme
+          </label>
+          <input class="form-control"
+                         id="ListSousProgramme_${index}__Nomsousprogramme"
+                         name="ListSousProgramme[${index}].Nomsousprogramme" />
+          <span class="text-danger"
+                        data-valmsg-for="ListSousProgramme[${index}].Nomsousprogramme"
+                data-valmsg-replace="true"></span>
+        </div>`;
+                        container.insertAdjacentHTML("beforeend", template);
+                        index++;
+                    });
+            })();
+    </script>
+}
+

@@ -1,0 +1,142 @@
+﻿@model Shared.Domain.Dtos.InstitutionSectorielleDto
+
+@{
+    ViewData["Title"] = "Ajouter une institution sectorielle";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Create" method="post" novalidate>
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        <label asp-for="Nominstitution" class="form-label">Nom</label>
+        <input asp-for="Nominstitution" class="form-control" />
+        <span asp-validation-for="Nominstitution" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Sigleinstitution" class="form-label">Sigle</label>
+        <input asp-for="Sigleinstitution" class="form-control" />
+        <span asp-validation-for="Sigleinstitution" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Missioninstitution" class="form-label">Mission</label>
+        <textarea asp-for="Missioninstitution" class="form-control"></textarea>
+        <span asp-validation-for="Missioninstitution" class="text-danger"></span>
+    </div>
+
+    <h4>Attributions</h4>
+    <div id="attributions">
+        @for (int i = 0; i < Model.ListAttributions.Count; i++)
+        {
+            <div class="mb-3 attribution-item">
+                <label asp-for="@Model.ListAttributions[i].DescriptionAttribution"
+                       class="form-label">
+                    Description
+                </label>
+                <input asp-for="@Model.ListAttributions[i].DescriptionAttribution"
+                       class="form-control" />
+                <span asp-validation-for="@Model.ListAttributions[i].DescriptionAttribution"
+                      class="text-danger"></span>
+            </div>
+        }
+    </div>
+    <button type="button" id="add-attribution" class="btn btn-link">Ajouter une attribution</button>
+
+    <h4>Sections</h4>
+    <div id="sections">
+        @for (int i = 0; i < Model.ListSections.Count; i++)
+        {
+            <div class="mb-3 section-item">
+                <label asp-for="@Model.ListSections[i].NomSection"
+                       class="form-label">
+                    Nom de la section
+                </label>
+                <input asp-for="@Model.ListSections[i].NomSection"
+                       class="form-control" />
+                <span asp-validation-for="@Model.ListSections[i].NomSection"
+                      class="text-danger"></span>
+
+                <label asp-for="@Model.ListSections[i].SigleSection"
+                       class="form-label mt-2">
+                    Sigle
+                </label>
+                <input asp-for="@Model.ListSections[i].SigleSection"
+                       class="form-control" />
+                <span asp-validation-for="@Model.ListSections[i].SigleSection"
+                      class="text-danger"></span>
+
+                <label asp-for="@Model.ListSections[i].AdresseSection"
+                       class="form-label mt-2">
+                    Adresse
+                </label>
+                <input asp-for="@Model.ListSections[i].AdresseSection"
+                       class="form-control" />
+                <span asp-validation-for="@Model.ListSections[i].AdresseSection"
+                      class="text-danger"></span>
+            </div>
+        }
+    </div>
+    <button type="button" id="add-section" class="btn btn-link">Ajouter une section</button>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-success">Enregistrer</button>
+        <a asp-action="Index" class="btn btn-secondary">Annuler</a>
+    </div>
+</form>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        (function(){
+            let attrIndex = @Model.ListAttributions.Count;
+            document.getElementById("add-attribution")
+                .addEventListener("click", function(){
+                    const container = document.getElementById("attributions");
+                    const template =
+                      `<div class="mb-3 attribution-item">
+                         <label class="form-label" for="ListAttributions_${attrIndex}__DescriptionAttribution">
+                           Description
+                         </label>
+                         <input class="form-control" id="ListAttributions_${attrIndex}__DescriptionAttribution"
+                                name="ListAttributions[${attrIndex}].DescriptionAttributionsInstitution" />
+                       </div>`;
+                    container.insertAdjacentHTML("beforeend", template);
+                    attrIndex++;
+                });
+
+            let secIndex = @Model.ListSections.Count;
+            document.getElementById("add-section")
+                .addEventListener("click", function(){
+                    const container = document.getElementById("sections");
+                    const template =
+                      `<div class="mb-3 section-item">
+                         <label class="form-label" for="ListSections_${secIndex}__NomSection">
+                           Nom de la section
+                         </label>
+                         <input class="form-control" id="ListSections_${secIndex}__NomSection"
+                                name="ListSections[${secIndex}].NomSectionInstitution" />
+                         <label class="form-label mt-2" for="ListSections_${secIndex}__SigleSection">
+                           Sigle
+                         </label>
+                         <input class="form-control" id="ListSections_${secIndex}__SigleSection"
+                                name="ListSections[${secIndex}].SigleSectionInstitution" />
+                         <label class="form-label mt-2" for="ListSections_${secIndex}__AdresseSection">
+                           Adresse
+                         </label>
+                         <input class="form-control" id="ListSections_${secIndex}__AdresseSection"
+                                name="ListSections[${secIndex}].AdresseSectionInstitution" />
+                       </div>`;
+                    container.insertAdjacentHTML("beforeend", template);
+                    secIndex++;
+                });
+        })();
+    </script>
+}
+

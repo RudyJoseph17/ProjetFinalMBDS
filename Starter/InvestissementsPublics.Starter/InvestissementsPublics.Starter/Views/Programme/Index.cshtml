@@ -1,0 +1,44 @@
+﻿@model IEnumerable<Shared.Domain.Dtos.ProgrammeDto>
+
+@{
+    ViewData["Title"] = "Programmes";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Ajouter un programme</a>
+</p>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Aucun programme trouvé.</div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nom du programme</th>
+                <th># Sous-programmes</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in Model)
+            {
+                <tr>
+                    <td>@p.Nomprogramme</td>
+                    <td>@p.ListSousProgramme.Count()</td>
+                    <td>
+                        <a asp-action="Details"
+                           asp-route-id="@p.Idprogramme"
+                           class="btn btn-info btn-sm">
+                            Détails
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

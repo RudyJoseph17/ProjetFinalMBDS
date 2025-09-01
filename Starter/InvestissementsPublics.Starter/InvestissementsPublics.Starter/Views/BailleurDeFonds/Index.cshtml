@@ -1,0 +1,47 @@
+﻿@using Shared.Domain.Dtos
+@model IEnumerable<BailleurDeFondsDto>
+
+@{
+    ViewData["Title"] = "Bailleurs de fonds";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Ajouter un bailleur</a>
+</p>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-info">Aucun bailleur trouvé.</div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nom du bailleur</th>
+                <th>Type bailleur</th>
+                <th style="width:220px">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var bailleur in Model)
+            {
+                <tr>
+                    <td>@bailleur.NomBailleur</td>
+                    <td>@bailleur.TypeBailleur</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@bailleur.IdBailleur" class="btn btn-warning btn-sm">Modifier</a>
+                        <a asp-action="Details" asp-route-id="@bailleur.IdBailleur" class="btn btn-info btn-sm ml-1">Détails</a>
+
+                        <form asp-action="Delete" asp-route-id="@bailleur.IdBailleur" method="post" style="display:inline" onsubmit="return confirm('Confirmer la suppression ?');">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-sm btn-danger ml-1">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

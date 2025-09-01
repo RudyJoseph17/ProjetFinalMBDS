@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Shared.Domain.Dtos.SecteurActiviteDto>
+
+@{
+    ViewData["Title"] = "Secteurs d'activité";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Ajouter un secteur</a>
+</p>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Aucun secteur trouvé.</div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nom du secteur</th>
+                <th># Sous-secteurs</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var s in Model)
+            {
+                <tr>
+                    <td>@s.NomSecteurActivite</td>
+                    <td>@s.ListSousSecteurActivite.Count()</td>
+                    <td>
+                        <a asp-action="Details"
+                           asp-route-id="@s.IdSecteurActivite"
+                           class="btn btn-info btn-sm">
+                            Détails
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+

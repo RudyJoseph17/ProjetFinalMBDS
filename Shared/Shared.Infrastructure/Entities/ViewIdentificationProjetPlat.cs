@@ -122,4 +122,5 @@ public partial class ViewIdentificationProjetPlat
 
     [Column("DATE_MISE_A_JOUR", TypeName = "DATE")]
     public DateTime? DateMiseAJour { get; set; }
+
 }

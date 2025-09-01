@@ -1,0 +1,32 @@
+﻿@model Shared.Domain.Dtos.SecteurActiviteDto
+
+@{
+    ViewData["Title"] = "Détails du secteur d'activité";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<dl class="row">
+    <dt class="col-sm-2">Nom</dt>
+    <dd class="col-sm-10">@Model.NomSecteurActivite</dd>
+</dl>
+
+<h4>Sous-secteurs</h4>
+@if (!Model.ListSousSecteurActivite.Any())
+{
+    <p>Aucun sous-secteur.</p>
+}
+else
+{
+    <ul>
+        @foreach (var ss in Model.ListSousSecteurActivite)
+        {
+            <li>@ss.NomSousSecteurActivite</li>
+        }
+    </ul>
+}
+
+<p>
+    <a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
+</p>
+

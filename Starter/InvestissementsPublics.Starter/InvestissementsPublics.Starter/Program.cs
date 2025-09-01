@@ -80,6 +80,7 @@ builder.Services.AddAutoMapper(
 // Enregistrement des services (pas de doublons)
 builder.Services.AddScoped<IIdentificationProjetService, IdentificationProjetService>();
 builder.Services.AddScoped<IProjetsBPService, ProjetsBPService>();
+builder.Services.AddScoped<IBailleurDeFondsService, BailleurDeFondsService>();
 builder.Services.AddScoped<IActiviteService, ActiviteService>();
 builder.Services.AddScoped<IActiviteBPService, ActiviteBPService>();
 builder.Services.AddScoped<IDdpCadreLogiqueService, DdpCadreLogiqueService>();
@@ -99,6 +100,11 @@ builder.Services.AddScoped<IQuantiteLivreParAnneeService, QuantiteLivreParAnneeS
 builder.Services.AddScoped<IQuantiteALivrerParAnneeService, QuantiteALivrerParAnneeService>();
 builder.Services.AddScoped<IPrevisionInformationFinanciereService, PrevisionInformationFinanciereService>();
 builder.Services.AddScoped<ISuiviInformationFinanciereService, SuiviInformationFinanciereService>();
+builder.Services.AddScoped<IInstitutionSectorielleService, InstitutionSectorielleService>();
+builder.Services.AddScoped<IDepartementService, DepartementService>();
+builder.Services.AddScoped<IProgrammeService, ProgrammeService>();
+builder.Services.AddScoped<ISecteurActiviteService, SecteurActiviteService>();
+builder.Services.AddScoped<IArticleNomenclatureBudgetaireService, ArticleNomenclatureBudgetaireService>();
 
 
 
@@ -111,9 +117,9 @@ var app = builder.Build();
 // Seed (création des rôles/users) - crée un scope et utilise GetRequiredService
 using (var scope = app.Services.CreateScope())
 {
-    await IdentitySeeder.SeedAsync(
-        scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>(),
-        scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>());
+    // after app build
+    await IdentitySeeder.SeedAsync(app.Services);
+
 }
 
 // Pipeline HTTP
@@ -121,6 +127,7 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
+    app.UseDeveloperExceptionPage();
 }
 app.UseHttpsRedirection();
 app.UseStaticFiles();

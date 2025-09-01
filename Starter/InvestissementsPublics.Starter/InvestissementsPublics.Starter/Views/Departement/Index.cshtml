@@ -1,0 +1,51 @@
+﻿@model IEnumerable<Shared.Domain.Dtos.DepartementDto>
+
+@{
+    ViewData["Title"] = "Départements";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Ajouter un département</a>
+</p>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Aucun département trouvé.</div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nom du département</th>
+                <th># Arrondissements</th>
+                <th># Communes</th>
+                <th># Sections</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var d in Model)
+            {
+                var totalCom = d.ListArrondissements.Sum(a => a.ListCommunes.Count);
+                var totalSec = d.ListArrondissements
+                .SelectMany(a => a.ListCommunes)
+                .Sum(c => c.ListSections.Count);
+                <tr>
+                    <td>@d.NomDepartement</td>
+                    <td>@d.ListArrondissements.Count</td>
+                    <td>@totalCom</td>
+                    <td>@totalSec</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@d.IdDepartement" class="btn btn-info btn-sm">
+                            Détails
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+

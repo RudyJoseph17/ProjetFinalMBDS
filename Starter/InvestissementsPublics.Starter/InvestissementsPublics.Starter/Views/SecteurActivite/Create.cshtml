@@ -1,0 +1,71 @@
+﻿@model Shared.Domain.Dtos.SecteurActiviteDto
+
+@{
+    ViewData["Title"] = "Ajouter un secteur d'activité";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Create" method="post" novalidate>
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        <label asp-for="NomSecteurActivite" class="form-label">Nom du secteur</label>
+        <input asp-for="NomSecteurActivite" class="form-control" />
+        <span asp-validation-for="NomSecteurActivite" class="text-danger"></span>
+    </div>
+
+    <h4>Sous-secteurs</h4>
+    <div id="sousSecteurs">
+        @for (int i = 1; i < Model.ListSousSecteurActivite.Count; i++)
+        {
+            <div class="mb-3">
+                <label asp-for="ListSousSecteurActivite[@i].NomSousSecteurActivite"
+                       class="form-label">
+                    Nom du sous-secteur
+                </label>
+                <input asp-for="ListSousSecteurActivite[@i].NomSousSecteurActivite"
+                       class="form-control" />
+                <span asp-validation-for="ListSousSecteurActivite[@i].NomSousSecteurActivite"
+                      class="text-danger"></span>
+            </div>
+        }
+    </div>
+    <button type="button" id="add-soussecteur" class="btn btn-link">
+        + Ajouter un sous-secteur
+    </button>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-success">Enregistrer</button>
+        <a asp-action="Index" class="btn btn-secondary ms-2">Annuler</a>
+    </div>
+</form>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script>
+        (function(){
+            let index = @Model.ListSousSecteurActivite.Count;
+            document.getElementById("add-soussecteur")
+                .addEventListener("click", function(){
+                    const container = document.getElementById("sousSecteurs");
+                    const html = `
+        <div class="mb-3">
+          <label class="form-label"
+                 for="ListSousSecteurActivite_${index}__NomSousSecteurActivite">
+            Nom du sous-secteur
+          </label>
+          <input class="form-control"
+                 id="ListSousSecteurActivite_${index}__NomSousSecteurActivite"
+                 name="ListSousSecteurActivite[${index}].NomSousSecteurActivite" />
+          <span class="text-danger"
+                data-valmsg-for="ListSousSecteurActivite[${index}].NomSousSecteurActivite"
+                data-valmsg-replace="true"></span>
+        </div>`;
+                    container.insertAdjacentHTML("beforeend", html);
+                    index++;
+                });
+        })();
+    </script>
+}
+

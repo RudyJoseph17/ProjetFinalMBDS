@@ -1,0 +1,47 @@
+﻿@model Shared.Domain.Dtos.ArticleNomenclatureBudgetaireDto
+
+@{
+    ViewData["Title"] = "Détails de l’article";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<dl class="row">
+    <dt class="col-sm-2">Article</dt>
+    <dd class="col-sm-10">@Model.NomArticleNomenclatureBudgetaire</dd>
+</dl>
+
+<h4>Paragraphes</h4>
+@if (!Model.listParagrapheNomenclatureBudgetaire.Any())
+{
+    <p>Aucun paragraphe.</p>
+}
+else
+{
+    <ul>
+        @foreach (var p in Model.listParagrapheNomenclatureBudgetaire)
+        {
+            <li>
+                <strong>@p.NomParagrapheNomenclatureBudgetaire</strong>
+                @if (!p.listAlineaNomenclatureBudgetaire.Any())
+                {
+                    <span> (aucun alinéa)</span>
+                }
+                else
+                {
+                    <ul>
+                        @foreach (var a in p.listAlineaNomenclatureBudgetaire)
+                        {
+                            <li>@a.NomAlineaNomenclatureBudgetaire</li>
+                        }
+                    </ul>
+                }
+            </li>
+        }
+    </ul>
+}
+
+<p>
+    <a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
+</p>
+
