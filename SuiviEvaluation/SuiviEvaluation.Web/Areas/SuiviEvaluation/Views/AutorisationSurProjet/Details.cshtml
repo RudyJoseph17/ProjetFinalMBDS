@@ -1,0 +1,55 @@
+﻿@model SuiviEvaluation.Application.Dtos.AutorisationSurProjetDto
+@{
+    ViewData["Title"] = "Détails autorisation";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="form-group">
+    <label>Projet :</label>
+    <p>@Model.IdIdentificationProjet</p>
+</div>
+
+<div class="form-group">
+    <label>Activité :</label>
+    <p>@Model.IdActivites</p>
+</div>
+
+<div class="form-group">
+    <label>Exercice début :</label>
+    <p>@Model.ExerciceFiscalDebut</p>
+</div>
+
+<div class="form-group">
+    <label>Exercice fin :</label>
+    <p>@Model.ExerciceFiscalFin</p>
+</div>
+
+<div class="form-group">
+    <label>Article :</label>
+    <p>@Model.Article</p>
+</div>
+
+<div class="form-group">
+    <label>Alinea :</label>
+    <p>@Model.Alinea</p>
+</div>
+
+<div class="form-group">
+    <label>Mois :</label>
+    <p>@Model.MoisAutorisation</p>
+</div>
+
+<div class="form-group">
+    <label>Montant :</label>
+    <p>@Model.MontantAutorisation</p>
+</div>
+
+<a asp-action="Edit" asp-route-id="@Model.IdActivites" class="btn btn-primary">Éditer</a>
+<form asp-action="Delete" asp-route-id="@Model.IdActivites" method="post" style="display:inline">
+    @Html.AntiForgeryToken()
+    <button type="submit" class="btn btn-danger" onclick="return confirm('Supprimer cette autorisation ?')">
+        Supprimer
+    </button>
+</form>
+<a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>

@@ -12,5 +12,9 @@ namespace Shared.Domain.Dtos
         [JsonProperty("IdIdentificationProjet")]
         public string IdIdentificationProjet { get; set; }
         public byte IdLivrablesProjet { get; set; }
+        public string? DefinitionLivrablesDuProjet { get; set; }
+        public int? QuantiteALivrer { get; set; }
+        public int? QuantiteLivree { get; set; }
+        public int? ValeurLivree { get; set; }
     }
 }

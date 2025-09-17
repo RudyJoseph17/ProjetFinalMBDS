@@ -35,7 +35,7 @@
             </li> *@
              <a class="btn btn-primary btn-block"
                asp-area="SuiviEvaluation"
-               asp-controller="Bilan"
+               asp-controller="A"
                asp-action="Index">
                 Voir les bilans par projet
                 <i class="fas fa-fw fa-cog"></i>
@@ -44,28 +44,37 @@
             <li class="nav-item">
                 <a class="btn btn-primary btn-block"
                    asp-area="SuiviEvaluation"
-                   asp-controller="Bilan"
-                   asp-action="Create"
+                   asp-controller="LivrablesRealisesProjet"
+                   asp-action="Index"
                    class="btn btn-sm btn-warning">
-                    Ajouter un nouveau bilan
+                    Livrables réalisés
                 </a>
             </li>
             <li class="nav-item">
                 <a class="btn btn-primary btn-block"
                    asp-area="SuiviEvaluation"
-                   asp-controller="Home"
+                   asp-controller="AutorisationSurProjet"
                    asp-action="Index"
                    class="btn btn-sm btn-warning">
-                    Situation financière projet
+                    Autorisation par projet
                 </a>
             </li>
             <li class="nav-item">
                 <a class="btn btn-primary btn-block"
                    asp-area="SuiviEvaluation"
-                   asp-controller="Home"
+                   asp-controller="DecaissementSurProjet"
                    asp-action="Index"
                    class="btn btn-sm btn-warning">
-                    Générer rapports
+                    decaissement par projet
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="btn btn-primary btn-block"
+                   asp-area="SuiviEvaluation"
+                   asp-controller="DepenseReelleSurProjet"
+                   asp-action="Index"
+                   class="btn btn-sm btn-warning">
+                    Depense reelle par projet
                 </a>
             </li>
                 <!-- ... autres items ... -->

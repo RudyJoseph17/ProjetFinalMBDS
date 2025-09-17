@@ -14,10 +14,10 @@ namespace BanqueProjet.Application.Dtos
     {
         [JsonProperty("IdIdentificationProjet")]
         public string IdIdentificationProjet { get; set; }
-        public byte IdBailleursDeFonds { get; set; }
+        public int IdBailleursDeFonds { get; set; }
         public string? NomBailleur { get; set; }
         public string? NomRepresentant { get; set; }
-        public decimal? TelephoneRepresentant { get; set; }
+        public string? TelephoneRepresentant { get; set; }
         public string? CourrielRepresentant { get; set; }
     }
 }

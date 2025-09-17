@@ -10,11 +10,13 @@ namespace BanqueProjet.Application.Dtos
 {
     public class ActiviteBPDto : ActiviteDto
     {
+        public int IdActivites { get; set; }
         public decimal? NumeroActivites { get; set; }
         public string? NomActivite { get; set; }
         public string? ResultatsAttendus { get; set; }
 
         public List<ActivitesAnnuellesDto> ActivitesAnnuelles { get; set; } = new();
-        public List<InformationsFinancieresBPDto> InformationsFinancieresProjet { get; set; } = new();
+        public List<InformationsFinancieresBPDto> InformationsFinancieres { get; set; }
+     = new List<InformationsFinancieresBPDto>();
     }
 }

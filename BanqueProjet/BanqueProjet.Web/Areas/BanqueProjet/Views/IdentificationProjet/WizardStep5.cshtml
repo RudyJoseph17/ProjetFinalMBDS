@@ -7,11 +7,16 @@
 
 <form asp-action="Wizard" method="post">
     <input type="hidden" name="step" value="@step" />
+
     <div id="partiesPrenantes-list">
-        <h2>Liste des parties prenantes</h2>
+        <h4>Liste des parties prenantes</h4>
         @for (int i = 1; i < Model.Projets.PartiesPrenantes.Count; i++)
 
         {
+            <div class="partiesPrenante-item mb-3">
+
+                <input name="Projets.PartiesPrenantes[@i].IdIdentificationProjet" type="hidden" value="@Model.Projets.IdIdentificationProjet" />
+            
             <div class="card mb-2 p-2">
                 <label class="form-label">Nom de la firme @(i + 1)</label>
                 <input asp-for="Projets.PartiesPrenantes[@i].NomFirme" class="form-control" />
@@ -32,16 +37,18 @@
                 <input asp-for="Projets.PartiesPrenantes[@i].RoleFirme" class="form-control" />
                 <span asp-validation-for="Projets.PartiesPrenantes[@i].RoleFirme" class="text-danger"></span>
             </div>
+            </div>
         }
-        <button type="button" id="add-partiesPrenantes" class="btn btn-secondary">Ajouter une partie prenante</button>
+        <button type="button" id="add-partiesPrenante" class="btn btn-secondary">Ajouter une partie prenante</button>
     </div>
+
 
     <div id="livrables-list">
         <h4>Liste des livrables</h4>
         @for (int i = 0; i < Model.Projets.LivrablesProjets.Count; i++)
 
         {
-            <div class="activite-item mb-3">
+            <div class="livrable-item mb-3">
                 <div class="form-row">
                     <div class="col">
                         <label asp-for="Projets.LivrablesProjets[@i].DefinitionLivrablesDuProjet">Definition du livrable</label>
@@ -158,7 +165,7 @@
     <script>
         function handleAdd(btnSelector, listSelector, tmplSelector) {
             $(btnSelector).on('click', function () {
-                var count = $(listSelector).children('.partiesPrenante-item').length;
+                var count = $(listSelector).children().length;
                 var html = $(tmplSelector).html().replace(/__index__/g, count);
                 $(listSelector).append(html);
             });
@@ -171,53 +178,21 @@
         $(function () {
             handleAdd('#add-partiesPrenante', '#partiesPrenantes-list', '#partiesPrenante-template');
             handleRemove('.partiesPrenante-item', '.remove-partiesPrenante');
-        });
-    </script>
-
-    <script>
-        function handleAdd(btnSelector, listSelector, tmplSelector) {
-            $(btnSelector).on('click', function () {
-                var count = $(listSelector).children('.livrable-item', '.effet-item', '.impact-item').length;
-                var html = $(tmplSelector).html().replace(/__index__/g, count);
-                $(listSelector).append(html);
-            });
-        }
-        function handleRemove(itemSelector, btnSelector) {
-            $(document).on('click', btnSelector, function () {
-                $(this).closest(itemSelector).remove();
-            });
-        }
-        $(function () {
             handleAdd('#add-livrable', '#livrables-list', '#livrable-template');
             handleRemove('.livrable-item', '.remove-livrable');
             handleAdd('#add-effet', '#effets-list', '#effet-template');
             handleRemove('.effet-item', '.remove-effet');
             handleAdd('#add-impact', '#impacts-list', '#impact-template');
             handleRemove('.impact-item', '.remove-impact');
-        });
-    </script>
-
-    <script>
-        function handleAdd(btnSelector, listSelector, tmplSelector) {
-            $(btnSelector).on('click', function () {
-                var count = $(listSelector).children('.indicateur-item').length;
-                var html = $(tmplSelector).html().replace(/__index__/g, count);
-                $(listSelector).append(html);
-            });
-        }
-        function handleRemove(itemSelector, btnSelector) {
-            $(document).on('click', btnSelector, function () {
-                $(this).closest(itemSelector).remove();
-            });
-        }
-        $(function () {
             handleAdd('#add-indicateur', '#indicateurs-list', '#indicateur-template');
             handleRemove('.indicateur-item', '.remove-indicateur');
         });
     </script>
 
-    <div id="aspect-template" class="d-none">
-        <div class="aspect-item mb-3">
+
+
+    <div id="partiesPrenante-template" class="d-none">
+        <div class="partiesPrenante-item mb-3">
             <div class="form-row">
                 <input name="Projets.PartiesPrenantes[__index__].IdIdentificationProjet" type="hidden" value="@Model.Projets.IdIdentificationProjet" />
                 <div class="col"><label>Nom de la firme</label><input name="Projets.PartiesPrenante[__index__].NomFirme" class="form-control" /></div>

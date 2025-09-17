@@ -18,6 +18,8 @@ using AutoMapper;
 using Shared.Infrastructure.Data;
 using BanqueProjet.Application.Mapping;
 using Shared.Infrastructure.Mapping;
+using BanqueProjet.Infrastructure.Diagnostics;
+using Serilog;
 
 
 
@@ -63,6 +65,20 @@ builder.Services.AddControllersWithViews();
 
 // Notification
 ////builder.Services.AddScoped<INotificationService, NotificationService>();
+///
+// ?? Configurer Serilog
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Debug() // log tout à partir de Debug
+    .WriteTo.Console()
+    .WriteTo.File(
+        path: @"C:\Users\rudyj\MBDS\9-STAGE_ET_PROJET_FINAL\DERNIERS_SCRIPTS\BanqueProjet-.log",
+        rollingInterval: RollingInterval.Day, // un fichier par jour
+        retainedFileCountLimit: 10,           // garder 10 jours d’historique
+        shared: true
+    )
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 // 2. Scan et enregistrement des profiles AutoMapper
 // Enregistrer le DbContext EF Core
@@ -94,6 +110,29 @@ builder.Services.AddScoped<IInformationsFinancieresService, InformationsFinancie
 builder.Services.AddScoped<IDefinitionLivrablesDuProjetService, DefinitionLivrablesDuProjetService>();
 builder.Services.AddScoped<IObjectifsSpecifiquesService, ObjectifsSpecifiquesService>();
 
+builder.Services.AddDbContext<SharedDbContext>((sp, options) =>
+{
+    options.UseOracle(builder.Configuration.GetConnectionString("DefaultConnection"))
+           .AddInterceptors(new OracleCommandInterceptor());
+});
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // durée de vie
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+
+//builder.Services.AddDistributedMemoryCache();
+
+//builder.Services.AddSession(options =>
+//{
+//    options.IdleTimeout = TimeSpan.FromMinutes(30); // durée de vie de la session
+//    options.Cookie.HttpOnly = true;
+//    options.Cookie.IsEssential = true;
+//});
+
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole(); // ? Log dans la console de debug
@@ -105,6 +144,7 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
 
 using (var scope = app.Services.CreateScope())
 {
@@ -128,6 +168,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseSession();
+
 
 app.UseAuthorization();
 

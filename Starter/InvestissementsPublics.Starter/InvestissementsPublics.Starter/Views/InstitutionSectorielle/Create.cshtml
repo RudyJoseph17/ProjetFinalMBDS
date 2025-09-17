@@ -33,9 +33,7 @@
         {
             <div class="mb-3 attribution-item">
                 <label asp-for="@Model.ListAttributions[i].DescriptionAttribution"
-                       class="form-label">
-                    Description
-                </label>
+                       class="form-label">Description</label>
                 <input asp-for="@Model.ListAttributions[i].DescriptionAttribution"
                        class="form-control" />
                 <span asp-validation-for="@Model.ListAttributions[i].DescriptionAttribution"
@@ -50,32 +48,17 @@
         @for (int i = 0; i < Model.ListSections.Count; i++)
         {
             <div class="mb-3 section-item">
-                <label asp-for="@Model.ListSections[i].NomSection"
-                       class="form-label">
-                    Nom de la section
-                </label>
-                <input asp-for="@Model.ListSections[i].NomSection"
-                       class="form-control" />
-                <span asp-validation-for="@Model.ListSections[i].NomSection"
-                      class="text-danger"></span>
+                <label asp-for="@Model.ListSections[i].NomSection" class="form-label">Nom de la section</label>
+                <input asp-for="@Model.ListSections[i].NomSection" class="form-control" />
+                <span asp-validation-for="@Model.ListSections[i].NomSection" class="text-danger"></span>
 
-                <label asp-for="@Model.ListSections[i].SigleSection"
-                       class="form-label mt-2">
-                    Sigle
-                </label>
-                <input asp-for="@Model.ListSections[i].SigleSection"
-                       class="form-control" />
-                <span asp-validation-for="@Model.ListSections[i].SigleSection"
-                      class="text-danger"></span>
+                <label asp-for="@Model.ListSections[i].SigleSection" class="form-label mt-2">Sigle</label>
+                <input asp-for="@Model.ListSections[i].SigleSection" class="form-control" />
+                <span asp-validation-for="@Model.ListSections[i].SigleSection" class="text-danger"></span>
 
-                <label asp-for="@Model.ListSections[i].AdresseSection"
-                       class="form-label mt-2">
-                    Adresse
-                </label>
-                <input asp-for="@Model.ListSections[i].AdresseSection"
-                       class="form-control" />
-                <span asp-validation-for="@Model.ListSections[i].AdresseSection"
-                      class="text-danger"></span>
+                <label asp-for="@Model.ListSections[i].AdresseSection" class="form-label mt-2">Adresse</label>
+                <input asp-for="@Model.ListSections[i].AdresseSection" class="form-control" />
+                <span asp-validation-for="@Model.ListSections[i].AdresseSection" class="text-danger"></span>
             </div>
         }
     </div>
@@ -94,49 +77,48 @@
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 
     <script>
-        (function(){
+        (function () {
             let attrIndex = @Model.ListAttributions.Count;
             document.getElementById("add-attribution")
-                .addEventListener("click", function(){
+                .addEventListener("click", function () {
                     const container = document.getElementById("attributions");
                     const template =
-                      `<div class="mb-3 attribution-item">
-                         <label class="form-label" for="ListAttributions_${attrIndex}__DescriptionAttribution">
-                           Description
-                         </label>
-                         <input class="form-control" id="ListAttributions_${attrIndex}__DescriptionAttribution"
-                                name="ListAttributions[${attrIndex}].DescriptionAttributionsInstitution" />
-                       </div>`;
+                        `<div class="mb-3 attribution-item">
+                                 <label class="form-label" for="ListAttributions_${attrIndex}__DescriptionAttribution">
+                                   Description
+                                 </label>
+                                 <input class="form-control"
+                                        id="ListAttributions_${attrIndex}__DescriptionAttribution"
+                                        name="ListAttributions[${attrIndex}].DescriptionAttribution" />
+                               </div>`;
                     container.insertAdjacentHTML("beforeend", template);
                     attrIndex++;
                 });
 
             let secIndex = @Model.ListSections.Count;
             document.getElementById("add-section")
-                .addEventListener("click", function(){
+                .addEventListener("click", function () {
                     const container = document.getElementById("sections");
                     const template =
-                      `<div class="mb-3 section-item">
-                         <label class="form-label" for="ListSections_${secIndex}__NomSection">
-                           Nom de la section
-                         </label>
-                         <input class="form-control" id="ListSections_${secIndex}__NomSection"
-                                name="ListSections[${secIndex}].NomSectionInstitution" />
-                         <label class="form-label mt-2" for="ListSections_${secIndex}__SigleSection">
-                           Sigle
-                         </label>
-                         <input class="form-control" id="ListSections_${secIndex}__SigleSection"
-                                name="ListSections[${secIndex}].SigleSectionInstitution" />
-                         <label class="form-label mt-2" for="ListSections_${secIndex}__AdresseSection">
-                           Adresse
-                         </label>
-                         <input class="form-control" id="ListSections_${secIndex}__AdresseSection"
-                                name="ListSections[${secIndex}].AdresseSectionInstitution" />
-                       </div>`;
+                        `<div class="mb-3 section-item">
+                                 <label class="form-label" for="ListSections_${secIndex}__NomSection">Nom de la section</label>
+                                 <input class="form-control"
+                                        id="ListSections_${secIndex}__NomSection"
+                                        name="ListSections[${secIndex}].NomSection" />
+
+                                 <label class="form-label mt-2" for="ListSections_${secIndex}__SigleSection">Sigle</label>
+                                 <input class="form-control"
+                                        id="ListSections_${secIndex}__SigleSection"
+                                        name="ListSections[${secIndex}].SigleSection" />
+
+                                 <label class="form-label mt-2" for="ListSections_${secIndex}__AdresseSection">Adresse</label>
+                                 <input class="form-control"
+                                        id="ListSections_${secIndex}__AdresseSection"
+                                        name="ListSections[${secIndex}].AdresseSection" />
+                               </div>`;
                     container.insertAdjacentHTML("beforeend", template);
                     secIndex++;
                 });
         })();
     </script>
 }
-

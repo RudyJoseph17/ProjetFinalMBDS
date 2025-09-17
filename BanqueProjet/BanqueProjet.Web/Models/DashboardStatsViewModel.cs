@@ -10,8 +10,8 @@ namespace BanqueProjet.Web.Models
 
         // Champs pour futur usage (validés)
         public int ProjetsValides { get; set; } = 0;
-        public List<string> NomsProjetsValides { get; set; } = new();
-        public IEnumerable<ProjetsBPDto> Projets { get; set; } = new List<ProjetsBPDto>();
+        public List<string> Ministeres { get; set; }
+        public List<int> Counts { get; set; }
 
         // (Optionnel) autres champs à ajouter plus tard
     }

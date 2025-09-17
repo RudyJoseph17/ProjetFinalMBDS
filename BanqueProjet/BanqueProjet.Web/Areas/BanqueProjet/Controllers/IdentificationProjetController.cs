@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -10,75 +11,35 @@ using Shared.Domain.Helpers;
 using BanqueProjet.Web.Models;
 using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Shared.Infrastructure.Persistence;
-using Shared.Domain.ApplicationUsers;
 using Humanizer;
 using Microsoft.AspNetCore.Identity;
-using BanqueProjet.Infrastructure.Persistence;
-using Shared.Domain.Interface;
 using Shared.Domain.Dtos;
-using AutoMapper;
-////using InvestissementsPublics.Starter.ApplicationUsers;
+using Shared.Domain.Interface;
 
 namespace BanqueProjet.Web.Areas.BanqueProjet.Controllers
 {
     [Area("BanqueProjet")]
     public class IdentificationProjetController : Controller
     {
-        private readonly IIdentificationProjetService _projetService;
-        private readonly IActiviteBPService _activiteBPService;
-        private readonly IActivitesAnnuellesService _activitesAnnuellesService;
-        private readonly IBailleursDeFondService _bailleursDeFondsService;
-        private readonly IDdpCadreLogiqueService _cadreLogiqueService;
+        private readonly IProjetsBPService _projetService;
+        private readonly IDdpCadreLogiqueService _cadreService;
         private readonly IAspectsJuridiquesService _aspectsJuridiquesService;
-        private readonly IPartiesPrenantesService _partiesPrenantesService;
-        private readonly ILocalisationGeographiqueProjService _localisationGeographiqueService;
-        private readonly ICoutAnnuelDuProjetService _coutannuelProjetService;
-        private readonly IEffetsDuProjetService _effetsProjetService;
-        private readonly IImpactsDuProjetService _impactsProjetsService;
-        private readonly IIndicateursDeResultatService _indicateursResultatsService;
-        private readonly IInformationsFinancieresService _informationsFinancieresService;
-        private readonly IDefinitionLivrablesDuProjetService _livrablesProjetService;
-        private readonly IObjectifsSpecifiquesService _objectifsSpecifiquesService;
+        private readonly ILocalisationGeographiqueProjService _LocalisationGeographiqueService;
+        //private readonly INotificationService _notif;
         private readonly ILogger<IdentificationProjetController> _logger;
-        private readonly IMapper _mapper;
         private const int TotalSteps = 6;
 
         public IdentificationProjetController(
-            IIdentificationProjetService ProjetService,
-            IActiviteBPService ActiviteBPService,
-            IActivitesAnnuellesService ActivitesAnnuellesService,
-            IBailleursDeFondService BailleursDeFondsService,
-            IDdpCadreLogiqueService CadreLogiqueService,
-            IAspectsJuridiquesService AspectsJuridiquesService,
-            IPartiesPrenantesService PartiesPrenantesService,
+            IProjetsBPService projetService,
+            IDdpCadreLogiqueService cadreService,
+            IAspectsJuridiquesService aspectsJuridiquesService,
             ILocalisationGeographiqueProjService LocalisationGeographiqueService,
-            ICoutAnnuelDuProjetService CoutannuelProjetService,
-            IEffetsDuProjetService EffetsProjetService,
-            IImpactsDuProjetService ImpactsProjetsService,
-            IIndicateursDeResultatService IndicateursResultatsService,
-            IInformationsFinancieresService InformationsFInancieresService,
-            IDefinitionLivrablesDuProjetService LivrablesProjetService,
-            IObjectifsSpecifiquesService ObjectifsSpecifiquesService,
-            IMapper mapper,
             ILogger<IdentificationProjetController> logger)
         {
-            _projetService = ProjetService;
-            _activiteBPService = ActiviteBPService;
-            _activitesAnnuellesService = ActivitesAnnuellesService;
-            _bailleursDeFondsService = BailleursDeFondsService;
-            _cadreLogiqueService = CadreLogiqueService;
-            _aspectsJuridiquesService = AspectsJuridiquesService;
-            _partiesPrenantesService = PartiesPrenantesService;
-            _localisationGeographiqueService = LocalisationGeographiqueService;
-            _coutannuelProjetService = CoutannuelProjetService;
-            _effetsProjetService = EffetsProjetService;
-            _impactsProjetsService = ImpactsProjetsService;
-            _indicateursResultatsService = IndicateursResultatsService;
-            _informationsFinancieresService = InformationsFInancieresService;
-            _livrablesProjetService = LivrablesProjetService;
-            _objectifsSpecifiquesService = ObjectifsSpecifiquesService;
-            _mapper = mapper;
+            _projetService = projetService;
+            _cadreService = cadreService;
+            _aspectsJuridiquesService = aspectsJuridiquesService;
+            _LocalisationGeographiqueService = LocalisationGeographiqueService;
             _logger = logger;
         }
 
@@ -90,147 +51,188 @@ namespace BanqueProjet.Web.Areas.BanqueProjet.Controllers
             {
                 var serialized = TempData.Peek("WizardModel").ToString();
                 model = JsonConvert.DeserializeObject<DdpViewModel>(serialized);
+
+                // s'assurer que l'ID existe même en cas de reprise de session
+                EnsureProjectId(model);
             }
             else
             {
-                var newId = IdGenerator.GenererIdPour(nameof(IdentificationProjetDto.IdIdentificationProjet));
+                var newId = IdGenerator.GenererIdPour(nameof(ProjetsBPDto.IdIdentificationProjet));
                 model = new DdpViewModel
                 {
                     Projets = new ProjetsBPDto { IdIdentificationProjet = newId },
-                    ActiviteBP = new ActiviteBPDto { IdIdentificationProjet = newId },
-                    ActiviteAnuelle = new ActivitesAnnuellesDto { IdIdentificationProjet = newId },
-                    BailleursDeFonds = new BailleursDeFondsDto { IdIdentificationProjet = newId },
                     CadreLogique = new DdpCadreLogiqueDto { IdIdentificationProjet = newId },
-                    AspectsJuridiques = new AspectsJuridiquesDto { IdIdentificationProjet = newId } ,
-                    PartiesPrenantesProjets = new PartiesPrenantesDto { IdIdentificationProjet = newId },
-                    LocalisationGeographique = new LocalisationGeographiqueProjDto { IdIdentificationProjet = newId },
-                    CoutAnnuelProjet = new CoutAnnuelDuProjetDto { IdIdentificationProjet = newId },
-                    EffetsProjets = new EffetsDuProjetDto { IdIdentificationProjet = newId },
-                    ImpactsDuProjets = new ImpactsDuProjetDto { IdIdentificationProjet = newId },
-                    IndicateursResultats = new IndicateursDeResultatDto { IdIdentificationProjet = newId },
-                    DefinitionLivrables = new DefinitionLivrablesDuProjetDto { IdIdentificationProjet = newId },
-                    ObjectifsSpecifiques = new ObjectifsSpecifiquesDto { IdIdentificationProjet = newId }
+                    ActiviteBP = new List<ActiviteBPDto>
+                    {
+                    new ActiviteBPDto { IdIdentificationProjet = newId } 
+                    },
+                    AspectsJuridiques = new List<AspectsJuridiquesDto>
+                    {
+                    new AspectsJuridiquesDto { IdIdentificationProjet = newId } 
+                    },
+                    LocalisationGeographique = new LocalisationGeographiqueProjDto { IdIdentificationProjet = newId }
                 };
             }
-
+            TempData.Put("WizardModel", model);
             ViewData["Step"] = step;
             return View($"WizardStep{step}", model);
+
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Wizard(DdpViewModel model, int step, string action)
         {
-            // Serialize and store model in TempData
-            var serialized = JsonConvert.SerializeObject(model);
-            TempData["WizardModel"] = serialized;
+            // 0) ID garanti sur current
+            EnsureProjectId(model);
 
-            // Navigate steps
+            // 1) Chargement de l’état complet précédent
+            var stored = TempData.Get<DdpViewModel>("WizardModel")
+                         ?? new DdpViewModel();
+            EnsureProjectId(stored);
+
+            // 2) Fusion des données de l’étape courante
+            MergeStepData(stored, model, step);
+
+            // 3) Propagation de l’ID sur les listes enfants
+            PropagateAllLists(stored);
+
+            // 4) Sauvegarde de l’état complet fusionné
+            TempData.Put("WizardModel", stored);
+
+            // 5) Navigation
             if (action == "Prev" && step > 1)
-            {
-                step--;
-                return RedirectToAction(nameof(Wizard), new { step });
-            }
-            else if (action == "Next" && step < TotalSteps)
-            {
-                step++;
-                return RedirectToAction(nameof(Wizard), new { step });
-            }
-            else if (action == "Finish")
-            {
-                // Propagate IDs to nested lists
-                void PropagateId<T>(List<T> list) where T : class
-                {
-                    foreach (var item in list)
-                    {
-                        var prop = item.GetType().GetProperty(nameof(IdentificationProjetDto.IdIdentificationProjet));
-                        if (prop != null)
-                            prop.SetValue(item, model.Projets.IdIdentificationProjet);
-                    }
-                }
+                return RedirectToAction(nameof(Wizard), new { step = step - 1 });
 
-                PropagateId(model.Projets.Activites);
-                PropagateId(model.Projets.AspectsJuridiques);
-                PropagateId(model.Projets.PartiesPrenantes);
-                PropagateId(model.Projets.IndicateursDeResultats);
-                PropagateId(model.Projets.LivrablesProjets);
-                PropagateId(model.Projets.EffetsProjets);
-                PropagateId(model.Projets.ObjectifsSpecifiques);
-                PropagateId(model.Projets.ImpactsDesProjets);
-                PropagateId(model.Projets.BailleursDeFonds);
-                PropagateId(model.Projets.ActivitesAnuelles);
-                PropagateId(model.Projets.CoutAnnuelsProjets);
-              
+            if (action == "Next" && step < TotalSteps)
+                return RedirectToAction(nameof(Wizard), new { step = step + 1 });
 
-                // 1. Création du projet
-                await _projetService.AjouterAsync(model.Projets);
-                await _activiteBPService.AjouterAsync(model.ActiviteBP);
-                await _activitesAnnuellesService.AjouterAsync(model.ActiviteAnuelle);
-                await _bailleursDeFondsService.AjouterAsync(model.BailleursDeFonds);
-                await _cadreLogiqueService.AjouterAsync(model.CadreLogique);
-                await _aspectsJuridiquesService.AjouterAsync(model.AspectsJuridiques);
-                await _partiesPrenantesService.AjouterAsync(model.PartiesPrenantesProjets);
-                await _localisationGeographiqueService.AjouterAsync(model.LocalisationGeographique);
-                await _coutannuelProjetService.AjouterAsync(model.CoutAnnuelProjet);
-                await _effetsProjetService.AjouterAsync(model.EffetsProjets);
-                await _impactsProjetsService.AjouterAsync(model.ImpactsDuProjets);
-                await _indicateursResultatsService.AjouterAsync(model.IndicateursResultats);
-                await _informationsFinancieresService.AjouterAsync(model.InformationsFinancieresBP);
-                await _livrablesProjetService.AjouterAsync(model.DefinitionLivrables);
-                await _objectifsSpecifiquesService.AjouterAsync(model.ObjectifsSpecifiques);
+            // 6) Finish
+            if (action == "Finish")
+            {
+                // Diagnostics
+                _logger.LogInformation("=== Création projet {Id} ===", stored.Projets.IdIdentificationProjet);
+                _logger.LogInformation("NomProjet: {Nom}", stored.Projets.NomProjet);
+                _logger.LogInformation("JSON envoyé aux procédures:\n{Json}",
+                    JsonConvert.SerializeObject(stored, Formatting.Indented));
 
-                //await _SuiviControleService.AjouterAsync(model.SuiviControle);
+                // Envoi final
+                await _projetService.AjouterAsync(stored.Projets);
+                await _cadreService.AjouterAsync(stored.CadreLogique);
+                foreach (var dto in stored.AspectsJuridiques)
+                    await _aspectsJuridiquesService.AjouterAsync(dto);
+                await _LocalisationGeographiqueService.AjouterAsync(stored.LocalisationGeographique);
 
                 TempData.Remove("WizardModel");
                 TempData["SuccessMessage"] = "Projet ajouté avec succès !";
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.ActiviteList = new SelectList(
-        model.Projets.Activites,
-        nameof(ActiviteBPDto.IdActivites),
-        nameof(ActiviteBPDto.NomActivite),
-        model.InformationsFinancieresBP.IdActivites
-    );
-
-            // Fallback: redisplay current step
+            // Fallback: réaffiche la même étape
             return RedirectToAction(nameof(Wizard), new { step });
         }
+
+        // -------------------------------------------------------
+        // En-dehors de l’action : helper de fusion
+        // -------------------------------------------------------
+
+        private void MergeStepData(DdpViewModel stored, DdpViewModel current, int step)
+        {
+            switch (step)
+            {
+                case 1:
+                    stored.Projets.NomProjet = current.Projets.NomProjet;
+                    stored.Projets.Ministere = current.Projets.Ministere;
+                    stored.Projets.Section = current.Projets.Section;
+                    stored.Projets.CodePip = current.Projets.CodePip;
+                    stored.Projets.CodeBailleur = current.Projets.CodeBailleur;
+                    stored.Projets.NomDirecteurDeProjet = current.Projets.NomDirecteurDeProjet;
+                    stored.Projets.TelephoneDirecteurDeProjet = current.Projets.TelephoneDirecteurDeProjet;
+                    stored.Projets.CourrielDirecteurDeProjet = current.Projets.CourrielDirecteurDeProjet;
+                    stored.Projets.DateInscription = current.Projets.DateInscription;
+                    stored.Projets.DateMiseAJour = current.Projets.DateMiseAJour;
+                    break;
+
+                case 2:
+                    stored.Projets.Programme = current.Projets.Programme;
+                    stored.Projets.SousProgramme = current.Projets.SousProgramme;
+                    stored.Projets.SecteurDActivites = current.Projets.SecteurDActivites;
+                    stored.Projets.SousSecteurDActivites = current.Projets.SousSecteurDActivites;
+                    stored.Projets.TypeDeProjet = current.Projets.TypeDeProjet;
+                    stored.Projets.EchelonTerritorial = current.Projets.EchelonTerritorial;
+
+                    stored.LocalisationGeographique.Departement = current.LocalisationGeographique.Departement;
+                    stored.LocalisationGeographique.Arrondissement = current.LocalisationGeographique.Arrondissement;
+                    stored.LocalisationGeographique.Commune = current.LocalisationGeographique.Commune;
+                    stored.LocalisationGeographique.SectionCommunale = current.LocalisationGeographique.SectionCommunale;
+                    break;
+
+                    // TODO : cases 3 à 6...
+            }
+        }
+
+        // -------------------------------------------------------
+        // En-dehors de l’action : helper de propagation d’ID
+        // -------------------------------------------------------
+
+        private void PropagateAllLists(DdpViewModel model)
+        {
+            var id = model.Projets.IdIdentificationProjet;
+            PropagateIdToList(model.Projets.Activites, id);
+            PropagateIdToList(model.Projets.AspectsJuridiques, id);
+            PropagateIdToList(model.Projets.PartiesPrenantes, id);
+            PropagateIdToList(model.Projets.IndicateursDeResultats, id);
+            PropagateIdToList(model.Projets.LivrablesProjets, id);
+            PropagateIdToList(model.Projets.EffetsProjets, id);
+            PropagateIdToList(model.Projets.ObjectifsSpecifiques, id);
+            PropagateIdToList(model.Projets.ImpactsDesProjets, id);
+            PropagateIdToList(model.Projets.BailleursDeFonds, id);
+            PropagateIdToList(model.Projets.ActivitesAnnuelles, id);
+            PropagateIdToList(model.Projets.CoutAnnuelDuProjet, id);
+        }
+
+        private void PropagateIdToList<T>(IEnumerable<T> list, string id) where T : class
+        {
+            if (list == null || string.IsNullOrWhiteSpace(id)) return;
+            foreach (var item in list)
+            {
+                var prop = item.GetType().GetProperty(nameof(IdentificationProjetDto.IdIdentificationProjet));
+                if (prop != null && prop.CanWrite)
+                    prop.SetValue(item, id);
+            }
+        }
+
 
         [HttpGet]
         public async Task<IActionResult> Index(string searchString, string letter)
         {
+            // Conserver les filtres pour la vue
             ViewData["CurrentFilter"] = searchString;
             ViewData["CurrentLetter"] = letter;
 
-            var identList = await _projetService.ObtenirTousAsync()
-                             ?? new List<IdentificationProjetDto>();
+            // Récupérer tous les projets (DTO)
+            var projets = await _projetService.ObtenirTousAsync();
 
-            _logger.LogInformation("identList count = {count}", identList?.Count ?? -1);
-            _logger.LogInformation("_mapper is null? {isNull}", _mapper == null);
-
-            // mapper vers ProjetsBPDto
-            var projets = _mapper.Map<List<ProjetsBPDto>>(identList);
-
+            // Filtrer par searchString si non vide
             if (!string.IsNullOrWhiteSpace(searchString))
             {
                 projets = projets
-                    .Where(p => p.NomProjet != null &&
-                                p.NomProjet.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                    .Where(p => p.NomProjet != null
+                             && p.NomProjet.Contains(searchString, StringComparison.OrdinalIgnoreCase))
                     .ToList();
             }
 
+            // Filtrer par lettre si non vide
             if (!string.IsNullOrWhiteSpace(letter))
             {
                 projets = projets
-                    .Where(p => !string.IsNullOrEmpty(p.NomProjet) &&
-                                p.NomProjet.StartsWith(letter, StringComparison.OrdinalIgnoreCase))
+                    .Where(p => !string.IsNullOrEmpty(p.NomProjet)
+                             && p.NomProjet.StartsWith(letter, StringComparison.OrdinalIgnoreCase))
                     .ToList();
             }
 
             return View(projets);
         }
-
 
         [HttpGet]
         public async Task<IActionResult> Details(string id)
@@ -252,7 +254,7 @@ namespace BanqueProjet.Web.Areas.BanqueProjet.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(IdentificationProjetDto model)
+        public async Task<IActionResult> Edit(ProjetsBPDto model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -289,22 +291,75 @@ namespace BanqueProjet.Web.Areas.BanqueProjet.Controllers
             return Ok(new { status = "saved", section = sectionName });
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> IndexMPCE()
-        //{
-        //    //1.Récupère tous les projets DTO
-        //    var tousLesProjets = await _projetService.ObtenirTousAsync();
-        //    //(ou GetAllDtosAsync selon votre service)
+        [HttpGet]
+        public async Task<IActionResult> IndexMPCE()
+        {
+            var tousLesProjets = await _projetService.ObtenirTousAsync();
 
-        //     //2.Filtre ceux dont le Ministère est "MPCE"
-        //    var projetsMpce = tousLesProjets
-        //        .Where(p =>
-        //            string.Equals(p.Ministere, "MPCE", StringComparison.OrdinalIgnoreCase))
-        //        .ToList();
+            var projetsMpce = tousLesProjets
+                .Where(p =>
+                    string.Equals(p.Ministere, "MPCE", StringComparison.OrdinalIgnoreCase))
+                .ToList();
 
-        //    //3.Retourne la vue IndexMPCE.cshtml
-        //    return View("IndexMPCE", projetsMpce);
-        //}
+            return View("IndexMPCE", projetsMpce);
+        }
+
+        // -------------------------
+        // Méthodes utilitaires privées
+        // -------------------------
+
+        /// <summary>
+        /// Garantit que le modèle possède un IdIdentificationProjet et le propage aux DTOs enfants.
+        /// </summary>
+        private void EnsureProjectId(DdpViewModel model)
+        {
+            if (model == null) return;
+
+            // Créer les sous-objets si nécessaire
+            if (model.Projets == null) model.Projets = new ProjetsBPDto();
+            if (model.CadreLogique == null) model.CadreLogique = new DdpCadreLogiqueDto();
+            if (model.AspectsJuridiques == null) model.AspectsJuridiques = new List<AspectsJuridiquesDto>();
+            if (model.LocalisationGeographique == null) model.LocalisationGeographique = new LocalisationGeographiqueProjDto();
+
+            // Générer l'ID si absent
+            if (string.IsNullOrWhiteSpace(model.Projets.IdIdentificationProjet))
+            {
+                var newId = IdGenerator.GenererIdPour(nameof(ProjetsBPDto.IdIdentificationProjet));
+                model.Projets.IdIdentificationProjet = newId;
+
+                // Propager l'ID aux autres DTOs simples
+                model.CadreLogique.IdIdentificationProjet = newId;
+                model.AspectsJuridiques.Add(
+                    new AspectsJuridiquesDto {IdIdentificationProjet = model.Projets.IdIdentificationProjet });
+                model.LocalisationGeographique.IdIdentificationProjet = newId;
+            }
+            else
+            {
+                // si ID existant, s'assurer que les DTOs simples ont aussi la valeur
+                model.CadreLogique.IdIdentificationProjet = model.CadreLogique.IdIdentificationProjet ?? model.Projets.IdIdentificationProjet;
+                model.AspectsJuridiques.Add(
+                    new AspectsJuridiquesDto { IdIdentificationProjet = model.Projets.IdIdentificationProjet });
+
+                model.LocalisationGeographique.IdIdentificationProjet = model.LocalisationGeographique.IdIdentificationProjet ?? model.Projets.IdIdentificationProjet;
+            }
+
+            // Propager aux listes contenues dans Projets (si non null)
+            PropagateIdToList(model.Projets?.Activites, model.Projets.IdIdentificationProjet);
+            PropagateIdToList(model.Projets?.AspectsJuridiques, model.Projets.IdIdentificationProjet);
+            PropagateIdToList(model.Projets?.PartiesPrenantes, model.Projets.IdIdentificationProjet);
+            PropagateIdToList(model.Projets?.IndicateursDeResultats, model.Projets.IdIdentificationProjet);
+            PropagateIdToList(model.Projets?.LivrablesProjets, model.Projets.IdIdentificationProjet);
+            PropagateIdToList(model.Projets?.EffetsProjets, model.Projets.IdIdentificationProjet);
+            PropagateIdToList(model.Projets?.ObjectifsSpecifiques, model.Projets.IdIdentificationProjet);
+            PropagateIdToList(model.Projets?.ImpactsDesProjets, model.Projets.IdIdentificationProjet);
+            PropagateIdToList(model.Projets?.BailleursDeFonds, model.Projets.IdIdentificationProjet);
+            PropagateIdToList(model.Projets?.ActivitesAnnuelles, model.Projets.IdIdentificationProjet);
+            PropagateIdToList(model.Projets?.CoutAnnuelDuProjet, model.Projets.IdIdentificationProjet);
+        }
+
+        /// <summary>
+        /// Propage l'IdIdentificationProjet sur chaque item d'une collection si la propriété existe.
+        /// </summary>
+
     }
 }
-

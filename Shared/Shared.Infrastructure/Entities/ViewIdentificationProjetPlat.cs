@@ -18,6 +18,7 @@ public partial class ViewIdentificationProjetPlat
     [StringLength(100)]
     [Unicode(false)]
     public string? NomProjet { get; set; }
+    
 
     [Column("TYPE_DE_PROJET")]
     [StringLength(20)]

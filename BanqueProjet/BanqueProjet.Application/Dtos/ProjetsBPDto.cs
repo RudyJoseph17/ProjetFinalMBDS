@@ -8,12 +8,17 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Shared.Domain.Dtos;
+using BanqueProjet.Application.Enums;
 
 namespace BanqueProjet.Application.Dtos
 {
     public class ProjetsBPDto : IdentificationProjetDto
     {
-      
+        [JsonProperty("ID_IDENTIFICATION_PROJET")]
+        public string IdIdentificationProjet { get; set; }
+
+        [JsonProperty("NOM_PROJET")]
+        public string? NomProjet { get; set; }
         public string? Ministere { get; set; }
         public string? Section { get; set; }
         public string CodePip { get; set; }
@@ -24,9 +29,17 @@ namespace BanqueProjet.Application.Dtos
         public string PopulationVisee { get; set; }
         public string? Programme { get; set; }
         public string? SousProgramme { get; set; }
+
+        [JsonProperty("DATE_INSCRIPTION")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime? DateInscription { get; set; }
+
+        [JsonProperty("DATE_MISE_A_JOUR")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime? DateMiseAJour { get; set; }
-        public string? TypeDeProjet { get; set; }
+        public TypeProjet? TypeDeProjet { get; set; }
         public string? SecteurDActivites { get; set; }
         public string? SousSecteurDActivites { get; set; }
         public string? NomDirecteurDeProjet { get; set; }
@@ -35,21 +48,25 @@ namespace BanqueProjet.Application.Dtos
         public string? ObjectifGeneralProjet { get; set; }
         public string? DureeProjet { get; set; }
         public decimal? CoutTotalProjet { get; set; }
-        public string? EchelonTerritorial { get; set; }
+        public EchelonTerritorial? EchelonTerritorial { get; set; }
 
 
         // Collections simplifiées ou DTOs correspondants
         public List<ActiviteBPDto> Activites { get; set; } = new ();
         public List<AspectsJuridiquesDto> AspectsJuridiques { get; set; } = new();
-        public List<PartiesPrenantesDto> PartiesPrenantes { get; set; } = new();
+
+
+
+        [JsonProperty("Listpartprenantes")]
+         public List<PartiesPrenantesDto> PartiesPrenantes { get; set; } = new();
         public List<IndicateursDeResultatDto> IndicateursDeResultats { get; set; } = new();
         public List<DefinitionLivrablesDuProjetDto> LivrablesProjets { get; set; } = new();
         public List<EffetsDuProjetDto> EffetsProjets { get; set; } = new();
         public List<ObjectifsSpecifiquesDto> ObjectifsSpecifiques { get; set; } = new();
         public List<ImpactsDuProjetDto> ImpactsDesProjets { get; set; } = new();
         public List<BailleursDeFondsDto> BailleursDeFonds { get; set; } = new();
-        public List<ActivitesAnnuellesDto> ActivitesAnuelles { get; set; } = new();
-        public List<CoutAnnuelDuProjetDto> CoutAnnuelsProjets { get; set; } = new();
+        public List<ActivitesAnnuellesDto> ActivitesAnnuelles { get; set; } = new();
+        public List<CoutAnnuelDuProjetDto> CoutAnnuelDuProjet { get; set; } = new();
 
 
 

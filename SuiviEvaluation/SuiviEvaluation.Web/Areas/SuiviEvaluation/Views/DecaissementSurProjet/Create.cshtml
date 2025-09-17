@@ -1,0 +1,13 @@
+﻿@model SuiviEvaluation.Application.Dtos.DecaissementSurProjetDto
+@{
+    ViewData["Title"] = "Créer décaissement";
+}
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+    <div class="form-group">
+        <label asp-for="IdIdentificationProjet"></label>
+        <input asp-for="IdIdentificationProjet" class="form-control" />
+        </
+</form>

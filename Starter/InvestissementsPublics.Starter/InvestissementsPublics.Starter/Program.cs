@@ -18,9 +18,12 @@ using InvestissementsPublics.Starter.Data;
 using InvestissementsPublics.Starter.ApplicationUsers;
 using Shared.Infrastructure.Mapping;
 using SuiviEvaluation.Application.Interfaces;
-using Programmation.Application.Interface;
 using SuiviEvaluation.Infrastructure.Persistence;
-using Programmation.Infrastructure.Persistence;       // si SharedMappingProfile est ici
+using InvestissementsPublics.Starter.Autorisations;
+using Microsoft.AspNetCore.Authorization;
+using Programmation.Application.Interface;
+using Programmation.Infrastructure.Persistence;
+// si SharedMappingProfile est ici
 // ajoute d'autres usings de profiles si besoin
 
 var builder = WebApplication.CreateBuilder(args);
@@ -48,6 +51,7 @@ builder.Services
     .AddRazorRuntimeCompilation();
 
 builder.Services.AddRazorPages();
+builder.Services.AddMemoryCache();
 
 // DbContexts (un seul enregistrement par DbContext)
 builder.Services.AddDbContext<ApplicationDbContext>(opts =>
@@ -69,6 +73,13 @@ builder.Services.AddDbContext<SuiviEvaluation.Infrastructure.Data.EvaluationDbCo
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Account/Login";               // ou "/Identity/Account/Login"
+    options.AccessDeniedPath = "/Account/AccessDenied"; // change si tu veux "/Identity/Account/AccessDenied"
+});
+
 
 // AutoMapper : enregistrement UNIQUE, avant d'enregistrer les services qui utilisent IMapper.
 // On indique ici les types marquant les assemblies contenant les Profiles (plus fiable que AppDomain scan si assemblies sont séparées).
@@ -96,15 +107,24 @@ builder.Services.AddScoped<IIndicateursDeResultatService, IndicateursDeResultatS
 builder.Services.AddScoped<IInformationsFinancieresService, InformationsFinancieresService>();
 builder.Services.AddScoped<IDefinitionLivrablesDuProjetService, DefinitionLivrablesDuProjetService>();
 builder.Services.AddScoped<IObjectifsSpecifiquesService, ObjectifsSpecifiquesService>();
-builder.Services.AddScoped<IQuantiteLivreParAnneeService, QuantiteLivreParAnneeService>();
-builder.Services.AddScoped<IQuantiteALivrerParAnneeService, QuantiteALivrerParAnneeService>();
-builder.Services.AddScoped<IPrevisionInformationFinanciereService, PrevisionInformationFinanciereService>();
-builder.Services.AddScoped<ISuiviInformationFinanciereService, SuiviInformationFinanciereService>();
+builder.Services.AddScoped<ILivrablesRealisesProjetService, LivrablesRealisesProjetService>();
+//builder.Services.AddScoped<ISuiviInformationFinanciereService, SuiviInformationFinanciereService>();
+builder.Services.AddScoped<IProgrammationProjetService, ProgrammationProjetService>();
+builder.Services.AddScoped<IInformationsFinancieresProgrammeesProjetService, InformationsFinancieresProgrammeesProjetService>();
+builder.Services.AddScoped<ILivrablesProjetService, LivrablesProjetService>();
 builder.Services.AddScoped<IInstitutionSectorielleService, InstitutionSectorielleService>();
 builder.Services.AddScoped<IDepartementService, DepartementService>();
 builder.Services.AddScoped<IProgrammeService, ProgrammeService>();
 builder.Services.AddScoped<ISecteurActiviteService, SecteurActiviteService>();
 builder.Services.AddScoped<IArticleNomenclatureBudgetaireService, ArticleNomenclatureBudgetaireService>();
+// service qui lit role->privileges
+builder.Services.AddScoped<IPrivilegeService, PrivilegeService>();
+// handler + policy provider
+builder.Services.AddScoped<IAuthorizationHandler, PrivilegeHandler>();
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, PrivilegePolicyProvider>();
+builder.Services.AddScoped<IDepenseReelleSurProjetService, DepenseReelleSurProjetService>();
+builder.Services.AddScoped<IDecaissementSurProjetService, DecaissementSurProjetService>();
+builder.Services.AddScoped<IAutorisationSurProjetService, AutorisationSurProjetService>();
 
 
 

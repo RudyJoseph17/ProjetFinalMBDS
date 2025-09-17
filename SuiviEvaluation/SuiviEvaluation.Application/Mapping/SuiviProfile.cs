@@ -13,11 +13,20 @@ namespace SuiviEvaluation.Application.Mapping
     {
         public SuiviProfile()
         {
-            CreateMap<InformationsFinancieresProjetDto, SuiviInformationFinanciereDto>()
+            CreateMap<InformationsFinancieresProjetDto, AutorisationSurProjetDto>()
                 .ReverseMap();
 
-            CreateMap<LivrablesDuProjetDto, QuantiteLivreeParAnneeDto>()
+            CreateMap<InformationsFinancieresProjetDto, DecaissementSurProjetDto>()
                 .ReverseMap();
+
+            CreateMap<InformationsFinancieresProjetDto, DepenseReelleSurProjetDto>()
+                .ReverseMap();
+
+            CreateMap<LivrablesDuProjetDto, LivrablesRealisesProjetDto>()
+                .ReverseMap();
+
+
+
         }
     }
 }

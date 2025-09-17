@@ -22,5 +22,12 @@ namespace Shared.Domain.Dtos
         public decimal? MontantAutorisation { get; set; }
         public decimal? MontantDecaissement { get; set; }
         public decimal? MontantDepense { get; set; }
+        public string? Article { get; set; }
+        public string? Alinea { get; set; }
+        public string? MoisPrevision { get; set; }
+        public string? MoisAutorisation { get; set; }
+        public string? MoisDepense { get; set; }
+        public string? MoisDecaissement { get; set; }
+    
     }
 }

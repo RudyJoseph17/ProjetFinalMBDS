@@ -1,0 +1,45 @@
+﻿@model IEnumerable<SuiviEvaluation.Application.Dtos.DecaissementSurProjetDto>
+@{
+    ViewData["Title"] = "Décaissements sur projet";
+}
+<h1>@ViewData["Title"]</h1>
+
+<p>
+    <a asp-action="Create">Créer un nouveau</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Projet</th>
+            <th>Activité</th>
+            <th>Exercice début</th>
+            <th>Exercice fin</th>
+            <th>Article</th>
+            <th>Mois</th>
+            <th>Montant</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.IdIdentificationProjet</td>
+                <td>@item.IdActivites</td>
+                <td>@item.ExerciceFiscalDebut</td>
+                <td>@item.ExerciceFiscalFin</td>
+                <td>@item.Article</td>
+                <td>@item.MoisDecaissement</td>
+                <td>@item.MontantDecaissement</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.IdActivites">Détails</a> |
+                    <a asp-action="Edit" asp-route-id="@item.IdActivites">Éditer</a> |
+                    <form asp-action="Delete" asp-route-id="@item.IdActivites" method="post" style="display:inline">
+                        <button type="submit" onclick="return confirm('Supprimer ?')">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

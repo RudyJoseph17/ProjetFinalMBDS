@@ -1,0 +1,49 @@
+﻿@model SuiviEvaluation.Application.Dtos.AutorisationSurProjetDto
+@{
+    ViewData["Title"] = "Éditer autorisation";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
+    <input asp-for="IdActivites" type="hidden" />
+
+    <div class="form-group">
+        <label asp-for="IdIdentificationProjet"></label>
+        <input asp-for="IdIdentificationProjet" class="form-control" readonly />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ExerciceFiscalDebut"></label>
+        <input asp-for="ExerciceFiscalDebut" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ExerciceFiscalFin"></label>
+        <input asp-for="ExerciceFiscalFin" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Article"></label>
+        <input asp-for="Article" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Alinea"></label>
+        <input asp-for="Alinea" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="MoisAutorisation"></label>
+        <input asp-for="MoisAutorisation" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="MontantAutorisation"></label>
+        <input asp-for="MontantAutorisation" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Enregistrer</button>
+    <a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
+</form>

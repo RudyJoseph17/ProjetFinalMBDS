@@ -1,0 +1,40 @@
+﻿@model SuiviEvaluation.Application.Dtos.DepenseReelleSurProjetDto
+@{
+    ViewData["Title"] = "Confirmer suppression";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<h3>Voulez-vous vraiment supprimer cette dépense réelle ?</h3>
+
+<dl class="row">
+    <dt class="col-sm-3">Projet</dt>
+    <dd class="col-sm-9">@Model.IdIdentificationProjet</dd>
+
+    <dt class="col-sm-3">Activité</dt>
+    <dd class="col-sm-9">@Model.IdActivites</dd>
+
+    <dt class="col-sm-3">Exercice début</dt>
+    <dd class="col-sm-9">@Model.ExerciceFiscalDebut</dd>
+
+    <dt class="col-sm-3">Exercice fin</dt>
+    <dd class="col-sm-9">@Model.ExerciceFiscalFin</dd>
+
+    <dt class="col-sm-3">Article</dt>
+    <dd class="col-sm-9">@Model.Article</dd>
+
+    <dt class="col-sm-3">Alinea</dt>
+    <dd class="col-sm-9">@Model.Alinea</dd>
+
+    <dt class="col-sm-3">Mois</dt>
+    <dd class="col-sm-9">@Model.MoisDepense</dd>
+
+    <dt class="col-sm-3">Montant</dt>
+    <dd class="col-sm-9">@Model.MontantDepense</dd>
+</dl>
+
+<form asp-action="Delete" asp-route-id="@Model.IdActivites" method="post">
+    @Html.AntiForgeryToken()
+    <button type="submit" class="btn btn-danger">Oui, supprimer</button>
+    <a asp-action="Index" class="btn btn-secondary">Annuler</a>
+</form>

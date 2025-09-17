@@ -19,6 +19,10 @@ namespace BanqueProjet.Infrastructure.Mapping
             CreateMap<ActiviteDto, ActiviteBPDto>()
                 .ReverseMap();
 
+            CreateMap<InformationsFinancieresProjetDto, InformationsFinancieresBPDto>()
+                .ReverseMap();
+
+
         }
     }
 }

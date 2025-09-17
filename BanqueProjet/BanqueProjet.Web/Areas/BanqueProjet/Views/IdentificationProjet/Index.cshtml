@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BanqueProjet.Application.Dtos.ProjetsBPDto >
+﻿@model IEnumerable<BanqueProjet.Application.Dtos.ProjetsBPDto>
 @{
     ViewData["Title"] = "Liste des Projets";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -73,25 +73,24 @@
     </thead>
     <tbody>
         @foreach (var projet in Model ?? Enumerable.Empty<BanqueProjet.Application.Dtos.ProjetsBPDto>())
-
         {
             <tr>
                 <td>
                     <a asp-action="Details"
-                       asp-route-id="@projet?.IdIdentificationProjet">
-                        @(projet?.NomProjet ?? "--")
+                       asp-route-id="@projet.IdIdentificationProjet">
+                        @projet.NomProjet
                     </a>
                 </td>
-                <td>@(projet?.Ministere ?? "--")</td>
-                <td>@(projet?.Section ?? "--")</td>
+                <td>@projet.Ministere</td>
+                <td>@projet.Section</td>
                 <td>
                     <a asp-action="Edit"
-                       asp-route-id="@projet?.IdIdentificationProjet"
+                       asp-route-id="@projet.IdIdentificationProjet"
                        class="btn btn-warning btn-sm">
                         Modifier
                     </a>
                     <a asp-action="Delete"
-                       asp-route-id="@projet?.IdIdentificationProjet"
+                       asp-route-id="@projet.IdIdentificationProjet"
                        class="btn btn-danger btn-sm">
                         Supprimer
                     </a>

@@ -8,10 +8,23 @@ using Programmation.Infrastructure;
 using DotNetEnv;                // <— import pour DotNetEnv
 
 
-Env.Load();
 
-// 2.?Ou, si vous avez choisi le nom “PROJECT_CONNECTION” dans .env :
-var connectionString = Environment.GetEnvironmentVariable("ProjetConnection");
+// Charger les variables d'environnement depuis le fichier .env
+DotNetEnv.Env.Load();
+
+// 2) Lire les variables
+var user = Environment.GetEnvironmentVariable("ORACLE_DB_USER");
+var password = Environment.GetEnvironmentVariable("ORACLE_DB_PASSWORD");
+var host = Environment.GetEnvironmentVariable("ORACLE_DB_HOST");
+var port = Environment.GetEnvironmentVariable("ORACLE_DB_PORT");
+var service = Environment.GetEnvironmentVariable("ORACLE_DB_SERVICE");
+
+// 3) Construire la chaîne de connexion Oracle
+var connectionString =
+    $"User Id={user};Password={password};Data Source={host}:{port}/{service};Pooling=true;";
+Console.WriteLine("?? Connection string utilisée : " + connectionString);
+
+// Lire la chaîne de connexion depuis la variable d’environnement
 
 if (string.IsNullOrEmpty(connectionString))
 {

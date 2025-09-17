@@ -1,0 +1,36 @@
+﻿@model SuiviEvaluation.Application.Dtos.LivrablesRealisesProjetDto
+
+@{
+    ViewData["Title"] = "Détails Livrables réalisés";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<dl class="row">
+    <dt class="col-sm-3">Projet</dt>
+    <dd class="col-sm-9">@Model.IdIdentificationProjet</dd>
+
+    <dt class="col-sm-3">Quantités par année</dt>
+    <dd class="col-sm-9">
+        <ul>
+            @foreach (var kv in Model.QuantiteLivreeParAnnee)
+            {
+                <li>@kv.Key : @kv.Value</li>
+            }
+        </ul>
+    </dd>
+
+    <dt class="col-sm-3">Total livré</dt>
+    <dd class="col-sm-9">@Model.QuantiteLivree</dd>
+
+    <dt class="col-sm-3">Valeur cible</dt>
+    <dd class="col-sm-9">@Model.ValeurLivree</dd>
+
+    <dt class="col-sm-3">Différence</dt>
+    <dd class="col-sm-9">@Model.Difference</dd>
+</dl>
+
+<p>
+    <a asp-action="Edit" asp-route-id="@Model.IdIdentificationProjet" class="btn btn-primary">Éditer</a>
+    <a asp-action="Index" class="btn btn-secondary">Retour</a>
+</p>

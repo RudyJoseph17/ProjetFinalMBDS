@@ -1,6 +1,6 @@
 # Architecture
 
-Explication de l’architecture de ton projet :
+Explication de l’architecture du projet :
 
 ## Modules principaux
 
@@ -27,14 +27,14 @@ subgraph UI [Interface Utilisateur]
     BanqueWeb[BanqueProjet.Web]
     ProgWeb[Programmation.Web]
     SuiviWeb[SuiviEvaluation.Web]
-    DashWeb[TableauxDeBord.Web]
+   
 end
 
 subgraph API [APIs REST]
     BanqueAPI[BanqueProjet.API]
     ProgAPI[Programmation.API]
     SuiviAPI[SuiviEvaluation.API]
-    DashAPI[TableauxDeBord.API]
+   
 end
 
 subgraph Application [Couches Métier]
@@ -48,7 +48,7 @@ subgraph Infrastructure [Accès Données]
     BanqueInfra[BanqueProjet.Infrastructure]
     ProgInfra[Programmation.Infrastructure]
     SuiviInfra[SuiviEvaluation.Infrastructure]
-    DashInfra[TableauxDeBord.Infrastructure]
+    
 end
 
 subgraph Shared [Partagé]
@@ -58,22 +58,18 @@ end
 Starter --> BanqueAPI
 Starter --> ProgAPI
 Starter --> SuiviAPI
-Starter --> DashAPI
 
 BanqueWeb --> BanqueAPI
 ProgWeb --> ProgAPI
 SuiviWeb --> SuiviAPI
-DashWeb --> DashAPI
 
 BanqueAPI --> BanqueApp
 ProgAPI --> ProgApp
 SuiviAPI --> SuiviApp
-DashAPI --> DashApp
 
 BanqueApp --> BanqueInfra
 ProgApp --> ProgInfra
 SuiviApp --> SuiviInfra
-DashApp --> DashInfra
 
 BanqueApp --> SharedDomain
 ProgApp --> SharedDomain

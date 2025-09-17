@@ -1,0 +1,43 @@
+﻿@model SuiviEvaluation.Application.Dtos.DepenseReelleSurProjetDto
+@{
+    ViewData["Title"] = "Éditer dépense réelle";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
+    <input asp-for="IdActivites" type="hidden" />
+
+    <div class="form-group">
+        <label asp-for="IdIdentificationProjet"></label>
+        <input asp-for="IdIdentificationProjet" class="form-control" readonly />
+    </div>
+    <div class="form-group">
+        <label asp-for="ExerciceFiscalDebut"></label>
+        <input asp-for="ExerciceFiscalDebut" type="number" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="ExerciceFiscalFin"></label>
+        <input asp-for="ExerciceFiscalFin" type="number" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Article"></label>
+        <input asp-for="Article" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Alinea"></label>
+        <input asp-for="Alinea" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="MoisDepense"></label>
+        <input asp-for="MoisDepense" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="MontantDepense"></label>
+        <input asp-for="MontantDepense" type="number" step="0.01" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Enregistrer</button>
+    <a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
+</form>

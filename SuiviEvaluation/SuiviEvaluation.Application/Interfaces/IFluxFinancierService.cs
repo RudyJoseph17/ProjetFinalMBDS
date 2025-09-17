@@ -8,7 +8,10 @@ namespace SuiviEvaluation.Application.Interfaces
 {
     public interface IFluxFinancierService
     {
-        Task AddAsync(FluxFinancierDto flux);
-        Task<IEnumerable<FluxFinancierDto>> GetFluxFinancierAsync();
+        Task AjouterAsync(FluxFinancierDto fluxFinancier);
+        Task MettreAJourAsync(FluxFinancierDto fluxFinancier);
+        Task SupprimerAsync(string IdIdentificationProjet);
+        Task<List<FluxFinancierDto>> ObtenirTousAsync();
+        Task<FluxFinancierDto?> ObtenirParIdAsync(string id);
     }
 }

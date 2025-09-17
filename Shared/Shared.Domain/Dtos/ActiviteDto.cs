@@ -11,6 +11,11 @@ namespace Shared.Domain.Dtos
     {
         [JsonProperty("IdIdentificationProjet")]
         public string IdIdentificationProjet { get; set; }
-        public byte IdActivites { get; set; }
+        public int IdActivites { get; set; }
+        public byte? NumeroActivites { get; set; }
+        public string? NomActivite { get; set; }
+        public string? ResultatsAttendus { get; set; }
+
+        public List<InformationsFinancieresProjetDto> InformationsFinancieres { get; set; } = new();
     }
 }

@@ -27,6 +27,10 @@ namespace Shared.Infrastructure.Persistence
 
         public async Task AjouterAsync(InstitutionSectorielleDto institutionSectorielle)
         {
+            _logger.LogInformation("DTO counts — Attributions: {A}, Sections: {S}",
+    institutionSectorielle.ListAttributions?.Count ?? 0,
+    institutionSectorielle.ListSections?.Count ?? 0);
+
             var json = JsonConvert.SerializeObject(institutionSectorielle);
             _logger.LogInformation(
                 "📦 JSON envoyé à AJOUTER_INSTITUTION_SECTORIELLE_ET_LISTES_JSON : {Json}",

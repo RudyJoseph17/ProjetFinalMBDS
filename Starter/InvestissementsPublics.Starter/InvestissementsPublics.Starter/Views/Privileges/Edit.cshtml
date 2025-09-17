@@ -1,0 +1,122 @@
+﻿@model InvestissementsPublics.Starter.Models.Privileges.PrivilegeCreateVm
+@{
+    ViewData["Title"] = "Modifier privilège";
+}
+
+<h2>Modifier privilège</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Rôles (cocher ceux qui auront ce privilège)</label>
+        <div>
+            @if (Model.AvailableRoles != null && Model.AvailableRoles.Any())
+            {
+                foreach (var r in Model.AvailableRoles)
+                {
+                    var isChecked = Model.SelectedRoleIds != null && Model.SelectedRoleIds.Contains(r.Value);
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="SelectedRoleIds" value="@r.Value" id="role_@r.Value" @(isChecked ? "checked" : "") />
+                        <label class="form-check-label" for="role_@r.Value">@r.Text</label>
+                    </div>
+                }
+            }
+            else
+            {
+                <p><em>Aucun rôle disponible.</em></p>
+            }
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Utilisateurs (rechercher et attribuer)</label>
+        <!-- Select2 multiple. Le name doit correspondre à SelectedUserIds -->
+        <select id="users-select" name="SelectedUserIds" multiple="multiple" style="width:100%"></select>
+        <small class="form-text text-muted">Tapez un nom ou email, sélectionnez plusieurs utilisateurs si besoin.</small>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Enregistrer</button>
+    <a asp-action="Index" class="btn btn-secondary">Annuler</a>
+</form>
+
+@section Styles {
+    <!-- si tu inclus déjà Select2 globalement, supprime ces lignes -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" rel="stylesheet" />
+}
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
+
+    <script>
+        $(function () {
+            function formatUser(item) {
+                return item.text;
+            }
+
+            $('#users-select').select2({
+                placeholder: 'Rechercher des utilisateurs (nom ou email)...',
+                allowClear: true,
+                minimumInputLength: 2,
+                multiple: true,
+                ajax: {
+                    url: '@Url.Action("SearchUsers", "Privileges")',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            q: params.term,
+                            page: params.page || 1
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: data.items,
+                            pagination: { more: data.more }
+                        };
+                    },
+                    cache: true
+                },
+                templateResult: formatUser,
+                templateSelection: function (item) { return item.text; }
+            });
+
+            // --- Préchargement des utilisateurs déjà sélectionnés (Edit) ---
+            var idsFromServer = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.SelectedUserIds ?? new System.Collections.Generic.List<string>()));
+            if (idsFromServer && idsFromServer.length) {
+                // appelle l'endpoint GetUsersByIds (retourne [{id, text}, ...])
+                $.ajax({
+                    url: '@Url.Action("GetUsersByIds", "Privileges")',
+                    data: { ids: idsFromServer },
+                    traditional: true, // important pour envoyer un tableau en query string
+                    success: function (res) {
+                        res.forEach(function (u) {
+                            // new Option(text, value, selected, defaultSelected)
+                            var option = new Option(u.text, u.id, true, true);
+                            $('#users-select').append(option);
+                        });
+                        // déclenche le rafraîchissement de select2
+                        $('#users-select').trigger('change');
+                    }
+                });
+            }
+        });
+    </script>
+
+    <partial name="_ValidationScriptsPartial" />
+}

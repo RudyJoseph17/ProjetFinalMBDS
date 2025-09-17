@@ -1,0 +1,32 @@
+name: Liste des packages NuGet
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  list-packages:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout du dépôt
+        uses: actions/checkout@v3
+
+      - name: Installer .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7.x'
+
+      - name: Exécuter le script PowerShell
+        shell: pwsh
+        run: |
+          Set-ExecutionPolicy Bypass -Scope Process -Force
+          .\ListAllPackages.ps1
+
+      - name: Publier le CSV comme artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: nuget-packages
+          path: packages.csv

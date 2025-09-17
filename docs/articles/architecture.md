@@ -77,6 +77,9 @@ InvestissementsPublics.sln
 │
 
 └── Shared
+	├── Shared.Domain (entités communes, auth, rôles)
 
-&nbsp;   └── Shared.Domain (entités communes, auth, rôles)
+	└── Shared.Infrastructure (entités communes, auth, rôles)
+
+&nbsp;   
 

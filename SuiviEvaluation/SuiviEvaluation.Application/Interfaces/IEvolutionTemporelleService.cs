@@ -9,7 +9,10 @@ namespace SuiviEvaluation.Application.Interfaces
 {
     public interface IEvolutionTemporelleService
     {
-        Task AddAsync(EvolutionTemporelleDuProjetDto evolution);
-        Task<IEnumerable<EvolutionTemporelleDuProjetDto>> GetEvolutionCouranteAsync();
+        Task AjouterAsync(EvolutionTemporelleDuProjetDto evolutionProjet);
+        Task MettreAJourAsync(EvolutionTemporelleDuProjetDto evolutionProjet);
+        Task SupprimerAsync(string IdIdentificationProjet);
+        Task<List<EvolutionTemporelleDuProjetDto>> ObtenirTousAsync();
+        Task<EvolutionTemporelleDuProjetDto?> ObtenirParIdAsync(string id);
     }
 }

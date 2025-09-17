@@ -6,13 +6,19 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Shared.Domain.Dtos
 {
     public class AttributionsInstitutionDto
     {
-        public int Idattribution { get; set; }
-        public string? Idinstitution { get; set; }
+        [JsonProperty("Idattribution")]
+        public int? Idattribution { get; set; }
+
+        [JsonProperty("IdInstitutionSectorielle")]
+        public int? Idinstitution { get; set; }
+
+        [JsonProperty("DescriptionAttribution")]
         public string? DescriptionAttribution { get; set; }
       
     }

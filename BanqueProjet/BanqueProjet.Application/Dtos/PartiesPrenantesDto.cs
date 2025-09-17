@@ -18,7 +18,7 @@ namespace BanqueProjet.Application.Dtos
         public string IdIdentificationProjet { get; set; }
         public byte IdPartiesPrenantes { get; set; }
         public string? NomFirme { get; set; }
-        public decimal? TelephoneFirme { get; set; }
+        public string? TelephoneFirme { get; set; }
         public string? CourrielFirme { get; set; }
         public string? RoleFirme { get; set; }
 

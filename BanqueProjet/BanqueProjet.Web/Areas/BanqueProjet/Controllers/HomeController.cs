@@ -74,7 +74,6 @@ namespace BanqueProjet.Web.Areas.BanqueProjet.Controllers
             {
                 TotalProjets = total,
                 ProjetsValides = validesCount,
-                NomsProjetsValides = nomsProjetsValides
             };
 
             return View(vm);

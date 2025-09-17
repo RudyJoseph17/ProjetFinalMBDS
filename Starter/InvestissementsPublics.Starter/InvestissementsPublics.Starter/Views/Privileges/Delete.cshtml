@@ -1,0 +1,31 @@
+﻿@model InvestissementsPublics.Starter.Models.Privileges.PrivilegeDeleteVm
+@{
+    ViewData["Title"] = "Supprimer privilège";
+}
+
+<h2>Supprimer privilège</h2>
+
+<div class="alert alert-warning">
+    <strong>Attention :</strong> La suppression supprimera le privilège, toutes les liaisons rôle↔privilège et tous les claims utilisateurs associés.
+</div>
+
+<dl class="row">
+    <dt class="col-sm-3">Nom</dt>
+    <dd class="col-sm-9">@Model.Name</dd>
+
+    <dt class="col-sm-3">Description</dt>
+    <dd class="col-sm-9">@Model.Description</dd>
+
+    <dt class="col-sm-3">Rôles liés</dt>
+    <dd class="col-sm-9">@Model.RolesLinked</dd>
+
+    <dt class="col-sm-3">Attributions directes (utilisateurs)</dt>
+    <dd class="col-sm-9">@Model.UsersLinked</dd>
+</dl>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+    <button type="submit" class="btn btn-danger">Confirmer suppression</button>
+    <a asp-action="Index" class="btn btn-secondary">Annuler</a>
+</form>
+

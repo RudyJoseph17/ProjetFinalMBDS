@@ -60,7 +60,7 @@ public partial class ViewIdentificationProjetPlat
     public string? Section { get; set; }
 
     [Column("CODE_PIP")]
-    [StringLength(16)]
+    [StringLength(13)]
     [Unicode(false)]
     public string? CodePip { get; set; }
 

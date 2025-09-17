@@ -220,6 +220,44 @@ namespace InvestissementsPublics.Starter.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Shared.Domain.Authorization.Privilege", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("NUMBER(10)")
+                        .HasAnnotation("Oracle:Identity", "START WITH 1 INCREMENT BY 1");
+
+                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("NVARCHAR2(500)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("NVARCHAR2(200)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Privileges", (string)null);
+                });
+
+            modelBuilder.Entity("Shared.Domain.Authorization.RolePrivilege", b =>
+                {
+                    b.Property<string>("RoleId")
+                        .HasColumnType("NVARCHAR2(450)");
+
+                    b.Property<int>("PrivilegeId")
+                        .HasColumnType("NUMBER(10)");
+
+                    b.HasKey("RoleId", "PrivilegeId");
+
+                    b.HasIndex("PrivilegeId");
+
+                    b.ToTable("RolePrivileges", (string)null);
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -269,6 +307,30 @@ namespace InvestissementsPublics.Starter.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Shared.Domain.Authorization.RolePrivilege", b =>
+                {
+                    b.HasOne("Shared.Domain.Authorization.Privilege", "Privilege")
+                        .WithMany("RolePrivileges")
+                        .HasForeignKey("PrivilegeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Privilege");
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Authorization.Privilege", b =>
+                {
+                    b.Navigation("RolePrivileges");
                 });
 #pragma warning restore 612, 618
         }

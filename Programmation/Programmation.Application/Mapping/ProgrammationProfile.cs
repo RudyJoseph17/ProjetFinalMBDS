@@ -13,11 +13,14 @@ namespace Programmation.Application.Mapping
     {
         public ProgrammationProfile()
         {
-            CreateMap<InformationsFinancieresProjetDto, PrevisionInformationFinanciereDto>()
+            CreateMap<InformationsFinancieresProjetDto, InformationsFinancieresProgrammeesProjetDto>()
                 .ReverseMap();
 
-            CreateMap<LivrablesDuProjetDto, QuantiteALivrerParAnneeDto>()
+            CreateMap<LivrablesDuProjetDto, LivrablesProgrameProjetDto>()
                 .ReverseMap();
+
+            CreateMap<IdentificationProjetDto, ProgrammationProjetDto>()
+               .ReverseMap();
         }
     }
 }

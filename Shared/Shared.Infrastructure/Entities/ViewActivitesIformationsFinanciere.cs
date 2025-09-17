@@ -41,4 +41,9 @@ public partial class ViewActivitesIformationsFinanciere
 
     [Column("MONTANT_DEPENSE", TypeName = "NUMBER(12,2)")]
     public decimal? MontantDepense { get; set; }
+
+    [Column("ID_IDENTIFICATION_PROJET")]
+    [StringLength(12)]
+    [Unicode(false)]
+    public string IdIdentificationProjet { get; set; } = null!;
 }

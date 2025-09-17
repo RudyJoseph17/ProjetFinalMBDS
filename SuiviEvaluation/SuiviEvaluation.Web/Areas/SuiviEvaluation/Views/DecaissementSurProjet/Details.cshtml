@@ -1,0 +1,55 @@
+﻿@model SuiviEvaluation.Application.Dtos.DecaissementSurProjetDto
+@{
+    ViewData["Title"] = "Détails décaissement";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="form-group">
+    <label>Projet :</label>
+    <p class="form-control-static">@Model.IdIdentificationProjet</p>
+</div>
+
+<div class="form-group">
+    <label>Activité :</label>
+    <p class="form-control-static">@Model.IdActivites</p>
+</div>
+
+<div class="form-group">
+    <label>Exercice début :</label>
+    <p class="form-control-static">@Model.ExerciceFiscalDebut</p>
+</div>
+
+<div class="form-group">
+    <label>Exercice fin :</label>
+    <p class="form-control-static">@Model.ExerciceFiscalFin</p>
+</div>
+
+<div class="form-group">
+    <label>Article :</label>
+    <p class="form-control-static">@Model.Article</p>
+</div>
+
+<div class="form-group">
+    <label>Alinea :</label>
+    <p class="form-control-static">@Model.Alinea</p>
+</div>
+
+<div class="form-group">
+    <label>Mois :</label>
+    <p class="form-control-static">@Model.MoisDecaissement</p>
+</div>
+
+<div class="form-group">
+    <label>Montant :</label>
+    <p class="form-control-static">@Model.MontantDecaissement</p>
+</div>
+
+<a asp-action="Edit" asp-route-id="@Model.IdActivites" class="btn btn-primary">Éditer</a>
+<form asp-action="Delete" asp-route-id="@Model.IdActivites" method="post" style="display:inline">
+    @Html.AntiForgeryToken()
+    <button type="submit" class="btn btn-danger" onclick="return confirm('Supprimer ce décaissement ?')">
+        Supprimer
+    </button>
+</form>
+<a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>

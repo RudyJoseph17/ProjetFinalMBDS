@@ -1,0 +1,51 @@
+﻿@model IEnumerable<SuiviEvaluation.Application.Dtos.DepenseReelleSurProjetDto>
+@{
+    ViewData["Title"] = "Dépenses réelles sur projet";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Créer une dépense réelle</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Projet</th>
+            <th>Activité</th>
+            <th>Exercice début</th>
+            <th>Exercice fin</th>
+            <th>Article</th>
+            <th>Alinea</th>
+            <th>Mois</th>
+            <th>Montant</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.IdIdentificationProjet</td>
+                <td>@item.IdActivites</td>
+                <td>@item.ExerciceFiscalDebut</td>
+                <td>@item.ExerciceFiscalFin</td>
+                <td>@item.Article</td>
+                <td>@item.Alinea</td>
+                <td>@item.MoisDepense</td>
+                <td>@item.MontantDepense</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.IdActivites">Détails</a> |
+                    <a asp-action="Edit" asp-route-id="@item.IdActivites">Éditer</a> |
+                    <form asp-action="Delete" asp-route-id="@item.IdActivites" method="post" style="display:inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-link" onclick="return confirm('Supprimer cette dépense réelle ?')">
+                            Supprimer
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

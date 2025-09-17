@@ -1,0 +1,19 @@
+﻿@model SuiviEvaluation.Application.Dtos.AutorisationSurProjetDto
+@{
+    ViewData["Title"] = "Créer autorisation";
+}
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+    <div class="form-group">
+        <label asp-for="IdIdentificationProjet"></label>
+        <input asp-for="IdIdentificationProjet" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="ExerciceFiscalDebut"></label>
+        <input asp-for="ExerciceFiscalDebut" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="ExerciceFiscalFin"></label>
+</form>

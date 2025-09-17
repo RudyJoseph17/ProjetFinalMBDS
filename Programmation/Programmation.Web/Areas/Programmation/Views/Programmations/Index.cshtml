@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Programmation.Application.Dtos.ProgrammationProjetDto>
+
+@{
+    ViewData["Title"] = "Liste des programmations";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<p>
+    <a asp-action="Create">Nouvelle programmation</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id projet</th>
+            <th>Nombre de livrables</th>
+            <th>Nombre d’infos financières</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.IdIdentificationProjet</td>
+                <td>@item.LivrablesProgrammesProjets.Count()</td>
+                <td>@item.InformationsFinancieresProgrammeesProjet?.Count()</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.IdIdentificationProjet">Détails</a> |
+                    <a asp-action="Edit" asp-route-id="@item.IdIdentificationProjet">Modifier</a> |
+                    <form asp-action="Delete" asp-route-id="@item.IdIdentificationProjet"
+                          method="post" style="display:inline">
+                        <button type="submit" onclick="return confirm('Supprimer ?');">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
