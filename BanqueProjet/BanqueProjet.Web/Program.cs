@@ -109,7 +109,7 @@ builder.Services.AddScoped<IIndicateursDeResultatService, IndicateursDeResultatS
 builder.Services.AddScoped<IInformationsFinancieresService, InformationsFinancieresService>();
 builder.Services.AddScoped<IDefinitionLivrablesDuProjetService, DefinitionLivrablesDuProjetService>();
 builder.Services.AddScoped<IObjectifsSpecifiquesService, ObjectifsSpecifiquesService>();
-
+builder.Services.AddScoped<IGrilleDdpProjetService, GrilleDdpProjetService>();
 builder.Services.AddDbContext<SharedDbContext>((sp, options) =>
 {
     options.UseOracle(builder.Configuration.GetConnectionString("DefaultConnection"))

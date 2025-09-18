@@ -1,21 +1,54 @@
-﻿@model Programmation.Application.Dtos.ProgrammationProjetDto
-
+﻿@model Programmation.Web.Models.ProgrammationViewModel
 @{
     ViewData["Title"] = "Créer une programmation";
 }
 
 <h2>@ViewData["Title"]</h2>
 
-<form asp-action="CreateProgrammation" method="post">
-    <div class="form-group">
-        <label asp-for="IdIdentificationProjet"></label>
-        <input asp-for="IdIdentificationProjet" class="form-control" readonly />
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<form asp-action="Create" method="post">
+    <input type="hidden" asp-for="ProjetsCrees.IdIdentificationProjet" />
+
+    <div class="mb-3">
+        <label asp-for="ProjetsCrees.NomProjet" class="form-label">Nom du projet</label>
+        <input asp-for="ProjetsCrees.NomProjet" class="form-control" />
     </div>
 
-    <!-- TODO: ajouter les champs d’édition pour les listes Livrables et InformationsFinancières -->
-    <div class="form-group">
-        <button type="submit" class="btn btn-primary">Enregistrer</button>
-        <a asp-action="IndexProgrammations" class="btn btn-secondary">Annuler</a>
+    <div class="mb-3">
+        <label asp-for="ProjetsCrees.DateProgrammation" class="form-label">Date de programmation</label>
+        <input asp-for="ProjetsCrees.DateProgrammation" type="date" class="form-control" />
     </div>
+
+    <h4>Livrables programmés</h4>
+    <div id="livrablesContainer">
+        @for (int i = 0; i < Model.LivrablesProgramme.Count; i++)
+        {
+            <div class="mb-2">
+                <input asp-for="LivrablesProgramme[@i].DefinitionLivrablesDuProjet" class="form-control mb-1" placeholder="Nom du livrable" />
+                <input asp-for="LivrablesProgramme[@i].QuantiteALivrer" class="form-control" placeholder="Description" />
+            </div>
+        }
+    </div>
+
+    <h4>Informations financières</h4>
+    <div id="infosFinContainer">
+        @for (int i = 0; i < Model.InfosFinancieresProgrammees.Count; i++)
+        {
+            <div class="mb-2 row">
+                <div class="col">
+                    <input asp-for="InfosFinancieresProgrammees[@i].Alinea" class="form-control" placeholder="Description" />
+                </div>
+                <div class="col">
+                    <input asp-for="InfosFinancieresProgrammees[@i].MontantPrevu" type="number" class="form-control" placeholder="Montant" />
+                </div>
+            </div>
+        }
+    </div>
+
+    <button type="submit" class="btn btn-success mt-3">Créer</button>
+    <a asp-action="Index" class="btn btn-secondary mt-3">Retour</a>
 </form>
-

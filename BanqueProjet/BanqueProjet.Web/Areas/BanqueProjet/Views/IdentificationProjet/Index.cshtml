@@ -68,6 +68,7 @@
             <th>Nom du projet</th>
             <th>Ministère</th>
             <th>Section</th>
+            <th>Avis</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -83,6 +84,22 @@
                 </td>
                 <td>@projet.Ministere</td>
                 <td>@projet.Section</td>
+                <td>
+                    @if (projet.IdGrilleDdpProjet.HasValue)
+                    {
+                        <a asp-area="BanqueProjet"
+                           asp-controller="GrilleDdpProjet"
+                           asp-action="Details"
+                           asp-route-id="@projet.IdGrilleDdpProjet"
+                           class="btn btn-sm @(projet.AvisProjet == "oui" ? "btn-success" : "btn-warning")">
+                            @projet.AvisProjet
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="text-danger">Projet à analyser</span>
+                    }
+                </td>
                 <td>
                     <a asp-action="Edit"
                        asp-route-id="@projet.IdIdentificationProjet"

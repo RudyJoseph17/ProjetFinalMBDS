@@ -27,6 +27,8 @@ public partial class BanquePDbContext : DbContext
 
     public virtual DbSet<OViewEffetsDuProjet> OViewEffetsDuProjets { get; set; }
 
+    public virtual DbSet<OViewGrilleDdpProjet> OViewGrilleDdpProjets { get; set; }
+
     public virtual DbSet<OViewImpactsDuProjet> OViewImpactsDuProjets { get; set; }
 
     public virtual DbSet<OViewIndicateursDeResultat> OViewIndicateursDeResultats { get; set; }
@@ -94,6 +96,11 @@ public partial class BanquePDbContext : DbContext
         modelBuilder.Entity<OViewEffetsDuProjet>(entity =>
         {
             entity.ToView("O_VIEW_EFFETS_DU_PROJET");
+        });
+
+        modelBuilder.Entity<OViewGrilleDdpProjet>(entity =>
+        {
+            entity.ToView("O_VIEW_GRILLE_DDP_PROJET");
         });
 
         modelBuilder.Entity<OViewImpactsDuProjet>(entity =>
@@ -164,11 +171,10 @@ public partial class BanquePDbContext : DbContext
         modelBuilder.Entity<ViewIdentProjetPartiesPrenantesPlat>(entity =>
         {
             entity.ToView("VIEW_IDENT_PROJET_PARTIES_PRENANTES_PLAT");
-
-            modelBuilder.Entity<ViewIdentificationProjetPlat>(entity =>
-            {
-                entity.ToView("VIEW_IDENTIFICATION_PROJET_PLAT");
-            });
+        });
+        modelBuilder.Entity<ViewIdentificationProjetPlat>(entity =>
+        {
+            entity.ToView("VIEW_IDENTIFICATION_PROJET_PLAT");
         });
         modelBuilder.HasSequence("NOTIFICATION_SEQ");
         modelBuilder.HasSequence("SEQ_ACTIVITES");
@@ -183,6 +189,7 @@ public partial class BanquePDbContext : DbContext
         modelBuilder.HasSequence("SEQ_COUT_ANNUEL_DU_PROJET");
         modelBuilder.HasSequence("SEQ_COUT_ANNUEL_PROJET");
         modelBuilder.HasSequence("SEQ_COUT_TOTAL_PROJET");
+        modelBuilder.HasSequence("SEQ_DDP_CADRE_LOGIQUE");
         modelBuilder.HasSequence("SEQ_DEPARTEMENT");
         modelBuilder.HasSequence("SEQ_DOCUMENTS_ANNEXES");
         modelBuilder.HasSequence("SEQ_EFFETS_DU_PROJET");

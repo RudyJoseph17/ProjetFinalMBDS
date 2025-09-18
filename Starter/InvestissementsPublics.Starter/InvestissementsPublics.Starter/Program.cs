@@ -126,6 +126,8 @@ builder.Services.AddScoped<IDepenseReelleSurProjetService, DepenseReelleSurProje
 builder.Services.AddScoped<IDecaissementSurProjetService, DecaissementSurProjetService>();
 builder.Services.AddScoped<IAutorisationSurProjetService, AutorisationSurProjetService>();
 
+builder.Services.AddScoped<IGrilleDdpProjetService, GrilleDdpProjetService>();
+
 
 
 // Logging

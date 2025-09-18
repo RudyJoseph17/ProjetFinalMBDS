@@ -1,0 +1,172 @@
+﻿@model BanqueProjet.Application.Dtos.GrilleDdpProjetDto
+
+@{
+    ViewData["Title"] = "Détails - Grille DDP";
+    // helper pour afficher bool? en français
+    Func<bool?, string> BoolToLabel = v => v.HasValue ? (v.Value ? "Oui" : "Non") : "Non renseigné";
+
+    // récupérer dynamiquement l'ID de la grille (supporte plusieurs noms de propriété)
+    var gridIdObj = Model?.GetType().GetProperty("IdGrilleDdpProjetProjet")?.GetValue(Model)
+                    ?? Model?.GetType().GetProperty("IdGrilleDdpProjet")?.GetValue(Model);
+    var gridId = gridIdObj?.ToString();
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (Model == null)
+{
+    <div class="alert alert-warning">Grille introuvable.</div>
+}
+else
+{
+    <div class="card mb-3">
+        <div class="card-header bg-primary text-white">
+            <strong>@(Model.TitreProjet ?? "Grille DDP")</strong>
+            <span class="float-end">ID grille: @gridId</span>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Projet (ID)</dt>
+                <dd class="col-sm-9">@Model.IdIdentificationProjet</dd>
+
+                <dt class="col-sm-3">Titre projet</dt>
+                <dd class="col-sm-9">@Model.TitreProjet</dd>
+
+                <dt class="col-sm-3">Ministère</dt>
+                <dd class="col-sm-9">@Model.Ministere</dd>
+
+                <dt class="col-sm-3">Date soumission</dt>
+                <dd class="col-sm-9">@Model.DateSoumission?.ToString("dd/MM/yyyy") ?? "—"</dd>
+
+                <dt class="col-sm-3">Date début analyse</dt>
+                <dd class="col-sm-9">@Model.DateDebutAnalyse?.ToString("dd/MM/yyyy") ?? "—"</dd>
+            </dl>
+
+            <hr />
+
+            <h5>Critères (résumé)</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class="col-sm-6">Titre projet AOL</dt>
+                        <dd class="col-sm-6">@BoolToLabel(Model.TitreProjetAol)</dd>
+
+                        <dt class="col-sm-6">Projet lien PSDH</dt>
+                        <dd class="col-sm-6">@BoolToLabel(Model.ProjetLienPsdh)</dd>
+
+                        <dt class="col-sm-6">Historique décrit</dt>
+                        <dd class="col-sm-6">@BoolToLabel(Model.HistoriqueDecrit)</dd>
+
+                        <dt class="col-sm-6">Justification démontrée</dt>
+                        <dd class="col-sm-6">@BoolToLabel(Model.JustificationDemontree)</dd>
+
+                        <dt class="col-sm-6">Objectif clair</dt>
+                        <dd class="col-sm-6">@BoolToLabel(Model.ProjetObjectifClair)</dd>
+
+                        <dt class="col-sm-6">Effets attendus cohérents</dt>
+                        <dd class="col-sm-6">@BoolToLabel(Model.EffetsAttendusCoherents)</dd>
+
+                        <dt class="col-sm-6">Population visée décrite</dt>
+                        <dd class="col-sm-6">@BoolToLabel(Model.PopulationViseeDecrite)</dd>
+
+                        <dt class="col-sm-6">Localisation décrite</dt>
+                        <dd class="col-sm-6">@BoolToLabel(Model.LocalisationDecrite)</dd>
+                    </dl>
+                </div>
+
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class="col-sm-6">Durée totale définie</dt>
+                        <dd class="col-sm-6">@BoolToLabel(Model.DureeTotalProjetBienDefine)</dd>
+
+                        <dt class="col-sm-6">Coût total déterminé</dt>
+                        <dd class="col-sm-6">@BoolToLabel(Model.CoutTotalProjetBienDetermine)</dd>
+
+                        <dt class="col-sm-6">Emplois créés identifiés</dt>
+                        <dd class="col-sm-6">@BoolToLabel(Model.EmploisCreesIdentifies)</dd>
+
+                        <dt class="col-sm-6">Facteur genre pris en compte</dt>
+                        <dd class="col-sm-6">@BoolToLabel(Model.FacteurGenrePrisEnCompte)</dd>
+
+                        <dt class="col-sm-6">Études satisfaisantes</dt>
+                        <dd class="col-sm-6">@BoolToLabel(Model.EtudesSatisfaisantes)</dd>
+
+                        <dt class="col-sm-6">Activités & résultats décrits</dt>
+                        <dd class="col-sm-6">@BoolToLabel(Model.ActivitesEtResultatsDecrits)</dd>
+
+                        <dt class="col-sm-6">Durée activité dans Gantt</dt>
+                        <dd class="col-sm-6">@BoolToLabel(Model.DureeActiviteDansGantt)</dd>
+
+                        <dt class="col-sm-6">Calendrier financier ⇄ Gantt</dt>
+                        <dd class="col-sm-6">@BoolToLabel(Model.CalendrierFinancierCorrespondGantt)</dd>
+                    </dl>
+                </div>
+            </div>
+
+            <hr />
+
+            <h5>Autres critères</h5>
+            <dl class="row">
+                <dt class="col-sm-4">Calculs dépenses exacts</dt>
+                <dd class="col-sm-8">@BoolToLabel(Model.CalculsDepensesExacts)</dd>
+
+                <dt class="col-sm-4">Dépenses prévues permettent activités</dt>
+                <dd class="col-sm-8">@BoolToLabel(Model.DepensesPrevuesPermetActivites)</dd>
+
+                <dt class="col-sm-4">Dépenses projet incluses</dt>
+                <dd class="col-sm-8">@BoolToLabel(Model.DepensesProjetIncluses)</dd>
+
+                <dt class="col-sm-4">Sources financement identifiées</dt>
+                <dd class="col-sm-8">@BoolToLabel(Model.SourcesFinancementIdentifiees)</dd>
+
+                <dt class="col-sm-4">Entités & rôles définis</dt>
+                <dd class="col-sm-8">@BoolToLabel(Model.EntitesRolesClairementDefinis)</dd>
+
+                <dt class="col-sm-4">Structure orga inclut entités</dt>
+                <dd class="col-sm-8">@BoolToLabel(Model.StructureOrgaInclutEntites)</dd>
+
+                <dt class="col-sm-4">Objectifs définis</dt>
+                <dd class="col-sm-8">@BoolToLabel(Model.ObjectifGeneralSpecifiqueDefinis)</dd>
+
+                <dt class="col-sm-4">Détails juridiques suffisants</dt>
+                <dd class="col-sm-8">@BoolToLabel(Model.DetailsSuffisantsAspJuridiques)</dd>
+
+                <dt class="col-sm-4">Passation marchés rigoureuse</dt>
+                <dd class="col-sm-8">@BoolToLabel(Model.PassationDesMarchesRigoureux)</dd>
+            </dl>
+
+            <hr />
+
+            <h5>Commentaires & décision</h5>
+            <dl class="row">
+                <dt class="col-sm-3">Commentaires généraux</dt>
+                <dd class="col-sm-9">@Model.CommentairesGeneraux ?? "—"</dd>
+
+                <dt class="col-sm-3">Résultats analyse</dt>
+                <dd class="col-sm-9">@Model.ResultatsAnalyse ?? "—"</dd>
+
+                <dt class="col-sm-3">Recommandations</dt>
+                <dd class="col-sm-9">@Model.Recommandations ?? "—"</dd>
+
+                <dt class="col-sm-3">Décision</dt>
+                <dd class="col-sm-9">@(!string.IsNullOrWhiteSpace(Model.Decision) ? Model.Decision : "—")</dd>
+
+                <dt class="col-sm-3">Date avis</dt>
+                <dd class="col-sm-9">@Model.DateAvis?.ToString("dd/MM/yyyy") ?? "—"</dd>
+            </dl>
+        </div>
+
+        <div class="card-footer">
+            <a asp-action="Edit" asp-controller="GrilleDdpProjet" asp-route-id="@gridId" class="btn btn-warning me-2">Modifier</a>
+
+            @* Lien vers la page du projet parent si IdIdentificationProjet présent *@
+            @if (!string.IsNullOrWhiteSpace(Model.IdIdentificationProjet))
+            {
+                <a asp-area="BanqueProjet" asp-controller="IdentificationProjet" asp-action="Details"
+                   asp-route-id="@Model.IdIdentificationProjet" class="btn btn-secondary me-2">Voir le projet</a>
+            }
+
+            <a asp-action="Index" asp-controller="GrilleDdpProjet" class="btn btn-outline-secondary">Retour aux grilles</a>
+        </div>
+    </div>
+}

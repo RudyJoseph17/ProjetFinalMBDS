@@ -15,6 +15,7 @@ using Humanizer;
 using Microsoft.AspNetCore.Identity;
 using Shared.Domain.Dtos;
 using Shared.Domain.Interface;
+using BanqueProjet.Infrastructure.Persistence;
 
 namespace BanqueProjet.Web.Areas.BanqueProjet.Controllers
 {
@@ -25,6 +26,7 @@ namespace BanqueProjet.Web.Areas.BanqueProjet.Controllers
         private readonly IDdpCadreLogiqueService _cadreService;
         private readonly IAspectsJuridiquesService _aspectsJuridiquesService;
         private readonly ILocalisationGeographiqueProjService _LocalisationGeographiqueService;
+        private readonly IGrilleDdpProjetService _GrilleDdpProjetService;
         //private readonly INotificationService _notif;
         private readonly ILogger<IdentificationProjetController> _logger;
         private const int TotalSteps = 6;
@@ -34,12 +36,14 @@ namespace BanqueProjet.Web.Areas.BanqueProjet.Controllers
             IDdpCadreLogiqueService cadreService,
             IAspectsJuridiquesService aspectsJuridiquesService,
             ILocalisationGeographiqueProjService LocalisationGeographiqueService,
+            IGrilleDdpProjetService GrilleDdpProjetService,
             ILogger<IdentificationProjetController> logger)
         {
             _projetService = projetService;
             _cadreService = cadreService;
             _aspectsJuridiquesService = aspectsJuridiquesService;
             _LocalisationGeographiqueService = LocalisationGeographiqueService;
+            _GrilleDdpProjetService = GrilleDdpProjetService;
             _logger = logger;
         }
 
@@ -231,6 +235,16 @@ namespace BanqueProjet.Web.Areas.BanqueProjet.Controllers
                     .ToList();
             }
 
+            // Charger les grilles pour chaque projet
+            foreach (var projet in projets)
+            {
+                var grille = await _GrilleDdpProjetService.ObtenirParProjetIdAsync(projet.IdIdentificationProjet);
+                projet.AvisProjet = grille != null
+                                    ? (!string.IsNullOrEmpty(grille.Decision) ? grille.Decision : "En attente")
+                                    : "Projet à analyser";
+                projet.IdGrilleDdpProjet = grille?.IdGrilleDdpProjet;
+            }
+
             return View(projets);
         }
 
@@ -240,7 +254,15 @@ namespace BanqueProjet.Web.Areas.BanqueProjet.Controllers
             var projet = await _projetService.ObtenirParIdAsync(id);
             if (projet == null) return NotFound();
 
-            return View(projet);
+            var vm = new DdpViewModel
+    {
+        Projets = projet,
+        // si tu veux charger le cadre logique et autres collections séparément, tu peux les affecter ici :
+        // CadreLogique = await _cadreService.ObtenirParIdAsync(id),
+        // etc.
+    };
+
+    return View(vm);
         }
 
         [HttpGet]

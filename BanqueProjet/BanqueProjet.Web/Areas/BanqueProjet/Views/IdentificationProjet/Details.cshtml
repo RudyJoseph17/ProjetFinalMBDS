@@ -1,0 +1,306 @@
+﻿@model BanqueProjet.Web.Models.DdpViewModel
+
+@{
+    ViewData["Title"] = "Détails du projet";
+    var projet = Model?.Projets;
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (projet == null)
+{
+    <div class="alert alert-warning">Projet introuvable.</div>
+}
+else
+{
+    <div class="card mt-3">
+        <div class="card-header bg-primary text-white">
+            <h4>@projet.NomProjet</h4>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">ID Projet</dt>
+                <dd class="col-sm-9">@projet.IdIdentificationProjet</dd>
+
+                <dt class="col-sm-3">Ministère</dt>
+                <dd class="col-sm-9">@projet.Ministere</dd>
+
+                <dt class="col-sm-3">Section</dt>
+                <dd class="col-sm-9">@projet.Section</dd>
+
+                <dt class="col-sm-3">Code PIP</dt>
+                <dd class="col-sm-9">@projet.CodePip</dd>
+
+                <dt class="col-sm-3">Code bailleur</dt>
+                <dd class="col-sm-9">@projet.CodeBailleur</dd>
+
+                <dt class="col-sm-3">Directeur de projet</dt>
+                <dd class="col-sm-9">
+                    @projet.NomDirecteurDeProjet <br />
+                    Tél: @projet.TelephoneDirecteurDeProjet <br />
+                    Courriel: @projet.CourrielDirecteurDeProjet
+                </dd>
+
+                <dt class="col-sm-3">Date d'inscription</dt>
+                <dd class="col-sm-9">@projet.DateInscription?.ToString("dd/MM/yyyy")</dd>
+
+                <dt class="col-sm-3">Date de mise à jour</dt>
+                <dd class="col-sm-9">@projet.DateMiseAJour?.ToString("dd/MM/yyyy")</dd>
+
+                <dt class="col-sm-3">Programme</dt>
+                <dd class="col-sm-9">@projet.Programme</dd>
+
+                <dt class="col-sm-3">Sous-programme</dt>
+                <dd class="col-sm-9">@projet.SousProgramme</dd>
+
+                <dt class="col-sm-3">Secteur d'activités</dt>
+                <dd class="col-sm-9">@projet.SecteurDActivites</dd>
+
+                <dt class="col-sm-3">Sous-secteur</dt>
+                <dd class="col-sm-9">@projet.SousSecteurDActivites</dd>
+
+                <dt class="col-sm-3">Type de projet</dt>
+                <dd class="col-sm-9">@projet.TypeDeProjet</dd>
+
+                <dt class="col-sm-3">Échelon territorial</dt>
+                <dd class="col-sm-9">@projet.EchelonTerritorial</dd>
+            </dl>
+        </div>
+    </div>
+
+    <hr />
+
+    @* Activités *@
+    @if (projet.Activites != null && projet.Activites.Any())
+    {
+        <h3>Activités</h3>
+        <table class="table table-sm table-striped">
+            <thead>
+                <tr>
+                    <th>Numéro</th>
+                    <th>Nom</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var a in projet.Activites)
+                {
+                    <tr>
+                        <td>@a.NumeroActivites</td>
+                        <td>@a.NomActivite</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    @* Bailleurs *@
+    @if (projet.BailleursDeFonds != null && projet.BailleursDeFonds.Any())
+    {
+        <h3>Bailleurs de fonds</h3>
+        <table class="table table-sm table-striped">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Représentant</th>
+                    <th>Tél.</th>
+                    <th>Courriel</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var b in projet.BailleursDeFonds)
+                {
+                    <tr>
+                        <td>@b.NomBailleur</td>
+                        <td>@b.NomRepresentant</td>
+                        <td>@b.TelephoneRepresentant</td>
+                        <td>@b.CourrielRepresentant</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    @* Aspects juridiques *@
+    @if (projet.AspectsJuridiques != null && projet.AspectsJuridiques.Any())
+    {
+        <h3>Aspects juridiques</h3>
+        <table class="table table-sm table-striped">
+            <thead>
+                <tr>
+                    <th>Catégorie</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var aj in projet.AspectsJuridiques)
+                {
+                    <tr>
+                        <td>@aj.CategorieAspect</td>
+                        <td>@aj.DescAspectsJuridiques</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    @* Parties prenantes *@
+    @if (projet.PartiesPrenantes != null && projet.PartiesPrenantes.Any())
+    {
+        <h3>Parties prenantes</h3>
+        <table class="table table-sm table-striped">
+            <thead>
+                <tr>
+                    <th>Firme</th>
+                    <th>Tél.</th>
+                    <th>Courriel</th>
+                    <th>Rôle</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in projet.PartiesPrenantes)
+                {
+                    <tr>
+                        <td>@p.NomFirme</td>
+                        <td>@p.TelephoneFirme</td>
+                        <td>@p.CourrielFirme</td>
+                        <td>@p.RoleFirme</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    @* Indicateurs *@
+    @if (projet.IndicateursDeResultats != null && projet.IndicateursDeResultats.Any())
+    {
+        <h3>Indicateurs de résultats</h3>
+        <ul>
+            @foreach (var ind in projet.IndicateursDeResultats)
+            {
+                <li>@ind.DefinitionIndicateursDeResu - Quantité: @ind.QuantiteAssocieAIndicateur</li>
+            }
+        </ul>
+    }
+
+    @* Livrables *@
+    @if (projet.LivrablesProjets != null && projet.LivrablesProjets.Any())
+    {
+        <h3>Livrables</h3>
+        <ul>
+            @foreach (var liv in projet.LivrablesProjets)
+            {
+                <li>@liv.DefinitionLivrablesDuProjet (@(liv.ValeurLivree ?? 0)) — Valeur: @liv.ValeurLivree</li>
+            }
+        </ul>
+    }
+
+    @* Coûts annuels *@
+    @if (projet.CoutAnnuelDuProjet != null && projet.CoutAnnuelDuProjet.Any())
+    {
+        <h3>Coûts annuels</h3>
+        <table class="table table-sm table-bordered">
+            <thead>
+                <tr>
+                    <th>Exercice début</th>
+                    <th>Exercice fin</th>
+                    <th>Source</th>
+                    <th>Montant</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var c in projet.CoutAnnuelDuProjet)
+                {
+                    <tr>
+                        <td>@c.ExerciceFiscaleDebut</td>
+                        <td>@c.ExerciceFiscaleFin</td>
+                        <td>@c.SourcesDeFinancementCoutAn</td>
+                        <td>@c.MontantAnnuel</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    @* Cadre logique (depuis Model.CadreLogique) *@
+    @if (Model.CadreLogique != null)
+    {
+        <h3>Cadre logique</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <th>Intrants - Résumé narratif</th>
+                    <td>@Model.CadreLogique.IntrantsResumeNarratif</td>
+                </tr>
+                <tr>
+                    <th>Extrants - Résumé narratif</th>
+                    <td>@Model.CadreLogique.ExtrantsResumeNarratif</td>
+                </tr>
+                <tr>
+                    <th>Objectifs spécifiques - Résumé narratif</th>
+                    <td>@Model.CadreLogique.ObjectifsSpecifiquesResumeNarratif</td>
+                </tr>
+                <tr>
+                    <th>Objectif général - Résumé narratif</th>
+                    <td>@Model.CadreLogique.ObjectifGeneralResumeNarratif</td>
+                </tr>
+                <tr>
+                    <th>Intrants - IOV</th>
+                    <td>@Model.CadreLogique.IntrantsIov</td>
+                </tr>
+                <tr>
+                    <th>Extrants - IOV</th>
+                    <td>@Model.CadreLogique.ExtrantsIov</td>
+                </tr>
+                <tr>
+                    <th>Objectifs spécifiques - IOV</th>
+                    <td>@Model.CadreLogique.ObjectifsSpecifiquesIov</td>
+                </tr>
+                <tr>
+                    <th>Objectif général - IOV</th>
+                    <td>@Model.CadreLogique.ObjectifGeneralIov</td>
+                </tr>
+                <tr>
+                    <th>Intrants - SMOV</th>
+                    <td>@Model.CadreLogique.IntrantsSmov</td>
+                </tr>
+                <tr>
+                    <th>Extrants - SMOV</th>
+                    <td>@Model.CadreLogique.ExtrantsSmov</td>
+                </tr>
+                <tr>
+                    <th>Objectifs spécifiques - SMOV</th>
+                    <td>@Model.CadreLogique.ObjectifsSpecifiquesSmov</td>
+                </tr>
+                <tr>
+                    <th>Objectif général - SMOV</th>
+                    <td>@Model.CadreLogique.ObjectifGeneralSmov</td>
+                </tr>
+                <tr>
+                    <th>Risques & Hypothèses (intrants)</th>
+                    <td>@Model.CadreLogique.IntrantsRisquesHypotheses</td>
+                </tr>
+                <tr>
+                    <th>Risques & Hypothèses (extrants)</th>
+                    <td>@Model.CadreLogique.ExtrantsRisquesHypotheses</td>
+                </tr>
+                <tr>
+                    <th>Risques & Hypothèses (objectifs spécifiques)</th>
+                    <td>@Model.CadreLogique.ObjectifsSpecifiquesRisquesHypotheses</td>
+                </tr>
+                <tr>
+                    <th>Risques & Hypothèses (objectif général)</th>
+                    <td>@Model.CadreLogique.ObjectifGeneralRisquesHypotheses</td>
+                </tr>
+            </tbody>
+        </table>
+    }
+
+    <div class="mt-3">
+        <a asp-action="Edit" asp-route-id="@projet.IdIdentificationProjet" class="btn btn-warning">Modifier</a>
+        <a asp-action="Delete" asp-route-id="@projet.IdIdentificationProjet" class="btn btn-danger">Supprimer</a>
+        <a asp-area="BanqueProjet" asp-controller="GrilleDdpProjet" asp-action="Create" asp-route-idProjet="@projet.IdIdentificationProjet" class="btn btn-primary">
+            Analyser ce projet
+        </a>
+        <a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
+    </div>
+}

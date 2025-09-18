@@ -66,7 +66,7 @@ namespace Programmation.API
         }
 
         [HttpDelete("projets/{id}")]
-        public async Task<ActionResult> DeleteProjet(byte id)
+        public async Task<ActionResult> DeleteProjet(string id)
         {
             await _programmationService.SupprimerAsync(id);
             return NoContent();

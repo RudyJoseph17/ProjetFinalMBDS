@@ -49,6 +49,9 @@ namespace BanqueProjet.Application.Dtos
         public string? DureeProjet { get; set; }
         public decimal? CoutTotalProjet { get; set; }
         public EchelonTerritorial? EchelonTerritorial { get; set; }
+        public string? AvisProjet { get; set; } // "oui", "non", "Projet à analyser"
+        public byte? IdGrilleDdpProjet { get; set; } // Id de la grille si existante
+
 
 
         // Collections simplifiées ou DTOs correspondants

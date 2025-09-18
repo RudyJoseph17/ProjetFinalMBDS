@@ -1,0 +1,286 @@
+﻿@model BanqueProjet.Application.Dtos.GrilleDdpProjetDto
+@{
+    ViewData["Title"] = "Modifier une grille DDP";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="IdGrilleDdpProjet" />
+
+    <div class="mb-3">
+        <label asp-for="TitreProjet" class="form-label"></label>
+        <input asp-for="TitreProjet" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Ministere" class="form-label"></label>
+        <input asp-for="Ministere" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DateSoumission" class="form-label"></label>
+        <input asp-for="DateSoumission" type="date" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DateDebutAnalyse" class="form-label"></label>
+        <input asp-for="DateDebutAnalyse" type="date" class="form-control" />
+    </div>
+
+    <!-- Tous les bool? avec select tri-état -->
+    <div class="mb-3">
+        <label asp-for="TitreProjetAol" class="form-label"></label>
+        <select asp-for="TitreProjetAol" class="form-select">
+            <option value="">-- Non renseigné --</option>
+            <option value="true" selected="@(Model.TitreProjetAol == true)">Oui</option>
+            <option value="false" selected="@(Model.TitreProjetAol == false)">Non</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ProjetLienPsdh" class="form-label"></label>
+        <select asp-for="ProjetLienPsdh" class="form-select">
+            <option value="">-- Non renseigné --</option>
+            <option value="true" selected="@(Model.ProjetLienPsdh == true)">Oui</option>
+            <option value="false" selected="@(Model.ProjetLienPsdh == false)">Non</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="HistoriqueDecrit" class="form-label"></label>
+        <select asp-for="HistoriqueDecrit" class="form-select">
+            <option value="">-- Non renseigné --</option>
+            <option value="true" selected="@(Model.HistoriqueDecrit == true)">Oui</option>
+            <option value="false" selected="@(Model.HistoriqueDecrit == false)">Non</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="JustificationDemontree" class="form-label"></label>
+        <select asp-for="JustificationDemontree" class="form-select">
+            <option value="">-- Non renseigné --</option>
+            <option value="true" selected="@(Model.JustificationDemontree == true)">Oui</option>
+            <option value="false" selected="@(Model.JustificationDemontree == false)">Non</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ProjetObjectifClair" class="form-label"></label>
+        <select asp-for="ProjetObjectifClair" class="form-select">
+            <option value="">-- Non renseigné --</option>
+            <option value="true" selected="@(Model.ProjetObjectifClair == true)">Oui</option>
+            <option value="false" selected="@(Model.ProjetObjectifClair == false)">Non</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="EffetsAttendusCoherents" class="form-label"></label>
+        <select asp-for="EffetsAttendusCoherents" class="form-select">
+            <option value="">-- Non renseigné --</option>
+            <option value="true" selected="@(Model.EffetsAttendusCoherents == true)">Oui</option>
+            <option value="false" selected="@(Model.EffetsAttendusCoherents == false)">Non</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="PopulationViseeDecrite" class="form-label"></label>
+        <select asp-for="PopulationViseeDecrite" class="form-select">
+            <option value="">-- Non renseigné --</option>
+            <option value="true" selected="@(Model.PopulationViseeDecrite == true)">Oui</option>
+            <option value="false" selected="@(Model.PopulationViseeDecrite == false)">Non</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="LocalisationDecrite" class="form-label"></label>
+        <select asp-for="LocalisationDecrite" class="form-select">
+            <option value="">-- Non renseigné --</option>
+            <option value="true" selected="@(Model.LocalisationDecrite == true)">Oui</option>
+            <option value="false" selected="@(Model.LocalisationDecrite == false)">Non</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DureeTotalProjetBienDefine" class="form-label"></label>
+        <select asp-for="DureeTotalProjetBienDefine" class="form-select">
+            <option value="">-- Non renseigné --</option>
+            <option value="true" selected="@(Model.DureeTotalProjetBienDefine == true)">Oui</option>
+            <option value="false" selected="@(Model.DureeTotalProjetBienDefine == false)">Non</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CoutTotalProjetBienDetermine" class="form-label"></label>
+        <select asp-for="CoutTotalProjetBienDetermine" class="form-select">
+            <option value="">-- Non renseigné --</option>
+            <option value="true" selected="@(Model.CoutTotalProjetBienDetermine == true)">Oui</option>
+            <option value="false" selected="@(Model.CoutTotalProjetBienDetermine == false)">Non</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="EmploisCreesIdentifies" class="form-label"></label>
+        <select asp-for="EmploisCreesIdentifies" class="form-select">
+            <option value="">-- Non renseigné --</option>
+            <option value="true" selected="@(Model.EmploisCreesIdentifies == true)">Oui</option>
+            <option value="false" selected="@(Model.EmploisCreesIdentifies == false)">Non</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="FacteurGenrePrisEnCompte" class="form-label"></label>
+        <select asp-for="FacteurGenrePrisEnCompte" class="form-select">
+            <option value="">-- Non renseigné --</option>
+            <option value="true" selected="@(Model.FacteurGenrePrisEnCompte == true)">Oui</option>
+            <option value="false" selected="@(Model.FacteurGenrePrisEnCompte == false)">Non</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="EtudesSatisfaisantes" class="form-label"></label>
+        <select asp-for="EtudesSatisfaisantes" class="form-select">
+            <option value="">-- Non renseigné --</option>
+            <option value="true" selected="@(Model.EtudesSatisfaisantes == true)">Oui</option>
+            <option value="false" selected="@(Model.EtudesSatisfaisantes == false)">Non</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ActivitesEtResultatsDecrits" class="form-label"></label>
+        <select asp-for="ActivitesEtResultatsDecrits" class="form-select">
+            <option value="">-- Non renseigné --</option>
+            <option value="true" selected="@(Model.ActivitesEtResultatsDecrits == true)">Oui</option>
+            <option value="false" selected="@(Model.ActivitesEtResultatsDecrits == false)">Non</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DureeActiviteDansGantt" class="form-label"></label>
+        <select asp-for="DureeActiviteDansGantt" class="form-select">
+            <option value="">-- Non renseigné --</option>
+            <option value="true" selected="@(Model.DureeActiviteDansGantt == true)">Oui</option>
+            <option value="false" selected="@(Model.DureeActiviteDansGantt == false)">Non</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CalendrierFinancierCorrespondGantt" class="form-label"></label>
+        <select asp-for="CalendrierFinancierCorrespondGantt" class="form-select">
+            <option value="">-- Non renseigné --</option>
+            <option value="true" selected="@(Model.CalendrierFinancierCorrespondGantt == true)">Oui</option>
+            <option value="false" selected="@(Model.CalendrierFinancierCorrespondGantt == false)">Non</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CalculsDepensesExacts" class="form-label"></label>
+        <select asp-for="CalculsDepensesExacts" class="form-select">
+            <option value="">-- Non renseigné --</option>
+            <option value="true" selected="@(Model.CalculsDepensesExacts == true)">Oui</option>
+            <option value="false" selected="@(Model.CalculsDepensesExacts == false)">Non</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DepensesPrevuesPermetActivites" class="form-label"></label>
+        <select asp-for="DepensesPrevuesPermetActivites" class="form-select">
+            <option value="">-- Non renseigné --</option>
+            <option value="true" selected="@(Model.DepensesPrevuesPermetActivites == true)">Oui</option>
+            <option value="false" selected="@(Model.DepensesPrevuesPermetActivites == false)">Non</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DepensesProjetIncluses" class="form-label"></label>
+        <select asp-for="DepensesProjetIncluses" class="form-select">
+            <option value="">-- Non renseigné --</option>
+            <option value="true" selected="@(Model.DepensesProjetIncluses == true)">Oui</option>
+            <option value="false" selected="@(Model.DepensesProjetIncluses == false)">Non</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="SourcesFinancementIdentifiees" class="form-label"></label>
+        <select asp-for="SourcesFinancementIdentifiees" class="form-select">
+            <option value="">-- Non renseigné --</option>
+            <option value="true" selected="@(Model.SourcesFinancementIdentifiees == true)">Oui</option>
+            <option value="false" selected="@(Model.SourcesFinancementIdentifiees == false)">Non</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="EntitesRolesClairementDefinis" class="form-label"></label>
+        <select asp-for="EntitesRolesClairementDefinis" class="form-select">
+            <option value="">-- Non renseigné --</option>
+            <option value="true" selected="@(Model.EntitesRolesClairementDefinis == true)">Oui</option>
+            <option value="false" selected="@(Model.EntitesRolesClairementDefinis == false)">Non</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="StructureOrgaInclutEntites" class="form-label"></label>
+        <select asp-for="StructureOrgaInclutEntites" class="form-select">
+            <option value="">-- Non renseigné --</option>
+            <option value="true" selected="@(Model.StructureOrgaInclutEntites == true)">Oui</option>
+            <option value="false" selected="@(Model.StructureOrgaInclutEntites == false)">Non</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ObjectifGeneralSpecifiqueDefinis" class="form-label"></label>
+        <select asp-for="ObjectifGeneralSpecifiqueDefinis" class="form-select">
+            <option value="">-- Non renseigné --</option>
+            <option value="true" selected="@(Model.ObjectifGeneralSpecifiqueDefinis == true)">Oui</option>
+            <option value="false" selected="@(Model.ObjectifGeneralSpecifiqueDefinis == false)">Non</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DetailsSuffisantsAspJuridiques" class="form-label"></label>
+        <select asp-for="DetailsSuffisantsAspJuridiques" class="form-select">
+            <option value="">-- Non renseigné --</option>
+            <option value="true" selected="@(Model.DetailsSuffisantsAspJuridiques == true)">Oui</option>
+            <option value="false" selected="@(Model.DetailsSuffisantsAspJuridiques == false)">Non</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="PassationDesMarchesRigoureux" class="form-label"></label>
+        <select asp-for="PassationDesMarchesRigoureux" class="form-select">
+            <option value="">-- Non renseigné --</option>
+            <option value="true" selected="@(Model.PassationDesMarchesRigoureux == true)">Oui</option>
+            <option value="false" selected="@(Model.PassationDesMarchesRigoureux == false)">Non</option>
+        </select>
+    </div>
+
+    <!-- Champs texte -->
+    <div class="mb-3">
+        <label asp-for="CommentairesGeneraux" class="form-label"></label>
+        <textarea asp-for="CommentairesGeneraux" class="form-control"></textarea>
+    </div>
+    <div class="mb-3">
+        <label asp-for="ResultatsAnalyse" class="form-label"></label>
+        <textarea asp-for="ResultatsAnalyse" class="form-control"></textarea>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Recommandations" class="form-label"></label>
+        <textarea asp-for="Recommandations" class="form-control"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Decision" class="form-label"></label>
+        <input asp-for="Decision" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="DateAvis" class="form-label"></label>
+        <input asp-for="DateAvis" type="date" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="IdIdentificationProjet" class="form-label"></label>
+        <input asp-for="IdIdentificationProjet" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Enregistrer</button>
+    <a asp-action="Index" class="btn btn-secondary">Annuler</a>
+</form>

@@ -11,7 +11,7 @@ namespace Programmation.Application.Interface
     {
         Task AjouterAsync(ProgrammationProjetDto programmationProjetDto);
         Task MettreAJourAsync(ProgrammationProjetDto programmationProjetDto);
-        Task SupprimerAsync(byte IdIdentificationProjet);
+        Task SupprimerAsync(string IdIdentificationProjet);
         Task<List<ProgrammationProjetDto>> ObtenirTousAsync();
         Task<ProgrammationProjetDto?> ObtenirParIdAsync(string id);
     }

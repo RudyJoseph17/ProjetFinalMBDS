@@ -1,41 +1,44 @@
-﻿@model IEnumerable<Programmation.Application.Dtos.ProgrammationProjetDto>
-
+﻿@model IEnumerable<BanqueProjet.Application.Dtos.ProjetsBPDto>
 @{
-    ViewData["Title"] = "Liste des programmations";
+    ViewData["Title"] = "Projets avec avis favorable";
 }
 
 <h2>@ViewData["Title"]</h2>
 
-<p>
-    <a asp-action="Create">Nouvelle programmation</a>
-</p>
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
 
-<table class="table">
-    <thead>
+<table class="table table-bordered table-hover">
+    <thead class="table-light">
         <tr>
-            <th>Id projet</th>
-            <th>Nombre de livrables</th>
-            <th>Nombre d’infos financières</th>
-            <th></th>
+            <th>Id</th>
+            <th>Nom du projet</th>
+            <th>Avis</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var projet in Model)
         {
             <tr>
-                <td>@item.IdIdentificationProjet</td>
-                <td>@item.LivrablesProgrammesProjets.Count()</td>
-                <td>@item.InformationsFinancieresProgrammeesProjet?.Count()</td>
+                <td>@projet.IdIdentificationProjet</td>
+                <td>@projet.NomProjet</td>
+                <td>@projet.AvisProjet</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.IdIdentificationProjet">Détails</a> |
-                    <a asp-action="Edit" asp-route-id="@item.IdIdentificationProjet">Modifier</a> |
-                    <form asp-action="Delete" asp-route-id="@item.IdIdentificationProjet"
-                          method="post" style="display:inline">
-                        <button type="submit" onclick="return confirm('Supprimer ?');">Supprimer</button>
+                    <a asp-action="Create" asp-route-idProjet="@projet.IdIdentificationProjet" class="btn btn-primary btn-sm mb-1">Nouvelle programmation</a>
+                    <a asp-action="Details" asp-route-idProjet="@projet.IdIdentificationProjet" class="btn btn-info btn-sm mb-1">Détails</a>
+                    <a asp-action="Edit" asp-route-idProjet="@projet.IdIdentificationProjet" class="btn btn-warning btn-sm mb-1">Modifier</a>
+                    <form asp-action="Delete" asp-route-idProjet="@projet.IdIdentificationProjet" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Confirmer la suppression ?');">Supprimer</button>
                     </form>
                 </td>
             </tr>
         }
     </tbody>
 </table>
-

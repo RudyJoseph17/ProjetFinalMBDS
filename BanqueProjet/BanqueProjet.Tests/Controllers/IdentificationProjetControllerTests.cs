@@ -25,11 +25,13 @@ namespace BanqueProjet.Tests.Controllers
             var mockCadre = new Mock<IDdpCadreLogiqueService>();
             var mockAspects = new Mock<IAspectsJuridiquesService>();
             var mockLocalisation = new Mock<ILocalisationGeographiqueProjService>();
+            var mockGrilleDdp = new Mock<IGrilleDdpProjetService>();
 
             ProjetsBPDto? projetsCaptured = null;
             DdpCadreLogiqueDto? cadreCaptured = null;
             AspectsJuridiquesDto? aspectsCaptured = null;
             LocalisationGeographiqueProjDto? localisationCaptured = null;
+            GrilleDdpProjetDto? grilleDdpCaptured = null;
 
             mockProjetService
                 .Setup(s => s.AjouterAsync(It.IsAny<ProjetsBPDto>()))
@@ -58,6 +60,7 @@ namespace BanqueProjet.Tests.Controllers
                 mockCadre.Object,
                 mockAspects.Object,
                 mockLocalisation.Object,
+                mockGrilleDdp.Object,
                 logger
             );
 
@@ -72,6 +75,7 @@ namespace BanqueProjet.Tests.Controllers
                 CadreLogique = new DdpCadreLogiqueDto(),
                 AspectsJuridiques = new List<AspectsJuridiquesDto>(),
                 LocalisationGeographique = new LocalisationGeographiqueProjDto()
+
             };
 
             // Act
