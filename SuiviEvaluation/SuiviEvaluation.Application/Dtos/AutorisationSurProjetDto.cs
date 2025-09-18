@@ -15,7 +15,7 @@ namespace SuiviEvaluation.Application.Dtos
         public byte? ExerciceFiscalDebut { get; set; }
         public byte? ExerciceFiscalFin { get; set; }
         public string? Article { get; set; }
-        public string? Alinea { get; set; }
+        //public string? Alinea { get; set; }
         public string? MoisAutorisation { get; set; }
         public decimal? MontantAutorisation { get; set; }
     }

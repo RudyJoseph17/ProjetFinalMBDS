@@ -53,8 +53,8 @@ namespace SuiviEvaluation.Infrastructure.Persistence
                 cmd.CommandText = @"
                   SELECT ID_IDENTIFICATION_PROJET, ID_ACTIVITES,
                          EXERCICE_FISCAL_DEBUT, EXERCICE_FISCAL_FIN,
-                         ARTICLE, ALINEA, MOIS_DEPENSE, MONTANT_DEPENSE
-                    FROM O_VIEW_DEPENSES_REELLES_SUR_PROJET";
+                         MONTANT_DEPENSE
+                    FROM VIEW_ACTIVITES_IFORMATIONS_FINANCIERES";
                 using var reader = await cmd.ExecuteReaderAsync();
                 while (await reader.ReadAsync())
                 {
@@ -85,8 +85,8 @@ namespace SuiviEvaluation.Infrastructure.Persistence
                 cmd.CommandText = @"
                   SELECT ID_IDENTIFICATION_PROJET, ID_ACTIVITES,
                          EXERCICE_FISCAL_DEBUT, EXERCICE_FISCAL_FIN,
-                         ARTICLE, ALINEA, MOIS_DEPENSE, MONTANT_DEPENSE
-                    FROM O_VIEW_DEPENSES_REELLES_SUR_PROJET
+                         MONTANT_DEPENSE
+                    FROM VIEW_ACTIVITES_IFORMATIONS_FINANCIERES
                    WHERE ID_IDENTIFICATION_PROJET = :p_id";
                 var p = cmd.CreateParameter();
                 p.ParameterName = "p_id";
@@ -123,8 +123,8 @@ namespace SuiviEvaluation.Infrastructure.Persistence
                 cmd.CommandText = @"
                   SELECT ID_IDENTIFICATION_PROJET, ID_ACTIVITES,
                          EXERCICE_FISCAL_DEBUT, EXERCICE_FISCAL_FIN,
-                         ARTICLE, ALINEA, MOIS_DEPENSE, MONTANT_DEPENSE
-                    FROM O_VIEW_DEPENSES_REELLES_SUR_PROJET
+                         MONTANT_DEPENSE
+                    FROM VIEW_ACTIVITES_IFORMATIONS_FINANCIERES
                    WHERE ID_ACTIVITES = :p_id";
                 var p = cmd.CreateParameter();
                 p.ParameterName = "p_id";
