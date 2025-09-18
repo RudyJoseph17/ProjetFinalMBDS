@@ -1,42 +1,78 @@
-﻿+ @*
-+   Views/Shared/_ViewStart.cshtml définit déjà :
-+   Layout = "_Layout.cshtml"
-+ *@
-
-+ @{
+﻿@model IEnumerable<SuiviEvaluation.Web.Models.ProjetListItemViewModel>
+@{
     ViewData["Title"] = "Accueil";
 }
 
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">Bienvenue sur le module de Suivi Evaluation</h1>
-    @*  <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-    <i class="fas fa-download fa-sm text-white-50"></i> Générer un rapport
-    </a> *@
 </div>
 
 <div class="row">
-    <!-- Exemple de cards SB Admin -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            Projets Totaux
-                        </div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">25</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                    </div>
+    <div class="col-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Projets enregistrés</h6>
+                <div>
+                    <a asp-area="SuiviEvaluation" asp-controller="Home" asp-action="Index" class="btn btn-sm btn-outline-secondary">Rafraîchir</a>
                 </div>
+            </div>
+            <div class="card-body">
+                @if (Model == null || !Model.Any())
+                {
+                    <div class="alert alert-info">Aucun projet trouvé dans le système.</div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Nom</th>
+                                    <th class="text-right">Coût total</th>
+                                    <th style="width:280px">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.NomProjet</td>
+                                        <td class="text-right">@string.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:N2}", item.CoutTotal)</td>
+                                        <td>
+                                            <div class="btn-group" role="group" aria-label="Actions pour @item.NomProjet">
+                                                <a class="btn btn-sm btn-primary"
+                                                   href="@Url.Action("Create", "AutorisationSurProjet", new { area = "SuiviEvaluation", nomProjet = item.NomProjet })"
+                                                   title="Entrer une autorisation">Entrer une autorisation</a>
+
+                                                <a class="btn btn-sm btn-success"
+                                                   href="@Url.Action("Create", "DecaissementSurProjet", new { area = "SuiviEvaluation", nomProjet = item.NomProjet })"
+                                                   title="Entrer un décaissement">Entrer un décaissement</a>
+
+                                                <a class="btn btn-sm btn-warning text-white"
+                                                   href="@Url.Action("Create", "DepenseReelleSurProjet", new { area = "SuiviEvaluation", nomProjet = item.NomProjet })"
+                                                   title="Entrer une dépense">Entrer une dépense</a>
+
+                                                <a class="btn btn-sm btn-secondary" href="@Url.Action("Details", "Projets", new { area = "BanqueProjet", id = item.Id })" title="Voir détails">Détails</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
             </div>
         </div>
     </div>
-    <!-- … autres cards … -->
 </div>
 
 @section Scripts {
-    <!-- Si votre page a des scripts spécifiques -->
-    <script src="~/js/mon-chart-custom.js"></script>
+    <script>
+        // Si besoin : fonction d'aide pour ouvrir la page Create et préremplir côté client
+        // Note : les contrôleurs ciblés doivent accepter le paramètre querystring `nomProjet` et préremplir le champ.
+        function openCreate(controller, nomProjet) {
+            var url = '/' + 'SuiviEvaluation' + '/' + controller + '/Create?nomProjet=' + encodeURIComponent(nomProjet);
+            window.location.href = url;
+        }
+    </script>
 }

@@ -183,5 +183,11 @@ namespace BanqueProjet.Infrastructure.Persistence
                 DateMiseAJour = first.DateMiseAJour
             };
         }
+
+        public async Task<List<ProjetsBPDto>> GetProjetsSommaireAsync()
+        {
+            // réutilise la logique existante
+            return await ObtenirTousAsync();
+        }
     }
 }

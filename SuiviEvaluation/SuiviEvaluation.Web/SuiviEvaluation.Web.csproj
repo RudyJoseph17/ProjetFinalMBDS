@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
+    <ProjectReference Include="..\..\BanqueProjet\BanqueProjet.Application\BanqueProjet.Application.csproj" />
     <ProjectReference Include="..\..\Shared\Shared.Domain\Shared.Domain.csproj" />
     <ProjectReference Include="..\SuiviEvaluation.Application\SuiviEvaluation.Application.csproj" />
     <ProjectReference Include="..\SuiviEvaluation.Infrastructure\SuiviEvaluation.Infrastructure.csproj" />

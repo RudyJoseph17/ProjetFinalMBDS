@@ -90,5 +90,15 @@ namespace BanqueProjet.Tests.Services
         {
             throw new NotImplementedException();
         }
+
+        public Task<string?> GetProjetsSommaireAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<List<ProjetsBPDto>> IProjetsBPService.GetProjetsSommaireAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

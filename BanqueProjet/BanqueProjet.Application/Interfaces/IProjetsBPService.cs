@@ -14,5 +14,6 @@ namespace BanqueProjet.Application.Interfaces
         Task SupprimerAsync(string IdIdentificationProjet);
         Task<List<ProjetsBPDto>> ObtenirTousAsync();
         Task<ProjetsBPDto?> ObtenirParIdAsync(string id);
+        Task<List<ProjetsBPDto>> GetProjetsSommaireAsync();
     }
 }
