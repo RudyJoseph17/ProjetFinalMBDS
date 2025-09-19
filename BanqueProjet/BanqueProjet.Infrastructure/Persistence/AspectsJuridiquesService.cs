@@ -124,5 +124,10 @@ namespace BanqueProjet.Infrastructure.Persistence
 
             await cmd.ExecuteNonQueryAsync();
         }
+
+        //public Task<List<AspectsJuridiquesDto>> ObtenirParIdAsync(string id)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

@@ -1,6 +1,7 @@
 ﻿using BanqueProjet.Application.Dtos;
 using BanqueProjet.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Oracle.ManagedDataAccess.Client;
 
 namespace BanqueProjet.Web.Areas.BanqueProjet.Controllers
 {
@@ -31,10 +32,23 @@ namespace BanqueProjet.Web.Areas.BanqueProjet.Controllers
             return View(grille);
         }
 
-        // GET: Create
-        public IActionResult Create()
+        // GET: Create?projetId=CQ0-04-EQ-4C&nomProjet=Entretien
+        public async Task<IActionResult> Create(
+            [FromQuery(Name = "projetId")] string idProjet,
+            [FromQuery(Name = "nomProjet")] string nomProjet)
         {
-            return View();
+            if (string.IsNullOrEmpty(idProjet))
+                return BadRequest("ID projet manquant.");
+
+            var existingGrille = await _service.ObtenirParProjetIdAsync(idProjet);
+
+            var dto = existingGrille ?? new GrilleDdpProjetDto
+            {
+                IdIdentificationProjet = idProjet,
+                TitreProjet = !string.IsNullOrEmpty(nomProjet) ? nomProjet : "Nom du projet ici si nécessaire"
+            };
+
+            return View(dto);
         }
 
         // POST: Create
@@ -45,11 +59,26 @@ namespace BanqueProjet.Web.Areas.BanqueProjet.Controllers
             if (!ModelState.IsValid)
                 return View(dto);
 
-            await _service.AjouterAsync(dto);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _service.AjouterAsync(dto);
+                TempData["SuccessMessage"] = "La grille DDP a été créée avec succès.";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (OracleException ex) when (ex.Number == 1)
+            {
+                // PK violation
+                ModelState.AddModelError("", "Une grille DDP existe déjà pour ce projet.");
+                return View(dto);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Erreur lors de la création : {ex.Message}");
+                return View(dto);
+            }
         }
 
-        // GET: GrilleDdpProjet/Edit/5
+        // GET: Edit
         public async Task<IActionResult> Edit(byte id)
         {
             if (id == 0)
@@ -62,7 +91,7 @@ namespace BanqueProjet.Web.Areas.BanqueProjet.Controllers
             return View(grille);
         }
 
-        // POST: GrilleDdpProjet/Edit/5
+        // POST: Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(byte id, GrilleDdpProjetDto grilleDdpProjetDto)
@@ -81,7 +110,6 @@ namespace BanqueProjet.Web.Areas.BanqueProjet.Controllers
             }
             catch (Exception ex)
             {
-                // Ici tu peux logger l'erreur
                 ModelState.AddModelError("", $"Erreur lors de la mise à jour : {ex.Message}");
                 return View(grilleDdpProjetDto);
             }

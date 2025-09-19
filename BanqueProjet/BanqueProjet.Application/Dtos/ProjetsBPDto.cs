@@ -21,6 +21,8 @@ namespace BanqueProjet.Application.Dtos
         public string? NomProjet { get; set; }
         public string? Ministere { get; set; }
         public string? Section { get; set; }
+
+        [JsonProperty("CODE_PIP")]
         public string CodePip { get; set; }
         public string CodeBailleur { get; set; }
         public string JustificationProjet { get; set; }

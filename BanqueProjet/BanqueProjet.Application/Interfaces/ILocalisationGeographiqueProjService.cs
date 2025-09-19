@@ -14,5 +14,6 @@ namespace BanqueProjet.Application.Interfaces
         Task SupprimerAsync(byte IdLocalisationGeographique);
         Task<List<LocalisationGeographiqueProjDto>> ObtenirTousAsync();
         Task<LocalisationGeographiqueProjDto?> ObtenirParIdAsync(byte id);
+        //Task<LocalisationGeographiqueProjDto> ObtenirParIdAsync(string id);
     }
 }

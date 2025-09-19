@@ -15,6 +15,6 @@ namespace BanqueProjet.Application.Interfaces
         Task<List<GrilleDdpProjetDto>> ObtenirTousAsync();
         Task<GrilleDdpProjetDto?> ObtenirParIdAsync(byte id);
         Task<GrilleDdpProjetDto?> ObtenirParProjetIdAsync(string IdIdentificationProjet);
-
+        //Task<List<GrilleDdpProjetDto>> ObtenirParIdAsync(string id);
     }
 }

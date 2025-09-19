@@ -14,6 +14,7 @@ namespace BanqueProjet.Application.Interfaces
         Task SupprimerAsync(byte IdAspectsJuridiques);
         Task<List<AspectsJuridiquesDto>> ObtenirTousAsync();
         Task<AspectsJuridiquesDto?> ObtenirParIdAsync(byte id);
+        //Task<List<AspectsJuridiquesDto>> ObtenirParIdAsync(string id);
     }
 
 }

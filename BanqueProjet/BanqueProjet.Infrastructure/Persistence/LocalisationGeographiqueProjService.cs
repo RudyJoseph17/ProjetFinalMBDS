@@ -124,5 +124,10 @@ namespace BanqueProjet.Infrastructure.Persistence
 
             await cmd.ExecuteNonQueryAsync();
         }
+
+        //public Task<LocalisationGeographiqueProjDto> ObtenirParIdAsync(string id)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }
