@@ -2,16 +2,16 @@
 @{
     ViewData["Title"] = "Supprimer autorisation";
 }
-
 <h1>@ViewData["Title"]</h1>
 
-<h3>Voulez-vous vraiment supprimer cette autorisation ?</h3>
+<h4>Voulez-vous vraiment supprimer cette autorisation ?</h4>
+<hr />
 
 <dl class="row">
     <dt class="col-sm-3">Projet</dt>
     <dd class="col-sm-9">@Model.IdIdentificationProjet</dd>
 
-    <dt class="col-sm-3">Activité</dt>
+    <dt class="col-sm-3">Id Activité</dt>
     <dd class="col-sm-9">@Model.IdActivites</dd>
 
     <dt class="col-sm-3">Exercice début</dt>
@@ -20,21 +20,13 @@
     <dt class="col-sm-3">Exercice fin</dt>
     <dd class="col-sm-9">@Model.ExerciceFiscalFin</dd>
 
-    <dt class="col-sm-3">Article</dt>
-    <dd class="col-sm-9">@Model.Article</dd>
-
-    <dt class="col-sm-3">Alinea</dt>
-    <dd class="col-sm-9">@Model.Alinea</dd>
-
-    <dt class="col-sm-3">Mois</dt>
-    <dd class="col-sm-9">@Model.MoisAutorisation</dd>
-
     <dt class="col-sm-3">Montant</dt>
     <dd class="col-sm-9">@Model.MontantAutorisation</dd>
 </dl>
 
-<form asp-action="Delete" asp-route-id="@Model.IdActivites" method="post">
+<form asp-action="Delete" method="post">
     @Html.AntiForgeryToken()
-    <button type="submit" class="btn btn-danger">Oui, supprimer</button>
+    <input asp-for="IdActivites" type="hidden" />
+    <button type="submit" class="btn btn-danger" onclick="return confirm('Confirmer la suppression ?')">Supprimer</button>
     <a asp-action="Index" class="btn btn-secondary">Annuler</a>
 </form>

@@ -12,10 +12,12 @@ namespace SuiviEvaluation.Application.Dtos
     {
         [JsonProperty("IdIdentificationProjet")]
         public string IdIdentificationProjet { get; set; }
+        public string NomProjet { get; set; }
+        public int IdActivites { get; set; }
         public byte? ExerciceFiscalDebut { get; set; }
         public byte? ExerciceFiscalFin { get; set; }
         public string? Article { get; set; }
-        //public string? Alinea { get; set; }
+        public string? Alinea { get; set; }
         public string? MoisAutorisation { get; set; }
         public decimal? MontantAutorisation { get; set; }
     }

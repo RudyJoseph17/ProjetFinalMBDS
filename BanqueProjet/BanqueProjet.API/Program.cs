@@ -9,6 +9,7 @@ using BanqueProjet.Application.Interfaces;
 using BanqueProjet.Infrastructure.Persistence;
 using Shared.Domain.Interface;
 using Shared.Infrastructure.Persistence;
+using Shared.Infrastructure.Data;
 
 
 
@@ -44,6 +45,9 @@ builder.Services.AddSwaggerGen();
 
 // Utiliser la chaîne de connexion du fichier .env
 builder.Services.AddDbContext<BanquePDbContext>(options =>
+    options.UseOracle(connectionString));
+
+builder.Services.AddDbContext<SharedDbContext>(options =>
     options.UseOracle(connectionString));
 
 

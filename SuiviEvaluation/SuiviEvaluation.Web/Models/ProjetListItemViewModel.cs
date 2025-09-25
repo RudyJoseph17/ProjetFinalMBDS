@@ -2,9 +2,10 @@
 {
     public class ProjetListItemViewModel
     {
-        public string Id { get; set; }
-        public string NomProjet { get; set; }
-        public decimal CoutTotal { get; set; }
-        public DateTime? DateMiseAJour { get; set; }
+        public string IdIdentificationProjet { get; set; } = string.Empty;
+        public string NomProjet { get; set; } = string.Empty;
+
+        // Ici, c'est maintenant la somme des montants
+        public decimal TotalAutorisation { get; set; } = 0;
     }
 }

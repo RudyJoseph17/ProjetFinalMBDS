@@ -1,8 +1,5 @@
 ﻿using BanqueProjet.Application.Dtos;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BanqueProjet.Application.Interfaces
@@ -11,11 +8,10 @@ namespace BanqueProjet.Application.Interfaces
     {
         Task AjouterAsync(AspectsJuridiquesDto aspectsJuridiques);
         Task MettreAJourAsync(AspectsJuridiquesDto aspectsJuridiques);
-        Task SupprimerAsync(byte IdAspectsJuridiques);
-        Task<List<AspectsJuridiquesDto>> ObtenirTousAsync();
+        Task SupprimerAsync(byte idAspectsJuridiques);
+
+        Task<IEnumerable<AspectsJuridiquesDto>> ObtenirTousAsync();
         Task<AspectsJuridiquesDto?> ObtenirParIdAsync(byte id);
-        //Task<List<AspectsJuridiquesDto>> ObtenirParIdAsync(string id);
+        Task SupprimerAsync(int idAspectsJuridiques);
     }
-
 }
-

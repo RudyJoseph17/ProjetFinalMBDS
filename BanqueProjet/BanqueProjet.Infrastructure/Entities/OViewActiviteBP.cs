@@ -7,7 +7,8 @@ using Microsoft.EntityFrameworkCore;
 namespace BanqueProjet.Infrastructure.Entities;
 
 [Keyless]
-public partial class OViewActivite
+[Table("O_VIEW_ACTIVITES")]
+public partial class OViewActiviteBP
 {
     [Column("ID_ACTIVITES")]
     [Precision(6)]

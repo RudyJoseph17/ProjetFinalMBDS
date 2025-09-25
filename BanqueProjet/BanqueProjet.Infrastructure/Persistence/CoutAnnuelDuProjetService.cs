@@ -89,20 +89,42 @@ namespace BanqueProjet.Infrastructure.Persistence
 
         public async Task<List<CoutAnnuelDuProjetDto>> ObtenirTousAsync()
         {
-            return await _dbContext.Set<CoutAnnuelDuProjetDto>()
-                .FromSqlRaw("SELECT * FROM O_VIEW_COUT_ANNUEL_DU_PROJET")
-                .AsNoTracking()
-                .ToListAsync();
+            var entities = await _dbContext.OViewCoutAnnuelDuProjet
+    .AsNoTracking()
+    .ToListAsync();
+
+            // Mappez-les vers vos DTOs métier
+            return entities.Select(e => new CoutAnnuelDuProjetDto
+            {
+                IdCoutAnnuelProjet = (byte)e.IdCoutAnnuelProjet,
+                ExerciceFiscaleDebut = e.ExerciceFiscaleDebut,
+                ExerciceFiscaleFin = e.ExerciceFiscaleFin,
+                SourcesDeFinancementCoutAn = e.SourcesDeFinancementCoutAn,
+                MontantAnnuel = e.MontantAnnuel,
+                IdIdentificationProjet = e.IdIdentificationProjet
+            })
+            .ToList();
+
         }
 
         public async Task<CoutAnnuelDuProjetDto?> ObtenirParIdAsync(byte id)
         {
-            return await _dbContext.Set<CoutAnnuelDuProjetDto>()
-                .FromSqlRaw(
-                    "SELECT * FROM O_VIEW_COUT_ANNUEL_DU_PROJET WHERE ID_COUT_ANNUEL_PROJET = {0}",
-                    id)
-                .AsNoTracking()
-                .FirstOrDefaultAsync();
+            var e = await _dbContext.OViewCoutAnnuelDuProjet
+    .AsNoTracking()
+    .FirstOrDefaultAsync(x => x.IdCoutAnnuelProjet == id);
+
+            if (e == null) return null;
+
+            return new CoutAnnuelDuProjetDto
+            {
+                IdCoutAnnuelProjet = (byte)e.IdCoutAnnuelProjet,
+                ExerciceFiscaleDebut = e.ExerciceFiscaleDebut,
+                ExerciceFiscaleFin = e.ExerciceFiscaleFin,
+                SourcesDeFinancementCoutAn = e.SourcesDeFinancementCoutAn,
+                MontantAnnuel = e.MontantAnnuel,
+                IdIdentificationProjet = e.IdIdentificationProjet
+            };
+
         }
 
         private async Task ExecuteProcedureAsync(string procedureName, string json)
@@ -123,6 +145,11 @@ namespace BanqueProjet.Infrastructure.Persistence
                 await conn.OpenAsync();
 
             await cmd.ExecuteNonQueryAsync();
+        }
+
+        public Task SupprimerAsync(decimal idCoutAnnuelProjet)
+        {
+            throw new NotImplementedException();
         }
     }
 }

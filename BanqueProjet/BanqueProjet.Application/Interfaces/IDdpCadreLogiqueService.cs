@@ -14,7 +14,9 @@ namespace BanqueProjet.Application.Interfaces
         Task SupprimerAsync(byte IdDdpCadreLogique);
         Task GetNextIdAsync(byte IdDdpCadreLogique);
         Task<List<DdpCadreLogiqueDto>> ObtenirTousAsync();
-        Task<DdpCadreLogiqueDto?> ObtenirParIdAsync(string id);
         Task<byte> GetNextIdAsync();
+        // remplace ou complète l’existant
+        Task<DdpCadreLogiqueDto?> ObtenirParIdentificationProjetAsync(string idIdentificationProjet);
     }
 }
+

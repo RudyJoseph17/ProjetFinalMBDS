@@ -2,54 +2,33 @@
 @{
     ViewData["Title"] = "Détails autorisation";
 }
-
 <h1>@ViewData["Title"]</h1>
 
-<div class="form-group">
-    <label>Projet :</label>
-    <p>@Model.IdIdentificationProjet</p>
-</div>
+<dl class="row">
+    <dt class="col-sm-3">Projet</dt>
+    <dd class="col-sm-9">@Model.IdIdentificationProjet</dd>
 
-<div class="form-group">
-    <label>Activité :</label>
-    <p>@Model.IdActivites</p>
-</div>
+    <dt class="col-sm-3">Id Activité</dt>
+    <dd class="col-sm-9">@Model.IdActivites</dd>
 
-<div class="form-group">
-    <label>Exercice début :</label>
-    <p>@Model.ExerciceFiscalDebut</p>
-</div>
+    <dt class="col-sm-3">Exercice début</dt>
+    <dd class="col-sm-9">@Model.ExerciceFiscalDebut</dd>
 
-<div class="form-group">
-    <label>Exercice fin :</label>
-    <p>@Model.ExerciceFiscalFin</p>
-</div>
+    <dt class="col-sm-3">Exercice fin</dt>
+    <dd class="col-sm-9">@Model.ExerciceFiscalFin</dd>
 
-<div class="form-group">
-    <label>Article :</label>
-    <p>@Model.Article</p>
-</div>
+    <dt class="col-sm-3">Article</dt>
+    <dd class="col-sm-9">@Model.Article</dd>
 
-<div class="form-group">
-    <label>Alinea :</label>
-    <p>@Model.Alinea</p>
-</div>
+    <dt class="col-sm-3">Alinéa</dt>
+    <dd class="col-sm-9">@Model.Alinea</dd>
 
-<div class="form-group">
-    <label>Mois :</label>
-    <p>@Model.MoisAutorisation</p>
-</div>
+    <dt class="col-sm-3">Mois</dt>
+    <dd class="col-sm-9">@Model.MoisAutorisation</dd>
 
-<div class="form-group">
-    <label>Montant :</label>
-    <p>@Model.MontantAutorisation</p>
-</div>
+    <dt class="col-sm-3">Montant</dt>
+    <dd class="col-sm-9">@Model.MontantAutorisation</dd>
+</dl>
 
-<a asp-action="Edit" asp-route-id="@Model.IdActivites" class="btn btn-primary">Éditer</a>
-<form asp-action="Delete" asp-route-id="@Model.IdActivites" method="post" style="display:inline">
-    @Html.AntiForgeryToken()
-    <button type="submit" class="btn btn-danger" onclick="return confirm('Supprimer cette autorisation ?')">
-        Supprimer
-    </button>
-</form>
-<a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
+<a asp-action="Edit" asp-route-id="@Model.IdActivites" class="btn btn-primary">Modifier</a>
+<a asp-action="Index" class="btn btn-secondary">Retour</a>

@@ -16,7 +16,7 @@ public partial class OViewAspectsJuridique
     [Column("DESCRIPTION_ASPECT")]
     [StringLength(500)]
     [Unicode(false)]
-    public string? DescriptionAspect { get; set; }
+    public string? DescAspectsJuridiques { get; set; }
 
     [Column("CATEGORIE_ASPECT")]
     [StringLength(200)]

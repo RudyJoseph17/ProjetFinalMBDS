@@ -15,7 +15,7 @@ namespace BanqueProjet.Web.Models
         public LocalisationGeographiqueProjDto LocalisationGeographique { get; set; } = new();
         public List<CoutAnnuelDuProjetDto> CoutAnnuelDuProjet { get; set; } = new();
         public List<EffetsDuProjetDto> EffetsProjets { get; set; } = new();
-        public List<ImpactsDuProjetDto> ImpactsDuProjets { get; set; } = new();
+        public List<ImpactsDuProjetDto> ImpactsDuProjet { get; set; } = new();
         public List<IndicateursDeResultatDto> IndicateursResultats { get; set; } = new();
         public List<InformationsFinancieresBPDto> InformationsFinancieresBP { get; set; } = new();
         public List<DefinitionLivrablesDuProjetDto> DefinitionLivrables { get; set; } = new();

@@ -16,6 +16,6 @@ namespace SuiviEvaluation.Application.Interfaces
         Task<List<AutorisationSurProjetDto>> ObtenirTousAsync();
         Task<AutorisationSurProjetDto?> ObtenirParIdAsync(string id);
         Task<AutorisationSurProjetDto?> ObtenirParIdActiviteAsync(int id);
-
+        
     }
 }

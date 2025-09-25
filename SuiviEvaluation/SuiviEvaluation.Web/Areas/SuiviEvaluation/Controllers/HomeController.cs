@@ -23,9 +23,9 @@ public class HomeController : Controller
         // mappez vers le ViewModel attendu par la vue
         var vm = projetsDto.Select(p => new ProjetListItemViewModel
         {
-            Id = p.IdIdentificationProjet,
+            IdIdentificationProjet = p.IdIdentificationProjet,
             NomProjet = p.NomProjet,
-            CoutTotal = p.CoutTotalProjet /* <-- Remplacez par la propriété correcte pour le coût total */
+            TotalAutorisation = p.CoutTotalProjet /* <-- Remplacez par la propriété correcte pour le coût total */
                 is decimal ? (decimal)p.CoutTotalProjet : 0m
         }).ToList();
 

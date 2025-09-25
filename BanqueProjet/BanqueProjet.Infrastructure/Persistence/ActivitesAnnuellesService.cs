@@ -41,7 +41,7 @@ namespace BanqueProjet.Infrastructure.Persistence
 
             var payload = new
             {
-                entity = "activites_annuelles",
+                entity = "OViewActivitesAnnuelle",
                 action = "insert",
                 data = activitesAnnuelles
             };
@@ -61,7 +61,7 @@ namespace BanqueProjet.Infrastructure.Persistence
 
             var payload = new
             {
-                entity = "activites_annuelles",
+                entity = "OViewActivitesAnnuelle",
                 action = "update",
                 data = activitesAnnuelles
             };
@@ -76,7 +76,7 @@ namespace BanqueProjet.Infrastructure.Persistence
         {
             var payload = new
             {
-                entity = "activites_annuelles",
+                entity = "OViewActivitesAnnuelle",
                 action = "delete",
                 data = new { IdActivitesAnnuelles }
             };
@@ -89,20 +89,46 @@ namespace BanqueProjet.Infrastructure.Persistence
 
         public async Task<List<ActivitesAnnuellesDto>> ObtenirTousAsync()
         {
-            return await _dbContext.Set<ActivitesAnnuellesDto>()
-                .FromSqlRaw("SELECT * FROM O_VIEW_ACTIVITES_ANNUELLES")
-                .AsNoTracking()
-                .ToListAsync();
+            var entities = await _dbContext.OViewActivitesAnnuelles
+    .AsNoTracking()
+    .ToListAsync();
+
+            // Mappez-les vers vos DTOs métier
+            return entities.Select(e => new ActivitesAnnuellesDto
+            {
+                IdActivitesAnnuelles = (byte)e.IdActivitesAnnuelles,
+                DescriptionActivite = e.DescriptionActivite,
+                ExerciceFiscalDebut = e.ExerciceFiscalDebut,
+                ExerciceFiscalFin = e.ExerciceFiscalFin,
+                CoutAnnuel = e.CoutAnnuel,
+                DateDebut = e.DateDebut,
+                DateFin = e.DateFin,
+                IdIdentificationProjet = e.IdIdentificationProjet
+            })
+            .ToList();
+
         }
 
         public async Task<ActivitesAnnuellesDto?> ObtenirParIdAsync(byte id)
         {
-            return await _dbContext.Set<ActivitesAnnuellesDto>()
-                .FromSqlRaw(
-                    "SELECT * FROM O_VIEW_ACTIVITES_ANNUELLES WHERE id_activites_annuelles = {0}",
-                    id)
-                .AsNoTracking()
-                .FirstOrDefaultAsync();
+            var e = await _dbContext.OViewActivitesAnnuelles
+    .AsNoTracking()
+    .FirstOrDefaultAsync(x => x.IdActivitesAnnuelles == id);
+
+            if (e == null) return null;
+
+            return new ActivitesAnnuellesDto
+            {
+                IdActivitesAnnuelles = (byte)e.IdActivitesAnnuelles,
+                DescriptionActivite = e.DescriptionActivite,
+                ExerciceFiscalDebut = e.ExerciceFiscalDebut,
+                ExerciceFiscalFin = e.ExerciceFiscalFin,
+                CoutAnnuel = e.CoutAnnuel,
+                DateDebut = e.DateDebut,
+                DateFin = e.DateFin,
+                IdIdentificationProjet = e.IdIdentificationProjet
+            };
+
         }
 
         private async Task ExecuteProcedureAsync(string procedureName, string json)
@@ -123,6 +149,11 @@ namespace BanqueProjet.Infrastructure.Persistence
                 await conn.OpenAsync();
 
             await cmd.ExecuteNonQueryAsync();
+        }
+
+        public Task SupprimerAsync(decimal idActivitesAnnuelles)
+        {
+            throw new NotImplementedException();
         }
     }
 }

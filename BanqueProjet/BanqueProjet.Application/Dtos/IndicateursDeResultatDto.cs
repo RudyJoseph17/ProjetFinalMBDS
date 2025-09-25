@@ -17,9 +17,7 @@ namespace BanqueProjet.Application.Dtos
         [JsonProperty("IdIdentificationProjet")]
         public string IdIdentificationProjet { get; set; }
         public byte IdIndicateursDeResultats { get; set; }
-
-        
-        public string? DefinitionIndicateursDeResu { get; set; }
+        public string? DefinitionIndicateursDeResultats { get; set; }
 
         public int? QuantiteAssocieAIndicateur { get; set; }
     }

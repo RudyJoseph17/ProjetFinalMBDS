@@ -1,50 +1,39 @@
-﻿@model IEnumerable<SuiviEvaluation.Application.Dtos.AutorisationSurProjetDto>
-@{
-    ViewData["Title"] = "Autorisations sur projet";
-}
-<h1>@ViewData["Title"]</h1>
+﻿@model IEnumerable<SuiviEvaluation.Web.Models.ProjetListItemViewModel>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Créer nouvelle autorisation</a>
-</p>
-
-<table class="table">
+<table class="table table-bordered">
     <thead>
         <tr>
-            <th>Projet</th>
-            <th>Activité</th>
-            <th>Exercice début</th>
-            <th>Exercice fin</th>
-            <th>Article</th>
-            <th>Alinea</th>
-            <th>Mois</th>
-            <th>Montant</th>
-            <th></th>
+            <th>Nom du projet</th>
+            <th>Coût total</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>@item.IdIdentificationProjet</td>
-                <td>@item.IdActivites</td>
-                <td>@item.ExerciceFiscalDebut</td>
-                <td>@item.ExerciceFiscalFin</td>
-                <td>@item.Article</td>
-                <td>@item.Alinea</td>
-                <td>@item.MoisAutorisation</td>
-                <td>@item.MontantAutorisation</td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.IdActivites">Détails</a> |
-                    <a asp-action="Edit" asp-route-id="@item.IdActivites">Éditer</a> |
-                    <form asp-action="Delete" asp-route-id="@item.IdActivites" method="post" style="display:inline">
-                        @Html.AntiForgeryToken()
-                        <button type="submit" onclick="return confirm('Supprimer cette autorisation ?')" class="btn btn-link">
-                            Supprimer
-                        </button>
-                    </form>
-                </td>
-            </tr>
+                <tr>
+                    <td>@item.NomProjet</td>
+                    <td class="text-right">@string.Format("{0:N2}", item.TotalAutorisation)</td>
+                    <td>
+                        <div class="btn-group">
+                            <a class="btn btn-primary"
+                               asp-area="SuiviEvaluation"
+                               asp-controller="AutorisationSurProjet"
+                               asp-action="Create"
+                               asp-route-projectId="@item.IdIdentificationProjet"
+                               asp-route-nomProjet="@item.NomProjet">
+                                Autorisation
+                            </a>
+                            <a class="btn btn-secondary"
+                               asp-area="SuiviEvaluation"
+                               asp-controller="AutorisationSurProjet"
+                               asp-action="Index"
+                               asp-route-nomProjet="@item.NomProjet">
+                                Voir Autorisations
+                            </a>
+                        </div>
+                    </td>
+                </tr>
         }
     </tbody>
 </table>

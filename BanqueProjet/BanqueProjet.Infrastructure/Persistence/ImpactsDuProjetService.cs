@@ -89,20 +89,35 @@ namespace BanqueProjet.Infrastructure.Persistence
 
         public async Task<List<ImpactsDuProjetDto>> ObtenirTousAsync()
         {
-            return await _dbContext.Set<ImpactsDuProjetDto>()
-                .FromSqlRaw("SELECT * FROM VIEW_IDENT_PROJET_IMPACTS_PLAT")
-                .AsNoTracking()
-                .ToListAsync();
+            var entities = await _dbContext.OViewImpactsDuProjet
+    .AsNoTracking()
+    .ToListAsync();
+
+            // Mappez-les vers vos DTOs métier
+            return entities.Select(e => new ImpactsDuProjetDto
+            {
+                IdImpactsProjet = (byte)e.IdImpactsProjet,
+                DescImpactsDuProjet = e.ImpactsDuProjet,
+                IdIdentificationProjet = e.IdIdentificationProjet
+            })
+            .ToList();
+
         }
 
-        public async Task<AspectsJuridiquesDto?> ObtenirParIdAsync(byte id)
+        public async Task<ImpactsDuProjetDto?> ObtenirParIdAsync(byte id)
         {
-            return await _dbContext.Set<AspectsJuridiquesDto>()
-                .FromSqlRaw(
-                    "SELECT * FROM VIEW_IDENT_PROJET_IMPACTS_PLAT WHERE ID_IDENTIFICATION_PROJET = {0}",
-                    id)
+            var e = await _dbContext.OViewImpactsDuProjet
                 .AsNoTracking()
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(x => x.IdImpactsProjet == id);
+
+            if (e == null) return null;
+
+            return new ImpactsDuProjetDto
+            {
+                IdImpactsProjet = (byte)e.IdImpactsProjet,
+                DescImpactsDuProjet = e.ImpactsDuProjet,
+                IdIdentificationProjet = e.IdIdentificationProjet
+            };
         }
 
         private async Task ExecuteProcedureAsync(string procedureName, string json)

@@ -1,17 +1,15 @@
-﻿using BanqueProjet.Application.Dtos;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using BanqueProjet.Application.Dtos;
 using BanqueProjet.Application.Interfaces;
 using BanqueProjet.Web.Areas.BanqueProjet.Controllers;
 using BanqueProjet.Web.Models;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Xunit;
 
 namespace BanqueProjet.Tests.Controllers
 {
@@ -22,60 +20,127 @@ namespace BanqueProjet.Tests.Controllers
         {
             // Arrange
             var mockProjetService = new Mock<IProjetsBPService>();
-            var mockCadre = new Mock<IDdpCadreLogiqueService>();
-            var mockAspects = new Mock<IAspectsJuridiquesService>();
-            var mockLocalisation = new Mock<ILocalisationGeographiqueProjService>();
-            var mockGrilleDdp = new Mock<IGrilleDdpProjetService>();
+            var mockCadreService = new Mock<IDdpCadreLogiqueService>();
+            var mockAspectsService = new Mock<IAspectsJuridiquesService>();
+            var mockLocalisationService = new Mock<ILocalisationGeographiqueProjService>();
+            var mockGrilleService = new Mock<IGrilleDdpProjetService>();
+            var mockPartiesService = new Mock<IPartiesPrenantesService>();
+            var mockIndicateursService = new Mock<IIndicateursDeResultatService>();
+            var mockLivrablesService = new Mock<IDefinitionLivrablesDuProjetService>();
+            var mockEffetsService = new Mock<IEffetsDuProjetService>();
+            var mockObjectifsService = new Mock<IObjectifsSpecifiquesService>();
+            var mockImpactsService = new Mock<IImpactsDuProjetService>();
+            var mockBailleursService = new Mock<IBailleursDeFondService>();
+            var mockCoutsService = new Mock<ICoutAnnuelDuProjetService>();
+            var mockActivitesAnnuellesService = new Mock<IActivitesAnnuellesService>();
+            var mockActiviteBPService = new Mock<IActiviteBPService>();
 
-            ProjetsBPDto? projetsCaptured = null;
-            DdpCadreLogiqueDto? cadreCaptured = null;
-            AspectsJuridiquesDto? aspectsCaptured = null;
-            LocalisationGeographiqueProjDto? localisationCaptured = null;
-            GrilleDdpProjetDto? grilleDdpCaptured = null;
+            ProjetsBPDto projetsCaptured = null!;
+            DdpCadreLogiqueDto cadreCaptured = null!;
+            AspectsJuridiquesDto aspectsCaptured = null!;
+            LocalisationGeographiqueProjDto localisationCaptured = null!;
 
+            // Stub des services qu'on vérifie
             mockProjetService
                 .Setup(s => s.AjouterAsync(It.IsAny<ProjetsBPDto>()))
-                .Returns(Task.CompletedTask)
-                .Callback<ProjetsBPDto>(p => projetsCaptured = p);
+                .Callback<ProjetsBPDto>(p => projetsCaptured = p)
+                .Returns(Task.CompletedTask);
 
-            mockCadre
+            mockCadreService
                 .Setup(s => s.AjouterAsync(It.IsAny<DdpCadreLogiqueDto>()))
-                .Returns(Task.CompletedTask)
-                .Callback<DdpCadreLogiqueDto>(d => cadreCaptured = d);
+                .Callback<DdpCadreLogiqueDto>(d => cadreCaptured = d)
+                .Returns(Task.CompletedTask);
 
-            mockAspects
+            mockAspectsService
                 .Setup(s => s.AjouterAsync(It.IsAny<AspectsJuridiquesDto>()))
-                .Returns(Task.CompletedTask)
-                .Callback<AspectsJuridiquesDto>(a => aspectsCaptured = a);
+                .Callback<AspectsJuridiquesDto>(a => aspectsCaptured = a)
+                .Returns(Task.CompletedTask);
 
-            mockLocalisation
+            mockLocalisationService
                 .Setup(s => s.AjouterAsync(It.IsAny<LocalisationGeographiqueProjDto>()))
-                .Returns(Task.CompletedTask)
-                .Callback<LocalisationGeographiqueProjDto>(l => localisationCaptured = l);
+                .Callback<LocalisationGeographiqueProjDto>(l => localisationCaptured = l)
+                .Returns(Task.CompletedTask);
+
+            // Stub des autres services pour qu'ils retournent toujours Task.CompletedTask
+            mockGrilleService
+                .Setup(s => s.AjouterAsync(It.IsAny<GrilleDdpProjetDto>()))
+                .Returns(Task.CompletedTask);
+            mockPartiesService
+                .Setup(s => s.AjouterAsync(It.IsAny<PartiesPrenantesDto>()))
+                .Returns(Task.CompletedTask);
+            mockIndicateursService
+                .Setup(s => s.AjouterAsync(It.IsAny<IndicateursDeResultatDto>()))
+                .Returns(Task.CompletedTask);
+            mockLivrablesService
+                .Setup(s => s.AjouterAsync(It.IsAny<DefinitionLivrablesDuProjetDto>()))
+                .Returns(Task.CompletedTask);
+            mockEffetsService
+                .Setup(s => s.AjouterAsync(It.IsAny<EffetsDuProjetDto>()))
+                .Returns(Task.CompletedTask);
+            mockObjectifsService
+                .Setup(s => s.AjouterAsync(It.IsAny<ObjectifsSpecifiquesDto>()))
+                .Returns(Task.CompletedTask);
+            mockImpactsService
+                .Setup(s => s.AjouterAsync(It.IsAny<ImpactsDuProjetDto>()))
+                .Returns(Task.CompletedTask);
+            mockBailleursService
+                .Setup(s => s.AjouterAsync(It.IsAny<BailleursDeFondsDto>()))
+                .Returns(Task.CompletedTask);
+            mockCoutsService
+                .Setup(s => s.AjouterAsync(It.IsAny<CoutAnnuelDuProjetDto>()))
+                .Returns(Task.CompletedTask);
+            mockActivitesAnnuellesService
+                .Setup(s => s.AjouterAsync(It.IsAny<ActivitesAnnuellesDto>()))
+                .Returns(Task.CompletedTask);
+
+            // Pour la partie ActiviteBP, comme on ne l'appelle pas dans PersistAllAsync, on stub juste l'appel Get
+            mockActiviteBPService
+                .Setup(s => s.ObtenirTousAsync())
+                .ReturnsAsync(new List<ActiviteBPDto>());
 
             var logger = new NullLogger<IdentificationProjetController>();
 
             var controller = new IdentificationProjetController(
                 mockProjetService.Object,
-                mockCadre.Object,
-                mockAspects.Object,
-                mockLocalisation.Object,
-                mockGrilleDdp.Object,
+                mockCadreService.Object,
+                mockAspectsService.Object,
+                mockLocalisationService.Object,
+                mockGrilleService.Object,
+                mockPartiesService.Object,
+                mockIndicateursService.Object,
+                mockLivrablesService.Object,
+                mockEffetsService.Object,
+                mockObjectifsService.Object,
+                mockImpactsService.Object,
+                mockBailleursService.Object,
+                mockCoutsService.Object,
+                mockActivitesAnnuellesService.Object,
+                mockActiviteBPService.Object,
                 logger
             );
 
-            controller.TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
+            controller.TempData = new TempDataDictionary(
+                new DefaultHttpContext(),
+                Mock.Of<ITempDataProvider>()
+            );
 
+            // On ajoute un élément dans AspectsJuridiques pour que le service soit bien appelé
             var model = new DdpViewModel
             {
-                Projets = new ProjetsBPDto
-                {
-                    NomProjet = "Test projet"
-                },
+                Projets = new ProjetsBPDto { NomProjet = "Test projet" },
                 CadreLogique = new DdpCadreLogiqueDto(),
-                AspectsJuridiques = new List<AspectsJuridiquesDto>(),
-                LocalisationGeographique = new LocalisationGeographiqueProjDto()
-
+                AspectsJuridiques = new List<AspectsJuridiquesDto> { new AspectsJuridiquesDto() },
+                LocalisationGeographique = new LocalisationGeographiqueProjDto(),
+                PartiesPrenantesProjets = new List<PartiesPrenantesDto>(),
+                IndicateursResultats = new List<IndicateursDeResultatDto>(),
+                DefinitionLivrables = new List<DefinitionLivrablesDuProjetDto>(),
+                EffetsProjets = new List<EffetsDuProjetDto>(),
+                ObjectifsSpecifiques = new List<ObjectifsSpecifiquesDto>(),
+                ImpactsDuProjet = new List<ImpactsDuProjetDto>(),
+                BailleursDeFonds = new List<BailleursDeFondsDto>(),
+                CoutAnnuelDuProjet = new List<CoutAnnuelDuProjetDto>(),
+                ActivitesAnnuelles = new List<ActivitesAnnuellesDto>(),
+                ActiviteBP = new List<ActiviteBPDto>()
             };
 
             // Act
@@ -86,21 +151,16 @@ namespace BanqueProjet.Tests.Controllers
             Assert.Equal(nameof(IdentificationProjetController.Index), redirect.ActionName);
 
             mockProjetService.Verify(s => s.AjouterAsync(It.IsAny<ProjetsBPDto>()), Times.Once);
-            Assert.NotNull(projetsCaptured);
-            Assert.False(string.IsNullOrWhiteSpace(projetsCaptured!.IdIdentificationProjet));
+            Assert.False(string.IsNullOrWhiteSpace(projetsCaptured.IdIdentificationProjet));
 
-            mockCadre.Verify(s => s.AjouterAsync(It.IsAny<DdpCadreLogiqueDto>()), Times.Once);
-            mockAspects.Verify(s => s.AjouterAsync(It.IsAny<AspectsJuridiquesDto>()), Times.Once);
-            mockLocalisation.Verify(s => s.AjouterAsync(It.IsAny<LocalisationGeographiqueProjDto>()), Times.Once);
+            mockCadreService.Verify(s => s.AjouterAsync(It.IsAny<DdpCadreLogiqueDto>()), Times.Once);
+            Assert.Equal(projetsCaptured.IdIdentificationProjet, cadreCaptured.IdIdentificationProjet);
 
-            Assert.NotNull(cadreCaptured);
-            Assert.Equal(projetsCaptured.IdIdentificationProjet, cadreCaptured!.IdIdentificationProjet);
+            mockAspectsService.Verify(s => s.AjouterAsync(It.IsAny<AspectsJuridiquesDto>()), Times.Once);
+            Assert.Equal(projetsCaptured.IdIdentificationProjet, aspectsCaptured.IdIdentificationProjet);
 
-            Assert.NotNull(aspectsCaptured);
-            Assert.Equal(projetsCaptured.IdIdentificationProjet, aspectsCaptured!.IdIdentificationProjet);
-
-            Assert.NotNull(localisationCaptured);
-            Assert.Equal(projetsCaptured.IdIdentificationProjet, localisationCaptured!.IdIdentificationProjet);
+            mockLocalisationService.Verify(s => s.AjouterAsync(It.IsAny<LocalisationGeographiqueProjDto>()), Times.Once);
+            Assert.Equal(projetsCaptured.IdIdentificationProjet, localisationCaptured.IdIdentificationProjet);
         }
     }
 }

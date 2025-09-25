@@ -78,7 +78,7 @@ namespace BanqueProjet.Infrastructure.Persistence
             {
                 entity = "OViewPartiesPrenante",
                 action = "delete",
-                data = new { IdPartiesPrenantes }
+                data = new { IdPartiesPrenantes}
             };
 
             var json = JsonConvert.SerializeObject(payload);
@@ -89,20 +89,43 @@ namespace BanqueProjet.Infrastructure.Persistence
 
         public async Task<List<PartiesPrenantesDto>> ObtenirTousAsync()
         {
-            return await _dbContext.Set<PartiesPrenantesDto>()
-                .FromSqlRaw("SELECT * FROM O_VIEW_PARTIES_PRENANTES")
+            var entities = await _dbContext.OViewPartiesPrenantes
                 .AsNoTracking()
                 .ToListAsync();
+
+            // Mappez-les vers vos DTOs métier
+            // Correct : on déclare e en entrée du lambda
+            return entities
+                .Select(e => new PartiesPrenantesDto
+                {
+                    IdPartiesPrenantes = (byte)e.IdPartiesPrenantes,
+                    NomFirme = e.NomFirme,
+                    TelephoneFirme = e.TelephoneFirme,
+                    CourrielFirme = e.CourrielFirme,
+                    RoleFirme = e.RoleFirme,
+                    IdIdentificationProjet = e.IdIdentificationProjet
+                })
+                .ToList();
+
         }
 
         public async Task<PartiesPrenantesDto?> ObtenirParIdAsync(byte id)
         {
-            return await _dbContext.Set<PartiesPrenantesDto>()
-                .FromSqlRaw(
-                    "SELECT * FROM O_VIEW_PARTIES_PRENANTES WHERE ID_PARTIES_PRENANTES = {0}",
-                    id)
+            var e = await _dbContext.OViewPartiesPrenantes
                 .AsNoTracking()
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(x => x.IdPartiesPrenantes == id);
+
+            if (e == null) return null;
+
+            return new PartiesPrenantesDto
+            {
+                IdPartiesPrenantes = (byte)e.IdPartiesPrenantes,
+                NomFirme = e.NomFirme,
+                TelephoneFirme = e.TelephoneFirme,
+                CourrielFirme = e.CourrielFirme,
+                RoleFirme = e.RoleFirme,
+                IdIdentificationProjet = e.IdIdentificationProjet
+            };
         }
 
         private async Task ExecuteProcedureAsync(string procedureName, string json)

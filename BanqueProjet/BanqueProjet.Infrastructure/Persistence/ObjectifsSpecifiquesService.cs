@@ -89,20 +89,36 @@ namespace BanqueProjet.Infrastructure.Persistence
 
         public async Task<List<ObjectifsSpecifiquesDto>> ObtenirTousAsync()
         {
-            return await _dbContext.Set<ObjectifsSpecifiquesDto>()
-                .FromSqlRaw("SELECT * FROM O_VIEW_OBJECTIFS_SPECIFIQUES")
-                .AsNoTracking()
-                .ToListAsync();
+            var entities = await _dbContext.OViewObjectifsSpecifiques
+    .AsNoTracking()
+    .ToListAsync();
+
+            // Mappez-les vers vos DTOs métier
+            return entities.Select(e => new ObjectifsSpecifiquesDto
+            {
+                IdObjectifsSpecifiques = (byte)e.IdObjectifsSpecifiques,
+                ObjectifsSpecifiques = e.ObjectifsSpecifiques,
+                IdIdentificationProjet = e.IdIdentificationProjet
+            })
+            .ToList();
+
         }
 
         public async Task<ObjectifsSpecifiquesDto?> ObtenirParIdAsync(byte id)
         {
-            return await _dbContext.Set<ObjectifsSpecifiquesDto>()
-                .FromSqlRaw(
-                    "SELECT * FROM O_VIEW_OBJECTIFS_SPECIFIQUES WHERE ID_Objectifs_Specifiques = {0}",
-                    id)
-                .AsNoTracking()
-                .FirstOrDefaultAsync();
+            var e = await _dbContext.OViewObjectifsSpecifiques
+    .AsNoTracking()
+    .FirstOrDefaultAsync(x => x.IdObjectifsSpecifiques == id);
+
+            if (e == null) return null;
+
+            return new ObjectifsSpecifiquesDto
+            {
+                IdObjectifsSpecifiques = (byte)e.IdObjectifsSpecifiques,
+                ObjectifsSpecifiques = e.ObjectifsSpecifiques,
+                IdIdentificationProjet = e.IdIdentificationProjet
+            };
+
         }
 
         private async Task ExecuteProcedureAsync(string procedureName, string json)
@@ -123,6 +139,11 @@ namespace BanqueProjet.Infrastructure.Persistence
                 await conn.OpenAsync();
 
             await cmd.ExecuteNonQueryAsync();
+        }
+
+        public Task SupprimerAsync(int? idObjectifsSpecifiques)
+        {
+            throw new NotImplementedException();
         }
     }
 }

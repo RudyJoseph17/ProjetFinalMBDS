@@ -16,6 +16,8 @@ namespace BanqueProjet.Application.Dtos
         public string IdIdentificationProjet { get; set; }
         public decimal IdActivitesAnnuelles { get; set; }
         public string? DescriptionActivite { get; set; }
+        public byte? ExerciceFiscalDebut { get; set; }
+        public byte? ExerciceFiscalFin { get; set; }
         public decimal? CoutAnnuel { get; set; }
         public DateTime? DateDebut { get; set; }
         public DateTime? DateFin { get; set; }

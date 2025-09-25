@@ -41,7 +41,7 @@ namespace BanqueProjet.Infrastructure.Persistence
 
             var payload = new
             {
-                entity = "OViewBailleursDeFond",
+                entity = "ViewIdentProjetBailleursPlat",
                 action = "insert",
                 data = BailleursDeFond
             };
@@ -61,7 +61,7 @@ namespace BanqueProjet.Infrastructure.Persistence
 
             var payload = new
             {
-                entity = "OViewBailleursDeFond",
+                entity = "ViewIdentProjetBailleursPlat",
                 action = "update",
                 data = BailleursDeFond
             };
@@ -76,7 +76,7 @@ namespace BanqueProjet.Infrastructure.Persistence
         {
             var payload = new
             {
-                entity = "OViewBailleursDeFond",
+                entity = "ViewIdentProjetBailleursPlat",
                 action = "delete",
                 data = new { IdBailleursDeFonds }
             };
@@ -89,20 +89,40 @@ namespace BanqueProjet.Infrastructure.Persistence
 
         public async Task<List<BailleursDeFondsDto>> ObtenirTousAsync()
         {
-            return await _dbContext.Set<BailleursDeFondsDto>()
-                .FromSqlRaw("SELECT * FROM O_VIEW_BAILLEURS_DE_FONDS")
-                .AsNoTracking()
-                .ToListAsync();
+            var entities = await _dbContext.ViewProjetBailleursPlats
+    .AsNoTracking()
+    .ToListAsync();
+
+            // Mappez-les vers vos DTOs métier
+            return entities.Select(e => new BailleursDeFondsDto
+            {
+                IdBailleursDeFonds = (byte)e.IdBailleursDeFonds,
+                NomBailleur = e.NomBailleur,
+                TelephoneRepresentant = e.TelephoneRepresentant,
+                CourrielRepresentant = e.CourrielRepresentant,
+                IdIdentificationProjet = e.IdProjet
+            })
+            .ToList();
+
         }
 
         public async Task<BailleursDeFondsDto?> ObtenirParIdAsync(byte id)
         {
-            return await _dbContext.Set<BailleursDeFondsDto>()
-                .FromSqlRaw(
-                    "SELECT * FROM O_VIEW_BAILLEURS_DE_FONDS WHERE ID_BAILLEURS_DE_FONDS = {0}",
-                    id)
-                .AsNoTracking()
-                .FirstOrDefaultAsync();
+            var e = await _dbContext.ViewProjetBailleursPlats
+    .AsNoTracking()
+    .FirstOrDefaultAsync(x => x.IdBailleursDeFonds == id);
+
+            if (e == null) return null;
+
+            return new BailleursDeFondsDto
+            {
+                IdBailleursDeFonds = (byte)e.IdBailleursDeFonds,
+                NomBailleur = e.NomBailleur,
+                TelephoneRepresentant = e.TelephoneRepresentant,
+                CourrielRepresentant = e.CourrielRepresentant,
+                IdIdentificationProjet = e.IdProjet
+            };
+
         }
 
         private async Task ExecuteProcedureAsync(string procedureName, string json)
@@ -123,6 +143,11 @@ namespace BanqueProjet.Infrastructure.Persistence
                 await conn.OpenAsync();
 
             await cmd.ExecuteNonQueryAsync();
+        }
+
+        public Task SupprimerAsync(int idBailleursDeFonds)
+        {
+            throw new NotImplementedException();
         }
     }
 }

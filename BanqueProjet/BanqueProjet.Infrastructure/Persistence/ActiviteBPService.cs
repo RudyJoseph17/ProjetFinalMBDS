@@ -17,32 +17,53 @@ namespace BanqueProjet.Infrastructure.Persistence
     public class ActiviteBPService : IActiviteBPService
     {
         private readonly IActiviteService _activiteService;
+        private readonly BanquePDbContext _dbContext;
         private readonly IMapper _mapper;
 
         public ActiviteBPService(
             IActiviteService activiteService,
+            BanquePDbContext dbContext,
             IMapper mapper)
         {
             _activiteService = activiteService;
+            _dbContext = dbContext;
             _mapper = mapper;
         }
 
         public async Task<List<ActiviteBPDto>> ObtenirTousAsync()
         {
-            var sharedList = await _activiteService.ObtenirTousAsync();
-            return _mapper.Map<List<ActiviteBPDto>>(sharedList);
+            var entities = await _dbContext.OViewActivitesBP
+                .AsNoTracking()
+                .ToListAsync();
+
+            // Mappez-les vers vos DTOs métier
+            return entities.Select(e => new ActiviteBPDto
+            {
+                IdActivites = (byte)e.IdActivites,
+                NumeroActivites = e.NumeroActivites,
+                NomActivite = e.NomActivite,
+                ResultatsAttendus = e.ResultatsAttendus,
+                IdIdentificationProjet = e.IdIdentificationProjet
+            })
+            .ToList();
         }
 
         public async Task<ActiviteBPDto?> ObtenirParIdAsync(byte id)
         {
-            // ici id est un byte : on ne peut pas utiliser IsNullOrWhiteSpace
-            var sharedList = await _activiteService.ObtenirTousAsync();
-            if (sharedList == null || !sharedList.Any())
-                return null;
+            var e = await _dbContext.OViewActivitesBP
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.IdActivites == id);
 
-            // comparer sur la propriété IdActivites (type byte)
-            var match = sharedList.FirstOrDefault(p => p.IdActivites == id);
-            return match is null ? null : _mapper.Map<ActiviteBPDto>(match);
+            if (e == null) return null;
+
+            return new ActiviteBPDto
+            {
+                IdActivites = (byte)e.IdActivites,
+                NumeroActivites = e.NumeroActivites,
+                NomActivite = e.NomActivite,
+                ResultatsAttendus = e.ResultatsAttendus,
+                IdIdentificationProjet = e.IdIdentificationProjet
+            };
         }
 
         public Task AjouterAsync(ActiviteBPDto activiteBP)

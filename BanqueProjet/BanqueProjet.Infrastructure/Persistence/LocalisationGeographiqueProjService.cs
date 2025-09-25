@@ -41,7 +41,7 @@ namespace BanqueProjet.Infrastructure.Persistence
 
             var payload = new
             {
-                entity = "localisation_geographique_projet",
+                entity = "OViewLocalisationGeographiqueProj",
                 action = "insert",
                 data = localisationGeographique
             };
@@ -61,7 +61,7 @@ namespace BanqueProjet.Infrastructure.Persistence
 
             var payload = new
             {
-                entity = "localisation_geographique_projet",
+                entity = "OViewLocalisationGeographiqueProj",
                 action = "update",
                 data = localisationGeographique
             };
@@ -76,7 +76,7 @@ namespace BanqueProjet.Infrastructure.Persistence
         {
             var payload = new
             {
-                entity = "localisation_geographique_projet",
+                entity = "OViewLocalisationGeographiqueProj",
                 action = "delete",
                 data = new { IdLocalisationGeographique }
             };
@@ -89,20 +89,41 @@ namespace BanqueProjet.Infrastructure.Persistence
 
         public async Task<List<LocalisationGeographiqueProjDto>> ObtenirTousAsync()
         {
-            return await _dbContext.Set<LocalisationGeographiqueProjDto>()
-                .FromSqlRaw("SELECT * FROM O_VIEW_LOCALISATION_GEOGRAPHIQUE_PROJ")
-                .AsNoTracking()
-                .ToListAsync();
+            var entities = await _dbContext.OViewLocalisationGeographiqueProj
+    .AsNoTracking()
+    .ToListAsync();
+
+            // Mappez-les vers vos DTOs métier
+            return entities.Select(e => new LocalisationGeographiqueProjDto
+            {
+                IdLocalisationGeographique = (byte)e.IdLocalisationGeographique,
+                Departement = e.Departement,
+                Arrondissement = e.Arrondissement,
+                Commune = e.Commune,
+                SectionCommunale = e.SectionCommunale,
+                IdIdentificationProjet = e.IdIdentificationProjet
+            })
+            .ToList();
         }
 
         public async Task<LocalisationGeographiqueProjDto?> ObtenirParIdAsync(byte id)
         {
-            return await _dbContext.Set<LocalisationGeographiqueProjDto>()
-                .FromSqlRaw(
-                    "SELECT * FROM O_VIEW_LOCALISATION_GEOGRAPHIQUE_PROJ WHERE id_localisation_geographique_projet = {0}",
-                    id)
-                .AsNoTracking()
-                .FirstOrDefaultAsync();
+            var e = await _dbContext.OViewLocalisationGeographiqueProj
+    .AsNoTracking()
+    .FirstOrDefaultAsync(x => x.IdLocalisationGeographique == id);
+
+            if (e == null) return null;
+
+            return new LocalisationGeographiqueProjDto
+            {
+                IdLocalisationGeographique = (byte)e.IdLocalisationGeographique,
+                Departement = e.Departement,
+                Arrondissement = e.Arrondissement,
+                Commune = e.Commune,
+                SectionCommunale = e.SectionCommunale,
+                IdIdentificationProjet = e.IdIdentificationProjet
+            };
+
         }
 
         private async Task ExecuteProcedureAsync(string procedureName, string json)

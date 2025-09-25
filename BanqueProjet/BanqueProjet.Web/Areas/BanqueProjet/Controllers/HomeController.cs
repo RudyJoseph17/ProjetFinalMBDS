@@ -35,49 +35,53 @@ namespace BanqueProjet.Web.Areas.BanqueProjet.Controllers
         /// <summary>
         /// Page d'accueil : affiche le dashboard (cartes + graphique)
         /// </summary>
-        public async Task<IActionResult> Index()
-        {
-            // Récupération asynchrone de tous les projets
-            var identList = await _projetService.ObtenirTousAsync()
-                             ?? new List<IdentificationProjetDto>();
+       [HttpGet]
+public async Task<IActionResult> Index()
+{
+    // 1) Charger et mapper tous les projets
+    var identList = await _projetService.ObtenirTousAsync()
+                     ?? new List<IdentificationProjetDto>();
+    var projets = _mapper.Map<List<ProjetsBPDto>>(identList)
+                  ?? new List<ProjetsBPDto>();
 
-            // 2) mapper en ProjetsBPDto (la vue attend IEnumerable<ProjetsBPDto>)
-            var projets = _mapper.Map<List<ProjetsBPDto>>(identList) ?? new List<ProjetsBPDto>();
+    // 2) Calcul des stats “cartes”
+    var totalProjets   = projets.Count;
+    var projetsValides = projets.Count(p => p.AvisProjet == "Valide");
 
-            // Statistiques pour les cards
-            var total = projets.Count;
-            var validesCount = 0;
-            var nomsProjetsValides = new List<string>();
-            // Exemple futur si le DTO a une propriété Statut :
-            //validesCount = projets.Count(p => p.Statut == "Valide");
-            //nomsProjetsValides = projets
-            //    .Where(p => p.Statut == "Valide")
-            //    .Select(p => p.NomProjet)
-            //    .ToList();
+    // 3) Calcul des stats “graphique”
+    var projetsParMinistere = projets
+        .GroupBy(p => string.IsNullOrWhiteSpace(p.Ministere) ? "Non spécifié" : p.Ministere)
+        .Select(g => new { Ministere = g.Key, Count = g.Count() })
+        .OrderByDescending(x => x.Count)
+        .ToList();
 
-            // Préparation des données pour Chart.js : nombre de projets par ministère
-            var projetsParMinistere = projets
-                .GroupBy(p => string.IsNullOrWhiteSpace(p.Ministere)
-                              ? "Non spécifié"
-                              : p.Ministere)
-                .Select(g => new { Ministere = g.Key, Count = g.Count() })
-                .OrderByDescending(x => x.Count)
-                .ToList();
+    var ministeres = projetsParMinistere.Select(x => x.Ministere).ToList();
+    var counts     = projetsParMinistere.Select(x => x.Count).ToList();
 
-            ViewData["Ministeres"] = JsonSerializer.Serialize(
-                projetsParMinistere.Select(x => x.Ministere));
-            ViewData["Counts"] = JsonSerializer.Serialize(
-                projetsParMinistere.Select(x => x.Count));
+    // 4) Fournir les JSON à Chart.js via ViewData
+    ViewData["Ministeres"] = JsonSerializer.Serialize(ministeres);
+    ViewData["Counts"]     = JsonSerializer.Serialize(counts);
 
-            // Construction du ViewModel
-            var vm = new DashboardStatsViewModel
-            {
-                TotalProjets = total,
-                ProjetsValides = validesCount,
-            };
+    // 5) Remplir le DashboardStatsViewModel
+    var statsVm = new DashboardStatsViewModel
+    {
+        TotalProjets   = totalProjets,
+        ProjetsValides = projetsValides,
+        Ministeres     = ministeres,
+        Counts         = counts
+    };
 
-            return View(vm);
-        }
+    // 6) Construire et renvoyer l’IndexViewModel
+    var vm = new IndexViewModel
+    {
+        Projets = projets,
+        Stats   = statsVm
+    };
+
+    return View(vm);
+}
+
+
 
         public IActionResult Privacy()
             => View();

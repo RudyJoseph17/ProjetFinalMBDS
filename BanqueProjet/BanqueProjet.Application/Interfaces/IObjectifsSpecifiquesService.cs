@@ -13,5 +13,6 @@ namespace BanqueProjet.Application.Interfaces
         Task MettreAJourAsync(ObjectifsSpecifiquesDto objectifsSpecifiques);
         Task SupprimerAsync(byte IdObjectifsSpecifiques);
         Task<List<ObjectifsSpecifiquesDto>> ObtenirTousAsync();
+        Task SupprimerAsync(int? idObjectifsSpecifiques);
     }
 }

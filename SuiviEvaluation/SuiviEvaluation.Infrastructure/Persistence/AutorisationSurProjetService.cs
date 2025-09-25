@@ -170,53 +170,53 @@ namespace SuiviEvaluation.Infrastructure.Persistence
             try
             {
                 using var cmd = conn.CreateCommand();
+                cmd.CommandType = CommandType.Text;
+
+                // Requête corrigée : on cherche par IDENTIFICATION_PROJET (string) PAS par ID_ACTIVITES
                 cmd.CommandText = @"
-                  SELECT ID_ACTIVITES,
-                         EXERCICE_FISCAL_DEBUT, EXERCICE_FISCAL_FIN,
-                         MONTANT_AUTORISATION
-                    FROM VIEW_ACTIVITES_IFORMATIONS_FINANCIERES
-                   WHERE ID_ACTIVITES = :p_id";
+          SELECT ID_ACTIVITES,
+                 ID_IDENTIFICATION_PROJET,
+                 EXERCICE_FISCAL_DEBUT, EXERCICE_FISCAL_FIN,
+                 MONTANT_AUTORISATION
+            FROM VIEW_ACTIVITES_IFORMATIONS_FINANCIERES
+           WHERE ID_IDENTIFICATION_PROJET = :p_id";
+
                 var p = cmd.CreateParameter();
                 p.ParameterName = "p_id";
-                p.Value = id;
+                // préciser type OracleDbType si possible (Varchar2) et taille
+                if (p is Oracle.ManagedDataAccess.Client.OracleParameter op)
+                {
+                    op.OracleDbType = Oracle.ManagedDataAccess.Client.OracleDbType.Varchar2;
+                    op.Size = 100;
+                }
+                p.Value = id ?? (object)DBNull.Value;
                 cmd.Parameters.Add(p);
 
                 using var reader = await cmd.ExecuteReaderAsync();
                 if (await reader.ReadAsync())
                 {
                     // ordinals
-                    int ordIdProj = -1, ordIdAct = -1, ordDeb = -1, ordFin = -1,
-                        ordArticle = -1, ordAlinea = -1, ordMois = -1, ordMontant = -1;
-
+                    int ordIdAct = -1, ordProjId = -1, ordDeb = -1, ordFin = -1, ordMontant = -1;
 
                     try { ordIdAct = reader.GetOrdinal("ID_ACTIVITES"); } catch { }
+                    try { ordProjId = reader.GetOrdinal("ID_IDENTIFICATION_PROJET"); } catch { }
                     try { ordDeb = reader.GetOrdinal("EXERCICE_FISCAL_DEBUT"); } catch { }
                     try { ordFin = reader.GetOrdinal("EXERCICE_FISCAL_FIN"); } catch { }
-                    //try { ordArticle = reader.GetOrdinal("ARTICLE"); } catch { }
-                    //try { ordAlinea = reader.GetOrdinal("ALINEA"); } catch { }
-                    //try { ordMois = reader.GetOrdinal("MOIS_AUTORISATION"); } catch { }
                     try { ordMontant = reader.GetOrdinal("MONTANT_AUTORISATION"); } catch { }
 
                     dto = new AutorisationSurProjetDto();
 
-
                     if (ordIdAct >= 0 && !reader.IsDBNull(ordIdAct))
                         dto.IdActivites = reader.GetInt32(ordIdAct);
 
+                    if (ordProjId >= 0 && !reader.IsDBNull(ordProjId))
+                        dto.IdIdentificationProjet = reader.GetString(ordProjId);
+
                     if (ordDeb >= 0 && !reader.IsDBNull(ordDeb))
-                        dto.ExerciceFiscalDebut = reader.GetByte(ordDeb);
+                        dto.ExerciceFiscalDebut = Convert.ToByte(reader.GetInt32(ordDeb)); // safer: lire en int puis convertir
 
                     if (ordFin >= 0 && !reader.IsDBNull(ordFin))
-                        dto.ExerciceFiscalFin = reader.GetByte(ordFin);
-
-                    //if (ordArticle >= 0 && !reader.IsDBNull(ordArticle))
-                    //    dto.Article = reader.GetString(ordArticle);
-
-                    //if (ordAlinea >= 0 && !reader.IsDBNull(ordAlinea))
-                    //    dto.Alinea = reader.GetString(ordAlinea);
-
-                    //if (ordMois >= 0 && !reader.IsDBNull(ordMois))
-                    //    dto.MoisAutorisation = reader.GetString(ordMois);
+                        dto.ExerciceFiscalFin = Convert.ToByte(reader.GetInt32(ordFin));
 
                     if (ordMontant >= 0 && !reader.IsDBNull(ordMontant))
                         dto.MontantAutorisation = reader.GetDecimal(ordMontant);
@@ -228,6 +228,7 @@ namespace SuiviEvaluation.Infrastructure.Persistence
             }
             return dto;
         }
+
 
         public async Task<AutorisationSurProjetDto?> ObtenirParIdActiviteAsync(int id)
         {

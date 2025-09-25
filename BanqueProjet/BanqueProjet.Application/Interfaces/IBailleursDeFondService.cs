@@ -13,5 +13,6 @@ namespace BanqueProjet.Application.Interfaces
         Task MettreAJourAsync(BailleursDeFondsDto BailleursDeFond);
         Task SupprimerAsync(byte IdBailleursDeFonds);
         Task<List<BailleursDeFondsDto>> ObtenirTousAsync();
+        Task SupprimerAsync(int idBailleursDeFonds);
     }
 }

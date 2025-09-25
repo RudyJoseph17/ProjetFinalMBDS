@@ -5,7 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Programmation.Infrastructure.Data;
 using Programmation.Infrastructure;
-using DotNetEnv;                // <— import pour DotNetEnv
+using DotNetEnv;
+using BanqueProjet.Infrastructure.Data;
+using Shared.Infrastructure.Data;                // <— import pour DotNetEnv
 
 
 
@@ -41,6 +43,12 @@ builder.Services.AddSwaggerGen();
 
 // Utiliser la chaîne de connexion du fichier .env
 builder.Services.AddDbContext<ProgrammationDbContext>(options =>
+    options.UseOracle(connectionString));
+
+builder.Services.AddDbContext<BanquePDbContext>(options =>
+    options.UseOracle(connectionString));
+
+builder.Services.AddDbContext<SharedDbContext>(options =>
     options.UseOracle(connectionString));
 
 var app = builder.Build();

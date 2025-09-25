@@ -14,5 +14,7 @@ namespace SuiviEvaluation.Application.Interfaces
         Task SupprimerAsync(string IdIdentificationProjet);
         Task<List<SuiviProjetDto>> ObtenirTousAsync();
         Task<SuiviProjetDto?> ObtenirParIdAsync(string id);
+        Task<IEnumerable<object>> ObtenirActivitesParProjetAsync(string projectId);
+        Task<SuiviProjetDto> ObtenirParNomAsync(string nomProjet);
     }
 }

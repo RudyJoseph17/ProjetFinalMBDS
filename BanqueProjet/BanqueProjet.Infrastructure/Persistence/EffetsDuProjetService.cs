@@ -89,20 +89,35 @@ namespace BanqueProjet.Infrastructure.Persistence
 
         public async Task<List<EffetsDuProjetDto>> ObtenirTousAsync()
         {
-            return await _dbContext.Set<EffetsDuProjetDto>()
-                .FromSqlRaw("SELECT * FROM VIEW_IDENT_PROJET_EFFETS_PLAT")
+            var entities = await _dbContext.OViewEffetsDuProjet
                 .AsNoTracking()
                 .ToListAsync();
+
+            // Mappez-les vers vos DTOs métier
+            return entities.Select(e => new EffetsDuProjetDto
+            {
+                IdEffetsDuProjet = (byte)e.IdEffetsDuProjet,
+                EffetDuProjet = e.EffetDuProjet,
+                IdIdentificationProjet = e.IdIdentificationProjet
+            })
+            .ToList();
         }
 
         public async Task<EffetsDuProjetDto?> ObtenirParIdAsync(byte id)
         {
-            return await _dbContext.Set<EffetsDuProjetDto>()
-                .FromSqlRaw(
-                    "SELECT * FROM VIEW_IDENT_PROJET_EFFETS_PLAT WHERE ID_EFFETS_DU_PROJET = {0}",
-                    id)
-                .AsNoTracking()
-                .FirstOrDefaultAsync();
+            var e = await _dbContext.OViewEffetsDuProjet
+    .AsNoTracking()
+    .FirstOrDefaultAsync(x => x.IdEffetsDuProjet == id);
+
+            if (e == null) return null;
+
+            return new EffetsDuProjetDto
+            {
+                IdEffetsDuProjet = (byte)e.IdEffetsDuProjet,
+                EffetDuProjet = e.EffetDuProjet,
+                IdIdentificationProjet = e.IdIdentificationProjet
+            };
+
         }
 
         private async Task ExecuteProcedureAsync(string procedureName, string json)

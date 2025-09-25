@@ -8,7 +8,7 @@ using Programmation.Application.Interface;
 namespace Programmation.API
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/programmation/programmationProjet")]
     public class ProgrammationApiController : ControllerBase
     {
         private readonly IProgrammationProjetService _programmationService;

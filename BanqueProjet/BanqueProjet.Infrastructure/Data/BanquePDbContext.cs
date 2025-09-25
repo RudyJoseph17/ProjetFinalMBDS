@@ -13,49 +13,29 @@ public partial class BanquePDbContext : DbContext
     }
 
     public virtual DbSet<ViewIdentificationProjetPlat> ViewIdentificationProjetPlats { get; set; }
-    public virtual DbSet<OViewActivite> OViewActivites { get; set; }
-
+    public virtual DbSet<OViewActiviteBP> OViewActivitesBP { get; set; }
     public virtual DbSet<OViewActivitesAnnuelle> OViewActivitesAnnuelles { get; set; }
-
     public virtual DbSet<OViewAspectsJuridique> OViewAspectsJuridiques { get; set; }
-
-    public virtual DbSet<OViewBailleursDeFond> OViewBailleursDeFonds { get; set; }
-
-    public virtual DbSet<OViewCoutAnnuelDuProjet> OViewCoutAnnuelDuProjets { get; set; }
-
+    public virtual DbSet<OViewCoutAnnuelDuProjet> OViewCoutAnnuelDuProjet { get; set; }
     public virtual DbSet<OViewDdpCadreLogique> OViewDdpCadreLogiques { get; set; }
-
-    public virtual DbSet<OViewEffetsDuProjet> OViewEffetsDuProjets { get; set; }
-
+    public virtual DbSet<OViewEffetsDuProjet> OViewEffetsDuProjet { get; set; }
     public virtual DbSet<OViewGrilleDdpProjet> OViewGrilleDdpProjets { get; set; }
-
-    public virtual DbSet<OViewImpactsDuProjet> OViewImpactsDuProjets { get; set; }
-
+    public virtual DbSet<OViewImpactsDuProjet> OViewImpactsDuProjet { get; set; }
     public virtual DbSet<OViewIndicateursDeResultat> OViewIndicateursDeResultats { get; set; }
-
-    public virtual DbSet<OViewLocalisationGeographiqueProj> OViewLocalisationGeographiqueProjs { get; set; }
-
+    public virtual DbSet<OViewLocalisationGeographiqueProj> OViewLocalisationGeographiqueProj { get; set; }
     public virtual DbSet<OViewObjectifsSpecifique> OViewObjectifsSpecifiques { get; set; }
-
     public virtual DbSet<OViewPartiesPrenante> OViewPartiesPrenantes { get; set; }
-
     public virtual DbSet<ViewIdentProjetActivitesAnnuellesPlat> ViewIdentProjetActivitesAnnuellesPlats { get; set; }
-
     public virtual DbSet<ViewIdentProjetActivitesPlat> ViewIdentProjetActivitesPlats { get; set; }
-
     public virtual DbSet<ViewIdentProjetAspectsJuridiquesPlat> ViewIdentProjetAspectsJuridiquesPlats { get; set; }
-
-    public virtual DbSet<ViewIdentProjetBailleursPlat> ViewIdentProjetBailleursPlats { get; set; }
-
+    public virtual DbSet<ViewIdentProjetBailleursPlat> ViewProjetBailleursPlats { get; set; }
     public virtual DbSet<ViewIdentProjetCoutAnnuelPlat> ViewIdentProjetCoutAnnuelPlats { get; set; }
-
     public virtual DbSet<ViewIdentProjetEffetsPlat> ViewIdentProjetEffetsPlats { get; set; }
-
     public virtual DbSet<ViewIdentProjetImpactsPlat> ViewIdentProjetImpactsPlats { get; set; }
-
     public virtual DbSet<ViewIdentProjetIndicateursPlat> ViewIdentProjetIndicateursPlats { get; set; }
-
     public virtual DbSet<ViewIdentProjetPartiesPrenantesPlat> ViewIdentProjetPartiesPrenantesPlats { get; set; }
+
+    public virtual DbSet<OViewLivrablesProjet> OViewLivrablesProjet { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -63,7 +43,7 @@ public partial class BanquePDbContext : DbContext
             .HasDefaultSchema("JOSEPHRUDY")
             .UseCollation("USING_NLS_COMP");
 
-        modelBuilder.Entity<OViewActivite>(entity =>
+        modelBuilder.Entity<OViewActiviteBP>(entity =>
         {
             entity.ToView("O_VIEW_ACTIVITES");
         });
@@ -138,9 +118,9 @@ public partial class BanquePDbContext : DbContext
             entity.ToView("VIEW_IDENT_PROJET_ACTIVITES_PLAT");
         });
 
-        modelBuilder.Entity<ViewIdentProjetAspectsJuridiquesPlat>(entity =>
+        modelBuilder.Entity<OViewAspectsJuridique>(entity =>
         {
-            entity.ToView("VIEW_IDENT_PROJET_ASPECTS_JURIDIQUES_PLAT");
+            entity.ToView("O_VIEW_ASPECTS_JURIDIQUES");
         });
 
         modelBuilder.Entity<ViewIdentProjetBailleursPlat>(entity =>
@@ -176,6 +156,14 @@ public partial class BanquePDbContext : DbContext
         {
             entity.ToView("VIEW_IDENTIFICATION_PROJET_PLAT");
         });
+        modelBuilder.Entity<OViewLivrablesProjet>(eb =>
+        {
+            eb.HasNoKey();
+            eb.ToView("O_VIEW_LIVRABLES_DU_PROJET");
+        });
+
+
+
         modelBuilder.HasSequence("NOTIFICATION_SEQ");
         modelBuilder.HasSequence("SEQ_ACTIVITES");
         modelBuilder.HasSequence("SEQ_ACTIVITES_ANNUELLES");

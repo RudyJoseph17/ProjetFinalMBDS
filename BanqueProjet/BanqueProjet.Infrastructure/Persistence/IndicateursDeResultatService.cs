@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using BanqueProjet.Infrastructure.Entities;
 
 namespace BanqueProjet.Infrastructure.Persistence
 {
@@ -89,20 +90,38 @@ namespace BanqueProjet.Infrastructure.Persistence
 
         public async Task<List<IndicateursDeResultatDto>> ObtenirTousAsync()
         {
-            return await _dbContext.Set<IndicateursDeResultatDto>()
-                .FromSqlRaw("SELECT * FROM O_VIEW_INDICATEURS_DE_RESULTATS")
-                .AsNoTracking()
-                .ToListAsync();
+            var entities = await _dbContext.OViewIndicateursDeResultats
+    .AsNoTracking()
+    .ToListAsync();
+
+            // Mappez-les vers vos DTOs métier
+            return entities.Select(e => new IndicateursDeResultatDto
+            {
+                IdIndicateursDeResultats = (byte)e.IdIndicateursDeResultats,
+                DefinitionIndicateursDeResultats = e.DefinitionIndicateursDeResultats,
+                QuantiteAssocieAIndicateur = e.QuantiteAssocieAIndicateur,
+                IdIdentificationProjet = e.IdIdentificationProjet
+            })
+            .ToList();
+
         }
 
         public async Task<IndicateursDeResultatDto?> ObtenirParIdAsync(byte id)
         {
-            return await _dbContext.Set<IndicateursDeResultatDto>()
-                .FromSqlRaw(
-                    "SELECT * FROM O_VIEW_INDICATEURS_DE_RESULTATS WHERE ID_INDICATEURS_DE_RESULTATS = {0}",
-                    id)
-                .AsNoTracking()
-                .FirstOrDefaultAsync();
+            var e = await _dbContext.OViewIndicateursDeResultats
+    .AsNoTracking()
+    .FirstOrDefaultAsync(x => x.IdIndicateursDeResultats == id);
+
+            if (e == null) return null;
+
+            return new IndicateursDeResultatDto
+            {
+                IdIndicateursDeResultats = (byte)e.IdIndicateursDeResultats,
+                DefinitionIndicateursDeResultats = e.DefinitionIndicateursDeResultats,
+                QuantiteAssocieAIndicateur = e.QuantiteAssocieAIndicateur,
+                IdIdentificationProjet = e.IdIdentificationProjet
+            };
+
         }
 
         private async Task ExecuteProcedureAsync(string procedureName, string json)

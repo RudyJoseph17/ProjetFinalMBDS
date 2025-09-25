@@ -16,7 +16,7 @@ public partial class OViewIndicateursDeResultat
     [Column("DEFINITION_INDICATEURS_DE_RESU")]
     [StringLength(100)]
     [Unicode(false)]
-    public string? DefinitionIndicateursDeResu { get; set; }
+    public string? DefinitionIndicateursDeResultats { get; set; }
 
     [Column("QUANTITE_ASSOCIE_A_INDICATEUR")]
     [Precision(7)]

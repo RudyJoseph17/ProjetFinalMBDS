@@ -14,5 +14,6 @@ namespace BanqueProjet.Application.Interfaces
         Task SupprimerAsync(byte IdActivites);
         Task<List<CoutAnnuelDuProjetDto>> ObtenirTousAsync();
         Task<CoutAnnuelDuProjetDto?> ObtenirParIdAsync(byte id);
+        Task SupprimerAsync(decimal idCoutAnnuelProjet);
     }
 }

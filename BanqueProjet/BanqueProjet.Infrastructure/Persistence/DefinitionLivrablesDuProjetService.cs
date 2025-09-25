@@ -41,7 +41,7 @@ namespace BanqueProjet.Infrastructure.Persistence
 
             var payload = new
             {
-                entity = "ViewIdentProjetLivrablesPlat",
+                entity = "OViewLivrablesProjet",
                 action = "insert",
                 data = indicateursDeResultats
             };
@@ -61,7 +61,7 @@ namespace BanqueProjet.Infrastructure.Persistence
 
             var payload = new
             {
-                entity = "ViewIdentProjetLivrablesPlat",
+                entity = "OViewLivrablesProjet",
                 action = "update",
                 data = indicateursDeResultats
             };
@@ -89,20 +89,36 @@ namespace BanqueProjet.Infrastructure.Persistence
 
         public async Task<List<DefinitionLivrablesDuProjetDto>> ObtenirTousAsync()
         {
-            return await _dbContext.Set<DefinitionLivrablesDuProjetDto>()
-                .FromSqlRaw("SELECT * FROM VIEW_IDENT_PROJET_LIVRABLES_PLAT")
+            var entities = await _dbContext.OViewLivrablesProjet
                 .AsNoTracking()
                 .ToListAsync();
+
+            // Mappez-les vers vos DTOs métier
+            return entities.Select(e => new DefinitionLivrablesDuProjetDto
+            {
+                IdLivrablesProjet = (byte)e.IdLivrablesProjet,
+                DefinitionLivrablesDuProjet = e.DefinitionLivrables,
+                ValeurLivree = e.ValeurLivree,
+                IdIdentificationProjet = e.IdIdentificationProjet
+            })
+            .ToList();
         }
 
         public async Task<DefinitionLivrablesDuProjetDto?> ObtenirParIdAsync(byte id)
         {
-            return await _dbContext.Set<DefinitionLivrablesDuProjetDto>()
-                .FromSqlRaw(
-                    "SELECT * VIEW_IDENT_PROJET_LIVRABLES_PLAT WHERE id_aspects_juridiques = {0}",
-                    id)
+            var e = await _dbContext.OViewLivrablesProjet
                 .AsNoTracking()
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(x => x.IdLivrablesProjet == id);
+
+            if (e == null) return null;
+
+            return new DefinitionLivrablesDuProjetDto
+            {
+                IdLivrablesProjet = (byte)e.IdLivrablesProjet,
+                DefinitionLivrablesDuProjet = e.DefinitionLivrables,
+                ValeurLivree = e.ValeurLivree,
+                IdIdentificationProjet = e.IdIdentificationProjet
+            };
         }
 
         private async Task ExecuteProcedureAsync(string procedureName, string json)

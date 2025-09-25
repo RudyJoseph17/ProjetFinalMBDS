@@ -64,14 +64,59 @@ else
 
                 <dt class="col-sm-3">Échelon territorial</dt>
                 <dd class="col-sm-9">@projet.EchelonTerritorial</dd>
+
+                <dt class="col-sm-3">Durée</dt>
+                <dd class="col-sm-9">@projet.DureeProjet</dd>
+
+                <dt class="col-sm-3">Coût total</dt>
+                <dd class="col-sm-9">@projet.CoutTotalProjet</dd>
+
+                <dt class="col-sm-3">Justification</dt>
+                <dd class="col-sm-9">@projet.JustificationProjet</dd>
+
+                <dt class="col-sm-3">Étude préfaisabilité</dt>
+                <dd class="col-sm-9">@projet.EtudePrefaisabilite</dd>
+
+                <dt class="col-sm-3">Étude faisabilité</dt>
+                <dd class="col-sm-9">@projet.EtudeFaisabilite</dd>
+
+                <dt class="col-sm-3">Objectif général</dt>
+                <dd class="col-sm-9">@projet.ObjectifGeneralProjet</dd>
+
+                <dt class="col-sm-3">Population visée</dt>
+                <dd class="col-sm-9">@projet.PopulationVisee</dd>
             </dl>
         </div>
     </div>
 
     <hr />
 
+    @* Localisation *@
+    @if (Model.LocalisationGeographique != null)
+    {
+        <h3>Localisation géographique</h3>
+        <ul>
+            <li>Département : @Model.LocalisationGeographique.Departement</li>
+            <li>Arrondissement : @Model.LocalisationGeographique.Arrondissement</li>
+            <li>Commune : @Model.LocalisationGeographique.Commune</li>
+            <li>Section communale : @Model.LocalisationGeographique.SectionCommunale</li>
+        </ul>
+    }
+
+    @* Objectifs spécifiques *@
+    @if (Model.ObjectifsSpecifiques != null && Model.ObjectifsSpecifiques.Any())
+    {
+        <h3>Objectifs spécifiques</h3>
+        <ul>
+            @foreach (var obj in Model.ObjectifsSpecifiques)
+            {
+                <li>@obj.ObjectifsSpecifiques</li>
+            }
+        </ul>
+    }
+
     @* Activités *@
-    @if (projet.Activites != null && projet.Activites.Any())
+    @if (Model.ActiviteBP != null && Model.ActiviteBP.Any())
     {
         <h3>Activités</h3>
         <table class="table table-sm table-striped">
@@ -82,7 +127,7 @@ else
                 </tr>
             </thead>
             <tbody>
-                @foreach (var a in projet.Activites)
+                @foreach (var a in Model.ActiviteBP)
                 {
                     <tr>
                         <td>@a.NumeroActivites</td>
@@ -94,7 +139,7 @@ else
     }
 
     @* Bailleurs *@
-    @if (projet.BailleursDeFonds != null && projet.BailleursDeFonds.Any())
+    @if (Model.BailleursDeFonds != null && Model.BailleursDeFonds.Any())
     {
         <h3>Bailleurs de fonds</h3>
         <table class="table table-sm table-striped">
@@ -107,7 +152,7 @@ else
                 </tr>
             </thead>
             <tbody>
-                @foreach (var b in projet.BailleursDeFonds)
+                @foreach (var b in Model.BailleursDeFonds)
                 {
                     <tr>
                         <td>@b.NomBailleur</td>
@@ -121,7 +166,7 @@ else
     }
 
     @* Aspects juridiques *@
-    @if (projet.AspectsJuridiques != null && projet.AspectsJuridiques.Any())
+    @if (Model.AspectsJuridiques != null && Model.AspectsJuridiques.Any())
     {
         <h3>Aspects juridiques</h3>
         <table class="table table-sm table-striped">
@@ -132,7 +177,7 @@ else
                 </tr>
             </thead>
             <tbody>
-                @foreach (var aj in projet.AspectsJuridiques)
+                @foreach (var aj in Model.AspectsJuridiques)
                 {
                     <tr>
                         <td>@aj.CategorieAspect</td>
@@ -144,7 +189,7 @@ else
     }
 
     @* Parties prenantes *@
-    @if (projet.PartiesPrenantes != null && projet.PartiesPrenantes.Any())
+    @if (Model.PartiesPrenantesProjets != null && Model.PartiesPrenantesProjets.Any())
     {
         <h3>Parties prenantes</h3>
         <table class="table table-sm table-striped">
@@ -157,7 +202,7 @@ else
                 </tr>
             </thead>
             <tbody>
-                @foreach (var p in projet.PartiesPrenantes)
+                @foreach (var p in Model.PartiesPrenantesProjets)
                 {
                     <tr>
                         <td>@p.NomFirme</td>
@@ -170,32 +215,56 @@ else
         </table>
     }
 
+    @* Effets *@
+    @if (Model.EffetsProjets != null && Model.EffetsProjets.Any())
+    {
+        <h3>Effets du projet</h3>
+        <ul>
+            @foreach (var e in Model.EffetsProjets)
+            {
+                <li>@e.EffetDuProjet</li>
+            }
+        </ul>
+    }
+
+    @* Impacts *@
+    @if (Model.ImpactsDuProjet != null && Model.ImpactsDuProjet.Any())
+    {
+        <h3>Impacts du projet</h3>
+        <ul>
+            @foreach (var i in Model.ImpactsDuProjet)
+            {
+                <li>@i.DescImpactsDuProjet</li>
+            }
+        </ul>
+    }
+
     @* Indicateurs *@
-    @if (projet.IndicateursDeResultats != null && projet.IndicateursDeResultats.Any())
+    @if (Model.IndicateursResultats != null && Model.IndicateursResultats.Any())
     {
         <h3>Indicateurs de résultats</h3>
         <ul>
-            @foreach (var ind in projet.IndicateursDeResultats)
+            @foreach (var ind in Model.IndicateursResultats)
             {
-                <li>@ind.DefinitionIndicateursDeResu - Quantité: @ind.QuantiteAssocieAIndicateur</li>
+                <li>@ind.DefinitionIndicateursDeResultats - Quantité: @ind.QuantiteAssocieAIndicateur</li>
             }
         </ul>
     }
 
     @* Livrables *@
-    @if (projet.LivrablesProjets != null && projet.LivrablesProjets.Any())
+    @if (Model.DefinitionLivrables != null && Model.DefinitionLivrables.Any())
     {
         <h3>Livrables</h3>
         <ul>
-            @foreach (var liv in projet.LivrablesProjets)
+            @foreach (var liv in Model.DefinitionLivrables)
             {
-                <li>@liv.DefinitionLivrablesDuProjet (@(liv.ValeurLivree ?? 0)) — Valeur: @liv.ValeurLivree</li>
+                <li>@liv.DefinitionLivrablesDuProjet (@(liv.ValeurLivree ?? 0))</li>
             }
         </ul>
     }
 
     @* Coûts annuels *@
-    @if (projet.CoutAnnuelDuProjet != null && projet.CoutAnnuelDuProjet.Any())
+    @if (Model.CoutAnnuelDuProjet != null && Model.CoutAnnuelDuProjet.Any())
     {
         <h3>Coûts annuels</h3>
         <table class="table table-sm table-bordered">
@@ -208,7 +277,7 @@ else
                 </tr>
             </thead>
             <tbody>
-                @foreach (var c in projet.CoutAnnuelDuProjet)
+                @foreach (var c in Model.CoutAnnuelDuProjet)
                 {
                     <tr>
                         <td>@c.ExerciceFiscaleDebut</td>
@@ -221,76 +290,72 @@ else
         </table>
     }
 
-    @* Cadre logique (depuis Model.CadreLogique) *@
+    @* Informations financières par activité *@
+    @if (Model.ActiviteBP != null && Model.ActiviteBP.Any())
+    {
+        <h3>Informations financières par activité</h3>
+        @foreach (var act in Model.ActiviteBP)
+        {
+            <div class="card mb-3">
+                <div class="card-header bg-light">
+                    Activité : @act.NomActivite (@act.NumeroActivites)
+                </div>
+                <div class="card-body">
+                    @if (act.InformationsFinancieres != null && act.InformationsFinancieres.Any())
+                    {
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Exercice début</th>
+                                    <th>Exercice fin</th>
+                                    <th>Source de financement</th>
+                                    <th>Montant prévu</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var info in act.InformationsFinancieres)
+                                {
+                                    <tr>
+                                        <td>@info.ExerciceFiscalDebut</td>
+                                        <td>@info.ExerciceFiscalFin</td>
+                                        <td>@info.SourcesFinancement</td>
+                                        <td>@info.MontantPrevu</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <div class="text-muted">Aucune information financière saisie pour cette activité.</div>
+                    }
+                </div>
+            </div>
+        }
+    }
+
+    @* Cadre logique *@
     @if (Model.CadreLogique != null)
     {
         <h3>Cadre logique</h3>
         <table class="table table-sm table-bordered">
             <tbody>
-                <tr>
-                    <th>Intrants - Résumé narratif</th>
-                    <td>@Model.CadreLogique.IntrantsResumeNarratif</td>
-                </tr>
-                <tr>
-                    <th>Extrants - Résumé narratif</th>
-                    <td>@Model.CadreLogique.ExtrantsResumeNarratif</td>
-                </tr>
-                <tr>
-                    <th>Objectifs spécifiques - Résumé narratif</th>
-                    <td>@Model.CadreLogique.ObjectifsSpecifiquesResumeNarratif</td>
-                </tr>
-                <tr>
-                    <th>Objectif général - Résumé narratif</th>
-                    <td>@Model.CadreLogique.ObjectifGeneralResumeNarratif</td>
-                </tr>
-                <tr>
-                    <th>Intrants - IOV</th>
-                    <td>@Model.CadreLogique.IntrantsIov</td>
-                </tr>
-                <tr>
-                    <th>Extrants - IOV</th>
-                    <td>@Model.CadreLogique.ExtrantsIov</td>
-                </tr>
-                <tr>
-                    <th>Objectifs spécifiques - IOV</th>
-                    <td>@Model.CadreLogique.ObjectifsSpecifiquesIov</td>
-                </tr>
-                <tr>
-                    <th>Objectif général - IOV</th>
-                    <td>@Model.CadreLogique.ObjectifGeneralIov</td>
-                </tr>
-                <tr>
-                    <th>Intrants - SMOV</th>
-                    <td>@Model.CadreLogique.IntrantsSmov</td>
-                </tr>
-                <tr>
-                    <th>Extrants - SMOV</th>
-                    <td>@Model.CadreLogique.ExtrantsSmov</td>
-                </tr>
-                <tr>
-                    <th>Objectifs spécifiques - SMOV</th>
-                    <td>@Model.CadreLogique.ObjectifsSpecifiquesSmov</td>
-                </tr>
-                <tr>
-                    <th>Objectif général - SMOV</th>
-                    <td>@Model.CadreLogique.ObjectifGeneralSmov</td>
-                </tr>
-                <tr>
-                    <th>Risques & Hypothèses (intrants)</th>
-                    <td>@Model.CadreLogique.IntrantsRisquesHypotheses</td>
-                </tr>
-                <tr>
-                    <th>Risques & Hypothèses (extrants)</th>
-                    <td>@Model.CadreLogique.ExtrantsRisquesHypotheses</td>
-                </tr>
-                <tr>
-                    <th>Risques & Hypothèses (objectifs spécifiques)</th>
-                    <td>@Model.CadreLogique.ObjectifsSpecifiquesRisquesHypotheses</td>
-                </tr>
-                <tr>
-                    <th>Risques & Hypothèses (objectif général)</th>
-                    <td>@Model.CadreLogique.ObjectifGeneralRisquesHypotheses</td>
-                </tr>
+                <tr><th>Intrants - Résumé narratif</th><td>@Model.CadreLogique.IntrantsResumeNarratif</td></tr>
+                <tr><th>Extrants - Résumé narratif</th><td>@Model.CadreLogique.ExtrantsResumeNarratif</td></tr>
+                <tr><th>Objectifs spécifiques - Résumé narratif</th><td>@Model.CadreLogique.ObjectifsSpecifiquesResumeNarratif</td></tr>
+                <tr><th>Objectif général - Résumé narratif</th><td>@Model.CadreLogique.ObjectifGeneralResumeNarratif</td></tr>
+                <tr><th>Intrants - IOV</th><td>@Model.CadreLogique.IntrantsIov</td></tr>
+                <tr><th>Extrants - IOV</th><td>@Model.CadreLogique.ExtrantsIov</td></tr>
+                <tr><th>Objectifs spécifiques - IOV</th><td>@Model.CadreLogique.ObjectifsSpecifiquesIov</td></tr>
+                <tr><th>Objectif général - IOV</th><td>@Model.CadreLogique.ObjectifGeneralIov</td></tr>
+                <tr><th>Intrants - SMOV</th><td>@Model.CadreLogique.IntrantsSmov</td></tr>
+                <tr><th>Extrants - SMOV</th><td>@Model.CadreLogique.ExtrantsSmov</td></tr>
+                <tr><th>Objectifs spécifiques - SMOV</th><td>@Model.CadreLogique.ObjectifsSpecifiquesSmov</td></tr>
+                <tr><th>Objectif général - SMOV</th><td>@Model.CadreLogique.ObjectifGeneralSmov</td></tr>
+                <tr><th>Risques & Hypothèses (intrants)</th><td>@Model.CadreLogique.IntrantsRisquesHypotheses</td></tr>
+                <tr><th>Risques & Hypothèses (extrants)</th><td>@Model.CadreLogique.ExtrantsRisquesHypotheses</td></tr>
+                <tr><th>Risques & Hypothèses (objectifs spécifiques)</th><td>@Model.CadreLogique.ObjectifsSpecifiquesRisquesHypotheses</td></tr>
+                <tr><th>Risques & Hypothèses (objectif général)</th><td>@Model.CadreLogique.ObjectifGeneralRisquesHypotheses</td></tr>
             </tbody>
         </table>
     }
@@ -306,7 +371,6 @@ else
            class="btn btn-primary">
             Analyser ce projet
         </a>
-
         <a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
     </div>
 }

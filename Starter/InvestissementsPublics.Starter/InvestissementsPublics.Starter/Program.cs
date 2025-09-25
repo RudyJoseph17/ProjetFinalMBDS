@@ -23,6 +23,7 @@ using InvestissementsPublics.Starter.Autorisations;
 using Microsoft.AspNetCore.Authorization;
 using Programmation.Application.Interface;
 using Programmation.Infrastructure.Persistence;
+using SuiviEvaluation.Application.Services;
 // si SharedMappingProfile est ici
 // ajoute d'autres usings de profiles si besoin
 
@@ -127,6 +128,8 @@ builder.Services.AddScoped<IDecaissementSurProjetService, DecaissementSurProjetS
 builder.Services.AddScoped<IAutorisationSurProjetService, AutorisationSurProjetService>();
 
 builder.Services.AddScoped<IGrilleDdpProjetService, GrilleDdpProjetService>();
+builder.Services.AddScoped<ISuiviProjetService, SuiviProjetService>();
+
 
 
 
