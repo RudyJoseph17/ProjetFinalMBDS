@@ -7,7 +7,8 @@ using Microsoft.EntityFrameworkCore;
 namespace BanqueProjet.Infrastructure.Entities;
 
 [Keyless]
-public partial class ViewActivitesIformationsFinanciere
+[Table("O_VIEW_INFORMATIONS_FINANCIERES_T")]
+public partial class OViewIformationsFinancierePrevision
 {
     [Column("ID_ACTIVITES")]
     [Precision(6)]
@@ -30,16 +31,16 @@ public partial class ViewActivitesIformationsFinanciere
     [Unicode(false)]
     public string? SourcesFinancement { get; set; }
 
+    [Column("ARTICLE")]
+    public string? Article { get; set; }
+
+    [Column("ALINEA")]
+    [StringLength(100)]
+    [Unicode(false)]
+    public string? Alinea { get; set; }
+
     [Column("MONTANT_PREVU", TypeName = "NUMBER(12,2)")]
     public decimal? MontantPrevu { get; set; }
 
-    [Column("MONTANT_AUTORISATION", TypeName = "NUMBER(12,2)")]
-    public decimal? MontantAutorisation { get; set; }
-
-    [Column("MONTANT_DECAISSEMENT", TypeName = "NUMBER(12,2)")]
-    public decimal? MontantDecaissement { get; set; }
-
-    [Column("MONTANT_DEPENSE", TypeName = "NUMBER(12,2)")]
-    public decimal? MontantDepense { get; set; }
 
 }

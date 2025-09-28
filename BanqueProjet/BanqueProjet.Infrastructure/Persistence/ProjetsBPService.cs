@@ -42,34 +42,64 @@ namespace BanqueProjet.Infrastructure.Persistence
             //};
         }
 
-        public async Task AjouterAsync(ProjetsBPDto projetsBPD)
+public async Task AjouterAsync(ProjetsBPDto projetsBPD)
+{
+    // 1) Génération de l’ID si nécessaire
+    if (string.IsNullOrWhiteSpace(projetsBPD.IdIdentificationProjet))
+    {
+        projetsBPD.IdIdentificationProjet =
+            IdGenerator.GenererIdPour(nameof(ProjetsBPDto.IdIdentificationProjet));
+    }
+
+    // 2) Préparation de la sérialisation JSON
+    var settings = new JsonSerializerSettings
+    {
+        ContractResolver = new DefaultContractResolver
         {
-            if (string.IsNullOrWhiteSpace(projetsBPD.IdIdentificationProjet))
-            {
-                projetsBPD.IdIdentificationProjet = IdGenerator.GenererIdPour(projetsBPD.IdIdentificationProjet);
-            }
+            NamingStrategy = new DefaultNamingStrategy()
+        },
+        NullValueHandling = NullValueHandling.Ignore,
+        DateFormatString = "yyyy-MM-dd"
+    };
 
-            var settings = new JsonSerializerSettings
-            {
-                ContractResolver = new DefaultContractResolver
-                {
-                    NamingStrategy = new DefaultNamingStrategy()  // conserve strictement la casse C#
-                },
-                NullValueHandling = NullValueHandling.Ignore,
+    string json   = JsonConvert.SerializeObject(projetsBPD, settings);
+    int    status;
+    string report;
 
-                // 👉 Force toutes les dates au format YYYY-MM-DD
-                DateFormatString = "yyyy-MM-dd"
-            };
+    // 3) Boucle de retry tant que la BDD signale un doublon
+    do
+    {
+        (status, report) = await ExecuteProcedureWithStatusAsync(
+            "AJOUTER_IDENTIFICATION_PROJET_JSON",
+            json);
 
-            var json = JsonConvert.SerializeObject(projetsBPD, settings);
+        if (status == 1)
+        {
+            // doublon détecté : régénération de l’ID et nouvelle sérialisation
+            _logger.LogWarning(
+                "Doublon détecté pour ID={Id}, régénération et nouvel essai",
+                projetsBPD.IdIdentificationProjet);
 
-            Console.WriteLine("JSON envoyé à Oracle :");
-            Console.WriteLine(json);  // ou ILogger.LogDebug(json)
-
-            _logger.LogInformation("=== JSON envoyé à Oracle (Ajouter) ===\n{Json}", json);
-
-            await ExecuteProcedureAsync("AJOUTER_IDENTIFICATION_PROJET_ET_LISTES_JSON", json);
+            projetsBPD.IdIdentificationProjet =
+                IdGenerator.GenererIdPour(nameof(ProjetsBPDto.IdIdentificationProjet));
+            json = JsonConvert.SerializeObject(projetsBPD, settings);
         }
+        else if (status < 0)
+        {
+            // erreur fatale remontée avec le report
+            throw new InvalidOperationException(
+                $"Erreur Oracle lors de l’insertion : {report}");
+        }
+
+    } while (status == 1);
+
+    _logger.LogInformation("Projet ajouté avec succès. Report Oracle :\n{Report}", report);
+}
+
+
+// Méthode utilitaire retournant (status, report) depuis la proc PL/SQL
+
+
 
         public async Task MettreAJourAsync(ProjetsBPDto projetsBPD)
         {
@@ -96,34 +126,111 @@ namespace BanqueProjet.Infrastructure.Persistence
 
         private async Task ExecuteProcedureAsync(string procedureName, string json)
         {
+            await using var conn = _dbContext.Database.GetDbConnection();
+            await using var cmd = conn.CreateCommand();
+            cmd.CommandText = procedureName;
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            // 1) p_action IN VARCHAR2
+            var pAction = cmd.CreateParameter();
+            pAction.ParameterName = "p_action";
+            pAction.DbType = DbType.String;
+            pAction.Value = "INSERT";         // ou "UPDATE" selon le contexte
+            cmd.Parameters.Add(pAction);
+
+            // 2) p_json IN CLOB
+            var pJson = cmd.CreateParameter();
+            pJson.ParameterName = "p_json";
+            pJson.DbType = DbType.String;      // ou DbType.AnsiString
+            pJson.Value = json;
+            cmd.Parameters.Add(pJson);
+
+            // 3) p_report OUT CLOB
+            var pReport = cmd.CreateParameter();
+            pReport.ParameterName = "p_report";
+            pReport.DbType = DbType.String;    // ODP.NET détecte automatiquement le CLOB
+            pReport.Direction = ParameterDirection.Output;
+            // taille arbitraire pour laisser sortir un long CLOB
+            pReport.Size = 32768;
+            cmd.Parameters.Add(pReport);
+
+            if (conn.State != ConnectionState.Open)
+                await conn.OpenAsync();
+
+            await cmd.ExecuteNonQueryAsync();
+
+            // Optionnel : récupérer et logger le rapport Oracle
+            var reportText = pReport.Value as string;
+            _logger.LogDebug("Report from Oracle: {Report}", reportText);
+        }
+
+        private async Task<(int Status, string Report)> ExecuteProcedureWithStatusAsync(
+    string procedureName,
+    string json)
+        {
+            // 1) Récupère la connexion gérée par EF
+            var conn = _dbContext.Database.GetDbConnection();
+            var mustClose = conn.State != ConnectionState.Open;
+
+            // 2) Ouvre si nécessaire
+            if (mustClose)
+                await conn.OpenAsync();
+
             try
             {
-                _logger.LogInformation("📦 JSON envoyé à {Procedure} : {Json}", procedureName, json);
-
-                await using var conn = _dbContext.Database.GetDbConnection();
-                await using var cmd = conn.CreateCommand();
-
+                // 3) Crée et configure le DbCommand
+                using var cmd = conn.CreateCommand();
                 cmd.CommandText = procedureName;
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                var param = cmd.CreateParameter();
-                param.ParameterName = "p_json";
-                param.DbType = DbType.String;
-                param.Value = json;
-                cmd.Parameters.Add(param);
+                // p_action IN
+                var pAction = cmd.CreateParameter();
+                pAction.ParameterName = "p_action";
+                pAction.DbType = DbType.String;
+                pAction.Direction = ParameterDirection.Input;
+                pAction.Value = "INSERT";
+                cmd.Parameters.Add(pAction);
 
-                if (conn.State != ConnectionState.Open)
-                    await conn.OpenAsync();
+                // p_json IN
+                var pJson = cmd.CreateParameter();
+                pJson.ParameterName = "p_json";
+                pJson.DbType = DbType.String;
+                pJson.Direction = ParameterDirection.Input;
+                pJson.Value = json;
+                cmd.Parameters.Add(pJson);
 
+                // p_report OUT
+                var pReport = cmd.CreateParameter();
+                pReport.ParameterName = "p_report";
+                pReport.DbType = DbType.String;
+                pReport.Direction = ParameterDirection.Output;
+                pReport.Size = 32768;
+                cmd.Parameters.Add(pReport);
+
+                // p_status OUT
+                var pStatus = cmd.CreateParameter();
+                pStatus.ParameterName = "p_status";
+                pStatus.DbType = DbType.Int32;
+                pStatus.Direction = ParameterDirection.Output;
+                cmd.Parameters.Add(pStatus);
+
+                // 4) Exécute la proc
                 await cmd.ExecuteNonQueryAsync();
+
+                // 5) Récupère les valeurs
+                var status = Convert.ToInt32(pStatus.Value);
+                var report = pReport.Value as string ?? string.Empty;
+                return (status, report);
             }
-            catch (Exception ex)
+            finally
             {
-                _logger.LogError(ex, "Erreur executing {Procedure}. json (truncated): {Json}",
-                    procedureName, json.Substring(0, Math.Min(json.Length, 500)));
-                throw;
+                // 6) Ferme la connexion si on l'avait ouverte
+                if (mustClose)
+                    await conn.CloseAsync();
             }
         }
+
+
 
         public async Task<List<ProjetsBPDto>> ObtenirTousAsync()
         {

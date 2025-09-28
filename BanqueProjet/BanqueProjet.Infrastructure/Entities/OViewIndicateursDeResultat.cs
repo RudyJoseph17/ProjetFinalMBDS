@@ -10,8 +10,8 @@ namespace BanqueProjet.Infrastructure.Entities;
 public partial class OViewIndicateursDeResultat
 {
     [Column("ID_INDICATEURS_DE_RESULTATS")]
-    [Precision(3)]
-    public byte IdIndicateursDeResultats { get; set; }
+    [Precision(6)]
+    public int IdIndicateursDeResultats { get; set; }
 
     [Column("DEFINITION_INDICATEURS_DE_RESU")]
     [StringLength(100)]

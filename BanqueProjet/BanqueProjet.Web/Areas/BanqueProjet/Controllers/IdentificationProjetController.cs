@@ -680,6 +680,27 @@ namespace BanqueProjet.Web.Areas.BanqueProjet.Controllers
             return View("DetailsForSuivi", vr);
         }
 
+        public async Task<IActionResult> DetailsPourProgrammation(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return BadRequest();
+
+            var projet = await _projetService.ObtenirParIdAsync(id);
+            if (projet == null) return NotFound();
+
+            var vr = new DdpViewModel
+            {
+                Projets = projet,
+                CadreLogique = await _cadreService.ObtenirParIdentificationProjetAsync(id),
+                AspectsJuridiques = (await _aspectsJuridiquesService.ObtenirTousAsync())
+                    .Where(x => x.IdIdentificationProjet == id).ToList(),
+                LocalisationGeographique = (await _localisationService.ObtenirTousAsync())
+                    .FirstOrDefault(x => x.IdIdentificationProjet == id)
+            };
+
+            EnsureProjectId(vr);
+            return View("DetailsPourProgrammation", vr);
+        }
+
         [HttpGet]
         public async Task<IActionResult> Dashboard()
         {

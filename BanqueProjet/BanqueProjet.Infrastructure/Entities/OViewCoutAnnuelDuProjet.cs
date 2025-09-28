@@ -15,14 +15,14 @@ public partial class OViewCoutAnnuelDuProjet
 
     [Column("EXERCICE_FISCALE_DEBUT")]
     [Precision(4)]
-    public byte? ExerciceFiscaleDebut { get; set; }
+    public int? ExerciceFiscaleDebut { get; set; }
 
     [Column("EXERCICE_FISCALE_FIN")]
     [Precision(4)]
-    public byte? ExerciceFiscaleFin { get; set; }
+    public int? ExerciceFiscaleFin { get; set; }
 
     [Column("SOURCES_DE_FINANCEMENT_COUT_AN")]
-    [StringLength(30)]
+    [StringLength(50)]
     [Unicode(false)]
     public string? SourcesDeFinancementCoutAn { get; set; }
 

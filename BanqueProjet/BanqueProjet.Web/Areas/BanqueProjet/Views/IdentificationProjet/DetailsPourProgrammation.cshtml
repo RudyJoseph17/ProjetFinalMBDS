@@ -1,0 +1,22 @@
+﻿@model BanqueProjet.Web.Models.DdpViewModel
+
+@{
+    ViewData["Title"] = "Détails du projet (Programmation)";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@await Html.PartialAsync("_DdpDetailsPartial", Model)
+
+<div class="mt-3">
+    <a asp-area="Programmation"
+       asp-controller="Programmations"
+       asp-action="Create"
+       asp-route-projetId="@Model.Projets.IdIdentificationProjet"
+       asp-route-nomProjet="@Model.Projets.NomProjet"
+       class="btn btn-primary">
+        Faire une programmation
+    </a>
+
+    <a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
+</div>

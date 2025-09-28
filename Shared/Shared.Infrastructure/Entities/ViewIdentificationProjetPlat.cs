@@ -18,7 +18,6 @@ public partial class ViewIdentificationProjetPlat
     [StringLength(100)]
     [Unicode(false)]
     public string? NomProjet { get; set; }
-    
 
     [Column("TYPE_DE_PROJET")]
     [StringLength(20)]
@@ -90,10 +89,9 @@ public partial class ViewIdentificationProjetPlat
     [Unicode(false)]
     public string? ObjectifGeneralProjet { get; set; }
 
-    [Column("DUREE_PROJET")]
-    [StringLength(15)]
-    [Unicode(false)]
-    public string? DureeProjet { get; set; }
+    [Column("DUREE_PROJET_MOIS")]
+    [Precision(3)]
+    public byte? DureeProjetMois { get; set; }
 
     [Column("POPULATION_VISEE")]
     [StringLength(100)]
@@ -123,5 +121,4 @@ public partial class ViewIdentificationProjetPlat
 
     [Column("DATE_MISE_A_JOUR", TypeName = "DATE")]
     public DateTime? DateMiseAJour { get; set; }
-
 }

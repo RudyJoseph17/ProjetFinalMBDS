@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,12 @@ namespace Shared.Domain.Dtos
     {
         public int IdArrondissement { get; set; }
         public string? NomArrondissement { get; set; }
+
+        [JsonProperty("ListCommunes")]
         public List<CommuneDto> ListCommunes { get; set; } = new();
+
+        [JsonProperty("ParentDepartement")]
+        public int ParentDepartement { get; set; }
     }
 }
 

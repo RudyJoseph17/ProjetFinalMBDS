@@ -10,11 +10,13 @@ namespace BanqueProjet.Infrastructure.Entities;
 [Table("O_VIEW_ACTIVITES")]
 public partial class OViewActiviteBP
 {
+    internal readonly object OViewIformationsFinancierePrevision;
+
     [Column("ID_ACTIVITES")]
     [Precision(6)]
     public int IdActivites { get; set; }
 
-    [Column("NUMERO_ACTIVITES")]
+    [Column("NUMERO_ACTIVITE")]
     [Precision(3)]
     public byte? NumeroActivites { get; set; }
 
@@ -32,4 +34,8 @@ public partial class OViewActiviteBP
     [StringLength(12)]
     [Unicode(false)]
     public string IdIdentificationProjet { get; set; } = null!;
+
+    public virtual ICollection<OViewIformationsFinancierePrevision> OViewIformationsFinancierePrevisions { get; set; }
+    = new List<OViewIformationsFinancierePrevision>();
+
 }

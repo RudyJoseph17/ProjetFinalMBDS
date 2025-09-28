@@ -96,7 +96,7 @@ namespace BanqueProjet.Infrastructure.Persistence
             // Mappez-les vers vos DTOs métier
             return entities.Select(e => new CoutAnnuelDuProjetDto
             {
-                IdCoutAnnuelProjet = (byte)e.IdCoutAnnuelProjet,
+                IdCoutAnnuelProjet = e.IdCoutAnnuelProjet,
                 ExerciceFiscaleDebut = e.ExerciceFiscaleDebut,
                 ExerciceFiscaleFin = e.ExerciceFiscaleFin,
                 SourcesDeFinancementCoutAn = e.SourcesDeFinancementCoutAn,
@@ -107,7 +107,7 @@ namespace BanqueProjet.Infrastructure.Persistence
 
         }
 
-        public async Task<CoutAnnuelDuProjetDto?> ObtenirParIdAsync(byte id)
+        public async Task<CoutAnnuelDuProjetDto?> ObtenirParIdAsync(int id)
         {
             var e = await _dbContext.OViewCoutAnnuelDuProjet
     .AsNoTracking()
@@ -117,7 +117,7 @@ namespace BanqueProjet.Infrastructure.Persistence
 
             return new CoutAnnuelDuProjetDto
             {
-                IdCoutAnnuelProjet = (byte)e.IdCoutAnnuelProjet,
+                IdCoutAnnuelProjet = e.IdCoutAnnuelProjet,
                 ExerciceFiscaleDebut = e.ExerciceFiscaleDebut,
                 ExerciceFiscaleFin = e.ExerciceFiscaleFin,
                 SourcesDeFinancementCoutAn = e.SourcesDeFinancementCoutAn,

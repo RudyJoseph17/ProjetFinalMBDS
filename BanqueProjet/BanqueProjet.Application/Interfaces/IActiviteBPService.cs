@@ -11,8 +11,8 @@ namespace BanqueProjet.Application.Interfaces
     {
         Task AjouterAsync(ActiviteBPDto activiteBP);
         Task MettreAJourAsync(ActiviteBPDto activiteBP);
-        Task SupprimerAsync(byte IdActivites);
+        Task SupprimerAsync(int IdActivites);
         Task<List<ActiviteBPDto>> ObtenirTousAsync();
-        Task<ActiviteBPDto?> ObtenirParIdAsync(byte id);
+        Task<ActiviteBPDto?> ObtenirParIdAsync(int id);
     }
 }

@@ -16,10 +16,10 @@ public partial class OViewAspectsJuridique
     [Column("DESCRIPTION_ASPECT")]
     [StringLength(500)]
     [Unicode(false)]
-    public string? DescAspectsJuridiques { get; set; }
+    public string? DescriptionAspect { get; set; }
 
     [Column("CATEGORIE_ASPECT")]
-    [StringLength(200)]
+    [StringLength(30)]
     [Unicode(false)]
     public string? CategorieAspect { get; set; }
 

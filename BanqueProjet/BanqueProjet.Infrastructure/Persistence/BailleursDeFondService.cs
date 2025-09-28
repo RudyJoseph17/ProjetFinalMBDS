@@ -100,7 +100,7 @@ namespace BanqueProjet.Infrastructure.Persistence
                 NomBailleur = e.NomBailleur,
                 TelephoneRepresentant = e.TelephoneRepresentant,
                 CourrielRepresentant = e.CourrielRepresentant,
-                IdIdentificationProjet = e.IdProjet
+                IdIdentificationProjet = e.IdIdentificationProjet
             })
             .ToList();
 
@@ -120,7 +120,7 @@ namespace BanqueProjet.Infrastructure.Persistence
                 NomBailleur = e.NomBailleur,
                 TelephoneRepresentant = e.TelephoneRepresentant,
                 CourrielRepresentant = e.CourrielRepresentant,
-                IdIdentificationProjet = e.IdProjet
+                IdIdentificationProjet = e.IdIdentificationProjet
             };
 
         }

@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Oracle.ManagedDataAccess.Client;
 
 namespace BanqueProjet.Infrastructure.Persistence
 {
@@ -125,30 +126,38 @@ namespace BanqueProjet.Infrastructure.Persistence
             };
 
         }
-
         private async Task ExecuteProcedureAsync(string procedureName, string json)
         {
-            await using var conn = _dbContext.Database.GetDbConnection();
-            await using var cmd = conn.CreateCommand();
+            // On récupère la stratégie de retry d'EF (pour gérer automatiquement 
+            // les éventuelles erreurs de réseau/temps mort)
+            var strategy = _dbContext.Database.CreateExecutionStrategy();
 
-            cmd.CommandText = procedureName;
-            cmd.CommandType = CommandType.StoredProcedure;
-
-            var param = cmd.CreateParameter();
-            param.ParameterName = "p_json";
-            param.DbType = DbType.String;
-            param.Value = json;
-            cmd.Parameters.Add(param);
-
-            if (conn.State != ConnectionState.Open)
+            await strategy.ExecuteAsync(async () =>
+            {
+                // 1) On ouvre une toute nouvelle connexion ADO.NET Oracle 
+                await using var conn = new OracleConnection(_dbContext.Database.GetConnectionString());
                 await conn.OpenAsync();
 
-            await cmd.ExecuteNonQueryAsync();
-        }
+                // 2) On crée la commande sur cette connexion
+                await using var cmd = new OracleCommand(procedureName, conn)
+                {
+                    CommandType = CommandType.StoredProcedure,
+                    BindByName = true,
+                    CommandTimeout = 180         // 3 minutes, ajustez si besoin
+                };
 
-        //public Task<LocalisationGeographiqueProjDto> ObtenirParIdAsync(string id)
-        //{
-        //    throw new NotImplementedException();
-        //}
+                // 3) Paramètre JSON en CLOB pour supporter de gros volumes
+                cmd.Parameters.Add(
+                    new OracleParameter("p_json", OracleDbType.Clob)
+                    {
+                        Direction = ParameterDirection.Input,
+                        Value = json
+                    }
+                );
+
+                // 4) On exécute
+                await cmd.ExecuteNonQueryAsync();
+            });
+        }
     }
 }

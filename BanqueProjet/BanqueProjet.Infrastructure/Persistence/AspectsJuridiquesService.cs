@@ -91,7 +91,7 @@ namespace BanqueProjet.Infrastructure.Persistence
             return entities.Select(e => new AspectsJuridiquesDto
             {
                 IdAspectsJuridiques = (byte)e.IdAspectsJuridiques,
-                DescAspectsJuridiques = e.DescAspectsJuridiques,
+                DescAspectsJuridiques = e.DescriptionAspect,
                 CategorieAspect = e.CategorieAspect,
                 IdIdentificationProjet = e.IdIdentificationProjet
             })
@@ -109,7 +109,7 @@ namespace BanqueProjet.Infrastructure.Persistence
             return new AspectsJuridiquesDto
             {
                 IdAspectsJuridiques = (byte)e.IdAspectsJuridiques,
-                DescAspectsJuridiques = e.DescAspectsJuridiques,
+                DescAspectsJuridiques = e.DescriptionAspect,
                 CategorieAspect = e.CategorieAspect,
                 IdIdentificationProjet = e.IdIdentificationProjet
             };

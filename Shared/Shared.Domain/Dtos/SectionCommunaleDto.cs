@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,5 +11,9 @@ namespace Shared.Domain.Dtos
     {
         public int IdSectionCommunale { get; set; }
         public string? NomSectionCommunale { get; set; }
+
+        // pour passer l’ID de la commune parent
+        [JsonProperty("ParentCommune")]
+        public int ParentCommune { get; set; }
     }
 }

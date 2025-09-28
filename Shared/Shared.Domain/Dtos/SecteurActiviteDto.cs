@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,14 @@ namespace Shared.Domain.Dtos
     {
         public int IdSecteurActivite { get; set; }
         public string? NomSecteurActivite { get; set; }
-        public List<SousSecteurActiviteDto> ListSousSecteurActivite { get; set; } = new();
+
+        // default initialiser + constructor pour garantir non-null
+        [JsonProperty("listSousSecteurActivite")]
+        public List<SousSecteurActiviteDto> ListSousSecteurActivite { get; set; }
+
+        public SecteurActiviteDto()
+        {
+            ListSousSecteurActivite = new List<SousSecteurActiviteDto>();
+        }
     }
 }

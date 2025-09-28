@@ -92,7 +92,7 @@ builder.Services.AddAutoMapper(
 // Enregistrement des services (pas de doublons)
 builder.Services.AddScoped<IIdentificationProjetService, IdentificationProjetService>();
 builder.Services.AddScoped<IProjetsBPService, ProjetsBPService>();
-builder.Services.AddScoped<IBailleurDeFondsService, BailleurDeFondsService>();
+//builder.Services.AddScoped<IBailleurDeFondsService, BailleurDeFondsService>();
 builder.Services.AddScoped<IActiviteService, ActiviteService>();
 builder.Services.AddScoped<IActiviteBPService, ActiviteBPService>();
 builder.Services.AddScoped<IDdpCadreLogiqueService, DdpCadreLogiqueService>();

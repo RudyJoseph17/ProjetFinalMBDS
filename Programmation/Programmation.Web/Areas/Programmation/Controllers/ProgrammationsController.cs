@@ -42,7 +42,7 @@ namespace Programmation.Web.Areas.Programmation.Controllers
             try
             {
                 var projets = await _projetService.ObtenirTousAsync();
-                var projetsFavorables = projets.FindAll(p => p.AvisProjet == "Favorable");
+                var projetsFavorables = projets.FindAll(p => p.AvisProjet == "Projet à analyser");
                 return View("Index", projetsFavorables);
             }
             catch (Exception ex)

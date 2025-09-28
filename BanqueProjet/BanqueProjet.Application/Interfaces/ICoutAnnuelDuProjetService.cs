@@ -13,7 +13,7 @@ namespace BanqueProjet.Application.Interfaces
         Task MettreAJourAsync(CoutAnnuelDuProjetDto coutAnnuelDuProjet);
         Task SupprimerAsync(byte IdActivites);
         Task<List<CoutAnnuelDuProjetDto>> ObtenirTousAsync();
-        Task<CoutAnnuelDuProjetDto?> ObtenirParIdAsync(byte id);
+        Task<CoutAnnuelDuProjetDto?> ObtenirParIdAsync(int id);
         Task SupprimerAsync(decimal idCoutAnnuelProjet);
     }
 }

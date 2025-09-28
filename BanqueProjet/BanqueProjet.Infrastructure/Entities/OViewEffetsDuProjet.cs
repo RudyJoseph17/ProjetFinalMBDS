@@ -10,8 +10,8 @@ namespace BanqueProjet.Infrastructure.Entities;
 public partial class OViewEffetsDuProjet
 {
     [Column("ID_EFFETS_DU_PROJET")]
-    [Precision(3)]
-    public byte IdEffetsDuProjet { get; set; }
+    [Precision(6)]
+    public int IdEffetsDuProjet { get; set; }
 
     [Column("EFFET_DU_PROJET")]
     [StringLength(500)]

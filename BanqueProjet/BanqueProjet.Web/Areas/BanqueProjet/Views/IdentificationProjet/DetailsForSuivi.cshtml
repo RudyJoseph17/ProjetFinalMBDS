@@ -18,5 +18,32 @@
         Saisir une autorisation
     </a>
 
+    <a asp-area="SuiviEvaluation"
+       asp-controller="DecaissementSurProjet"
+       asp-action="Create"
+       asp-route-projetId="@Model.Projets.IdIdentificationProjet"
+       asp-route-nomProjet="@Model.Projets.NomProjet"
+       class="btn btn-primary">
+        Saisir un décaissement
+    </a>
+
+    <a asp-area="SuiviEvaluation"
+       asp-controller="DepenseReelleSurProjet"
+       asp-action="Create"
+       asp-route-projetId="@Model.Projets.IdIdentificationProjet"
+       asp-route-nomProjet="@Model.Projets.NomProjet"
+       class="btn btn-primary">
+        Saisir un décaissement
+    </a>
+
+    <a asp-area="SuiviEvaluation"
+       asp-controller="AutorisationSurProjet"
+       asp-action="Create"
+       asp-route-projetId="@Model.Projets.IdIdentificationProjet"
+       asp-route-nomProjet="@Model.Projets.NomProjet"
+       class="btn btn-primary">
+        Voir le flux financier
+    </a>
+
     <a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
 </div>

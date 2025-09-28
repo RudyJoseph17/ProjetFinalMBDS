@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BanqueProjet.Infrastructure.Entities;
 
 [Keyless]
+[Table("VIEW_IDENTIFICATION_PROJET_PLAT")]
 public partial class ViewIdentificationProjetPlat
 {
     [Column("ID_IDENTIFICATION_PROJET")]
@@ -89,7 +90,7 @@ public partial class ViewIdentificationProjetPlat
     [Unicode(false)]
     public string? ObjectifGeneralProjet { get; set; }
 
-    [Column("DUREE_PROJET")]
+    [Column("DUREE_PROJET_MOIS")]
     [StringLength(15)]
     [Unicode(false)]
     public string? DureeProjet { get; set; }

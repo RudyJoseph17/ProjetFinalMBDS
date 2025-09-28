@@ -13,8 +13,8 @@ public partial class OViewEvolutionTemporelleDuProjet
     [Precision(3)]
     public byte IdEvolutionTemporelle { get; set; }
 
-    [Column("DATE_DE_DEMMARAGE_", TypeName = "DATE")]
-    public DateTime? DateDeDemmarage { get; set; }
+    [Column("DATE_DE_DEMARRAGE_", TypeName = "DATE")]
+    public DateTime? DateDeDemarrage { get; set; }
 
     [Column("DATE_ACHEVEMENT_PREVUE", TypeName = "DATE")]
     public DateTime? DateAchevementPrevue { get; set; }

@@ -97,8 +97,8 @@ namespace BanqueProjet.Infrastructure.Persistence
             return entities.Select(e => new DefinitionLivrablesDuProjetDto
             {
                 IdLivrablesProjet = (byte)e.IdLivrablesProjet,
-                DefinitionLivrablesDuProjet = e.DefinitionLivrables,
-                ValeurLivree = e.ValeurLivree,
+                DefinitionLivrablesDuProjet = e.DefinitionLivrablesDuProjet,
+                ValeurLivree = e.ValeurLivree ?? 0,
                 IdIdentificationProjet = e.IdIdentificationProjet
             })
             .ToList();
@@ -115,7 +115,7 @@ namespace BanqueProjet.Infrastructure.Persistence
             return new DefinitionLivrablesDuProjetDto
             {
                 IdLivrablesProjet = (byte)e.IdLivrablesProjet,
-                DefinitionLivrablesDuProjet = e.DefinitionLivrables,
+                DefinitionLivrablesDuProjet = e.DefinitionLivrablesDuProjet,
                 ValeurLivree = e.ValeurLivree,
                 IdIdentificationProjet = e.IdIdentificationProjet
             };

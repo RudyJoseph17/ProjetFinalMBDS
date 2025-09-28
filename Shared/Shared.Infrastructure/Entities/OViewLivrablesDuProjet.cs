@@ -10,8 +10,8 @@ namespace Shared.Infrastructure.Entities;
 public partial class OViewLivrablesDuProjet
 {
     [Column("ID_LIVRABLES_PROJET")]
-    [Precision(3)]
-    public byte IdLivrablesProjet { get; set; }
+    [Precision(6)]
+    public int IdLivrablesProjet { get; set; }
 
     [Column("DEFINITION_LIVRABLES_DU_PROJET")]
     [StringLength(100)]

@@ -14,9 +14,9 @@ namespace BanqueProjet.Application.Dtos
     {
         [JsonProperty("IdIdentificationProjet")]
         public string IdIdentificationProjet { get; set; }
-        public decimal IdCoutAnnuelProjet { get; set; }
-        public byte? ExerciceFiscaleDebut { get; set; }
-        public byte? ExerciceFiscaleFin { get; set; }
+        public int IdCoutAnnuelProjet { get; set; }
+        public int? ExerciceFiscaleDebut { get; set; }
+        public int? ExerciceFiscaleFin { get; set; }
         public string? SourcesDeFinancementCoutAn { get; set; }
         public decimal? MontantAnnuel { get; set; }
     }

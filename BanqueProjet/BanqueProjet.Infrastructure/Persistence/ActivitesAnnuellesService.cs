@@ -97,12 +97,9 @@ namespace BanqueProjet.Infrastructure.Persistence
             return entities.Select(e => new ActivitesAnnuellesDto
             {
                 IdActivitesAnnuelles = (byte)e.IdActivitesAnnuelles,
-                DescriptionActivite = e.DescriptionActivite,
                 ExerciceFiscalDebut = e.ExerciceFiscalDebut,
                 ExerciceFiscalFin = e.ExerciceFiscalFin,
-                CoutAnnuel = e.CoutAnnuel,
-                DateDebut = e.DateDebut,
-                DateFin = e.DateFin,
+                CoutAnnuel = e.CoutAnnuelEstime,
                 IdIdentificationProjet = e.IdIdentificationProjet
             })
             .ToList();
@@ -120,12 +117,9 @@ namespace BanqueProjet.Infrastructure.Persistence
             return new ActivitesAnnuellesDto
             {
                 IdActivitesAnnuelles = (byte)e.IdActivitesAnnuelles,
-                DescriptionActivite = e.DescriptionActivite,
                 ExerciceFiscalDebut = e.ExerciceFiscalDebut,
                 ExerciceFiscalFin = e.ExerciceFiscalFin,
-                CoutAnnuel = e.CoutAnnuel,
-                DateDebut = e.DateDebut,
-                DateFin = e.DateFin,
+                CoutAnnuel = e.CoutAnnuelEstime,
                 IdIdentificationProjet = e.IdIdentificationProjet
             };
 
