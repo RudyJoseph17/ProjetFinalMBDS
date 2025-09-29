@@ -1,13 +1,12 @@
-﻿using BanqueProjet.Application.Dtos;
+﻿// ViewModel pour /Programmation/Views
 using Programmation.Application.Dtos;
-using System.Collections.Generic;
 
-namespace Programmation.Web.Models
+public class ProgrammationViewModel
 {
-    public class ProgrammationViewModel
-    {
-        public ProgrammationProjetDto ProjetsCrees { get; set; } = new();
-        public List<LivrablesProgrameProjetDto> LivrablesProgramme { get; set; } = new();
-        public List<InformationsFinancieresProgrammeesProjetDto> InfosFinancieresProgrammees { get; set; } = new();
-    }
+    public ProgrammationProjetDto Programmation { get; set; } = new();
+    public List<HypothesesEtRisquesDto> Hypotheses { get; set; } = new();
+    public List<InformationsFinancieresProgrammeesProjetDto> InformationsFinancieres { get; set; } = new();
+    public List<LivrablesProgrameProjetDto> Livrables { get; set; } = new();
+    public List<PrevisionActiviteAnnuelleDto> Previsions { get; set; } = new();
+    public List<GestionEtSuiviProjetDto> Gestion { get; set; } = new();
 }

@@ -1,206 +1,262 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Programmation.Application.Interface;
 using Programmation.Application.Dtos;
-using BanqueProjet.Application.Interfaces;
-using BanqueProjet.Application.Dtos;
-using Programmation.Web.Models;
+using Programmation.Application.Interface;
 
-namespace Programmation.Web.Areas.Programmation.Controllers
+namespace Programmation.Web.Controllers
 {
     [Area("Programmation")]
-    public class ProgrammationsController : Controller
+    public class ProgrammationController : Controller
     {
         private readonly IProgrammationProjetService _programmationService;
-        private readonly ILivrablesProjetService _livrablesService;
+        private readonly IHypothesesEtRisquesService _hypothesesService;
         private readonly IInformationsFinancieresProgrammeesProjetService _infosFinService;
-        private readonly IProjetsBPService _projetService;
-        private readonly ILogger<ProgrammationsController> _logger;
+        private readonly ILivrablesProjetService _livrablesService;
+        private readonly IPrevisionActiviteAnnuelleService _previsionService;
+        private readonly IGestionEtSuiviService _gestionService;
+        private readonly ILogger<ProgrammationController> _logger;
 
-        public ProgrammationsController(
+        public ProgrammationController(
             IProgrammationProjetService programmationService,
-            ILivrablesProjetService livrablesService,
+            IHypothesesEtRisquesService hypothesesService,
             IInformationsFinancieresProgrammeesProjetService infosFinService,
-            IProjetsBPService projetService,
-            ILogger<ProgrammationsController> logger)
+            ILivrablesProjetService livrablesService,
+            IPrevisionActiviteAnnuelleService previsionService,
+            IGestionEtSuiviService gestionService,
+            ILogger<ProgrammationController> logger)
         {
             _programmationService = programmationService;
-            _livrablesService = livrablesService;
+            _hypothesesService = hypothesesService;
             _infosFinService = infosFinService;
-            _projetService = projetService;
+            _livrablesService = livrablesService;
+            _previsionService = previsionService;
+            _gestionService = gestionService;
             _logger = logger;
         }
 
-        // ----------------------------------------------------------------
-        // Index : liste des projets avec avis "Favorable"
-        // ----------------------------------------------------------------
-        [HttpGet]
+        // GET: /Programmation
         public async Task<IActionResult> Index()
         {
-            try
-            {
-                var projets = await _projetService.ObtenirTousAsync();
-                var projetsFavorables = projets.FindAll(p => p.AvisProjet == "Projet à analyser");
-                return View("Index", projetsFavorables);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Erreur lors de la récupération des projets avec avis favorable.");
-                TempData["Error"] = "Impossible de récupérer les projets.";
-                return View("Index", Array.Empty<ProjetsBPDto>());
-            }
+            var list = await _programmationService.ObtenirTousAsync();
+            return View(list);
         }
 
-        // ----------------------------------------------------------------
-        // Détails d'un projet et préparation de la programmation
-        // ----------------------------------------------------------------
-        [HttpGet]
-        public async Task<IActionResult> Details(string idProjet)
+        // GET: /Programmation/Details/{id}
+        public async Task<IActionResult> Details(string id)
         {
-            if (string.IsNullOrWhiteSpace(idProjet)) return BadRequest();
+            if (string.IsNullOrWhiteSpace(id))
+                return NotFound();
 
-            try
+            var main = await _programmationService.ObtenirParIdAsync(id);
+            if (main == null)
+                return NotFound();
+
+            var vm = new ProgrammationViewModel
             {
-                var projetDto = await _projetService.ObtenirParIdAsync(idProjet);
-                if (projetDto == null) return NotFound();
-
-                var viewModel = new ProgrammationViewModel
-                {
-                    ProjetsCrees = new ProgrammationProjetDto
-                    {
-                        IdIdentificationProjet = projetDto.IdIdentificationProjet,
-                        NomProjet = projetDto.NomProjet
-                    },
-                    LivrablesProgramme = await _livrablesService.ObtenirParProjetAsync(idProjet),
-                    InfosFinancieresProgrammees = await _infosFinService.ObtenirParProjetAsync(idProjet)
-                };
-
-                return View("Details", viewModel);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Erreur lors de la récupération des détails du projet {Id}.", idProjet);
-                TempData["Error"] = "Impossible de récupérer les informations du projet.";
-                return RedirectToAction(nameof(Index));
-            }
-        }
-
-        // ----------------------------------------------------------------
-        // Création d'une nouvelle programmation pour un projet
-        // ----------------------------------------------------------------
-        [HttpGet]
-        public IActionResult Create(string idProjet)
-        {
-            if (string.IsNullOrWhiteSpace(idProjet)) return BadRequest();
-
-            var viewModel = new ProgrammationViewModel
-            {
-                ProjetsCrees = new ProgrammationProjetDto
-                {
-                    IdIdentificationProjet = idProjet
-                }
+                Programmation = main,
+                Hypotheses = await _hypothesesService.ObtenirParIdentificationProjetAsync(id) is var h && h != null
+                                   ? new List<HypothesesEtRisquesDto> { h }
+                                   : new List<HypothesesEtRisquesDto>(),
+                InformationsFinancieres = await _infosFinService.ObtenirParProjetAsync(id),
+                Livrables = await _livrablesService.ObtenirParProjetAsync(id),
+                Previsions = await _previsionService.ObtenirParIdentificationProjetAsync(id) is var p && p != null
+                                   ? new List<PrevisionActiviteAnnuelleDto> { p }
+                                   : new List<PrevisionActiviteAnnuelleDto>(),
+                Gestion = await _gestionService.ObtenirParIdentificationProjetAsync(id) is var g && g != null
+                                   ? new List<GestionEtSuiviProjetDto> { g }
+                                   : new List<GestionEtSuiviProjetDto>()
             };
 
-            return View("Create", viewModel);
+            return View(vm);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ProgrammationViewModel model)
+        // GET: /Programmation/Create?projetId=XYZ
+        public IActionResult Create([FromQuery] string projetId)
         {
-            if (!ModelState.IsValid)
-                return View("Create", model);
+            if (string.IsNullOrWhiteSpace(projetId))
+                return BadRequest("IdIdentificationProjet manquant.");
 
-            try
+            var vm = new ProgrammationViewModel
             {
-                await _programmationService.AjouterAsync(model.ProjetsCrees);
-                TempData["Success"] = "Programmation projet créée avec succès !";
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Erreur lors de la création de la programmation pour le projet {Id}.", model?.ProjetsCrees?.IdIdentificationProjet);
-                TempData["Error"] = "Impossible de créer la programmation.";
-                return View("Create", model);
-            }
-        }
-
-        // ----------------------------------------------------------------
-        // Edition d'une programmation existante
-        // ----------------------------------------------------------------
-        [HttpGet]
-        public async Task<IActionResult> Edit(string idProjet)
-        {
-            if (string.IsNullOrWhiteSpace(idProjet)) return BadRequest();
-
-            try
-            {
-                var programmation = await _programmationService.ObtenirParIdAsync(idProjet);
-                if (programmation == null) return NotFound();
-
-                var viewModel = new ProgrammationViewModel
+                Programmation = new ProgrammationProjetDto
                 {
-                    ProjetsCrees = programmation,
-                    LivrablesProgramme = await _livrablesService.ObtenirParProjetAsync(idProjet),
-                    InfosFinancieresProgrammees = await _infosFinService.ObtenirParProjetAsync(idProjet)
-                };
+                    IdIdentificationProjet = projetId
+                },
+                Hypotheses = new List<HypothesesEtRisquesDto>(),
+                InformationsFinancieres = new List<InformationsFinancieresProgrammeesProjetDto>(),
+                Livrables = new List<LivrablesProgrameProjetDto>(),
+                Previsions = new List<PrevisionActiviteAnnuelleDto>(),
+                Gestion = new List<GestionEtSuiviProjetDto>()
+            };
 
-                return View("Edit", viewModel);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Erreur lors de l'ouverture du formulaire d'édition du projet {Id}.", idProjet);
-                TempData["Error"] = "Impossible d'ouvrir l'édition du projet.";
-                return RedirectToAction(nameof(Index));
-            }
+            return View(vm);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(ProgrammationViewModel model)
+        // POST: /Programmation/Create
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(ProgrammationViewModel vm)
         {
             if (!ModelState.IsValid)
-                return View("Edit", model);
+                return View(vm);
 
             try
             {
-                await _programmationService.MettreAJourAsync(model.ProjetsCrees);
-                TempData["Success"] = "Programmation projet mise à jour !";
+                _logger.LogInformation("🚀 [CTRL] Création Programmation pour projet {Id}", vm.Programmation.IdIdentificationProjet);
+
+                // 1) Créer le volet principal
+                await _programmationService.AjouterAsync(vm.Programmation);
+
+                // 2) Créer chaque partie imbriquée
+                foreach (var h in vm.Hypotheses)
+                    await _hypothesesService.AjouterAsync(h);
+
+                foreach (var info in vm.InformationsFinancieres)
+                    await _infosFinService.AjouterAsync(info);
+
+                foreach (var l in vm.Livrables)
+                    await _livrablesService.AjouterAsync(l);
+
+                foreach (var p in vm.Previsions)
+                    await _previsionService.AjouterAsync(p);
+
+                foreach (var g in vm.Gestion)
+                    await _gestionService.AjouterAsync(g);
+
+                TempData["Success"] = "Programmation créée avec succès.";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erreur lors de la mise à jour de la programmation du projet {Id}.", model?.ProjetsCrees?.IdIdentificationProjet);
-                TempData["Error"] = "Impossible de mettre à jour la programmation.";
-                return View("Edit", model);
+                _logger.LogError(ex, "Erreur lors de la création de la programmation");
+                ModelState.AddModelError("", ex.Message);
+                return View(vm);
             }
         }
 
-        // ----------------------------------------------------------------
-        // Suppression d'une programmation
-        // ----------------------------------------------------------------
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(string idProjet)
+        // GET: /Programmation/Edit/{id}
+        public async Task<IActionResult> Edit(string id)
         {
-            if (string.IsNullOrWhiteSpace(idProjet)) return BadRequest();
+            if (string.IsNullOrWhiteSpace(id))
+                return NotFound();
+
+            var main = await _programmationService.ObtenirParIdAsync(id);
+            if (main == null)
+                return NotFound();
+
+            var vm = new ProgrammationViewModel
+            {
+                Programmation = main,
+                Hypotheses = await _hypothesesService.ObtenirParIdentificationProjetAsync(id) is var h && h != null
+                                   ? new List<HypothesesEtRisquesDto> { h }
+                                   : new List<HypothesesEtRisquesDto>(),
+                InformationsFinancieres = await _infosFinService.ObtenirParProjetAsync(id),
+                Livrables = await _livrablesService.ObtenirParProjetAsync(id),
+                Previsions = await _previsionService.ObtenirParIdentificationProjetAsync(id) is var p && p != null
+                                   ? new List<PrevisionActiviteAnnuelleDto> { p }
+                                   : new List<PrevisionActiviteAnnuelleDto>(),
+                Gestion = await _gestionService.ObtenirParIdentificationProjetAsync(id) is var g && g != null
+                                   ? new List<GestionEtSuiviProjetDto> { g }
+                                   : new List<GestionEtSuiviProjetDto>()
+            };
+            return View(vm);
+        }
+
+        // POST: /Programmation/Edit/{id}
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(string id, ProgrammationViewModel vm)
+        {
+            if (id != vm.Programmation.IdIdentificationProjet)
+                return BadRequest();
+
+            if (!ModelState.IsValid)
+                return View(vm);
 
             try
             {
-                // Passe directement le string
-                await _programmationService.SupprimerAsync(idProjet);
-                TempData["Success"] = "Programmation projet supprimée !";
+                _logger.LogInformation("✏️ [CTRL] Mise à jour Programmation pour projet {Id}", id);
+
+                await _programmationService.MettreAJourAsync(vm.Programmation);
+
+                foreach (var h in vm.Hypotheses)
+                    await _hypothesesService.MettreAJourAsync(h);
+
+                foreach (var info in vm.InformationsFinancieres)
+                    await _infosFinService.MettreAJourAsync(info);
+
+                foreach (var l in vm.Livrables)
+                    await _livrablesService.MettreAJourAsync(l);
+
+                foreach (var p in vm.Previsions)
+                    await _previsionService.MettreAJourAsync(p);
+
+                foreach (var g in vm.Gestion)
+                    await _gestionService.MettreAJourAsync(g);
+
+                TempData["Success"] = "Programmation mise à jour avec succès.";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erreur lors de la suppression de la programmation Id={Id}.", idProjet);
-                TempData["Error"] = "Impossible de supprimer la programmation.";
-                return RedirectToAction(nameof(Index));
+                _logger.LogError(ex, "Erreur lors de la mise à jour de la programmation");
+                ModelState.AddModelError("", ex.Message);
+                return View(vm);
             }
         }
 
+        // GET: /Programmation/Delete/{id}
+        public async Task<IActionResult> Delete(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+                return NotFound();
+
+            var main = await _programmationService.ObtenirParIdAsync(id);
+            if (main == null)
+                return NotFound();
+
+            return View(main);
+        }
+
+        // POST: /Programmation/Delete/{id}
+        [HttpPost, ActionName("Delete"), ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            try
+            {
+                _logger.LogInformation("🗑️ [CTRL] Suppression Programmation pour projet {Id}", id);
+
+                // Supprimer d'abord chaque partie imbriquée
+                if (await _hypothesesService.ObtenirParIdentificationProjetAsync(id) is var h && h != null)
+                    await _hypothesesService.SupprimerAsync(h.IdHypothesesEtRisques);
+
+                foreach (var info in await _infosFinService.ObtenirParProjetAsync(id))
+                    await _infosFinService.SupprimerAsync(info.IdInformationsFinancieres);
+
+                foreach (var l in await _livrablesService.ObtenirParProjetAsync(id))
+                    await _livrablesService.SupprimerAsync(l.IdLivrablesProjet);
+
+                if (await _previsionService.ObtenirParIdentificationProjetAsync(id) is var p && p != null)
+                    await _previsionService.SupprimerAsync(p.IdActivitesAnnuelles);
+
+                if (await _gestionService.ObtenirParIdentificationProjetAsync(id) is var g && g != null)
+                    await _gestionService.SupprimerAsync(g.IdGestionDeProjetEtSuivi);
+
+                // Enfin supprimer la programmation principale
+                await _programmationService.SupprimerAsync(id);
+
+                TempData["Success"] = "Programmation supprimée avec succès.";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erreur lors de la suppression de la programmation");
+                return RedirectToAction(nameof(Delete), new { id, error = ex.Message });
+            }
+        }
     }
+
+
 }

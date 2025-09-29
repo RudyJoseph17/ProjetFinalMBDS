@@ -205,7 +205,6 @@ namespace Programmation.Infrastructure.Persistence
             var dto = new InformationsFinancieresProgrammeesProjetDto();
 
             dto.IdInformationsFinancieres = SafeGetByte(reader, "ID_INFORMATION_FINANCIERE") ?? 0;
-            dto.IdActivite = SafeGetInt(reader, "ID_ACTIVITE") ?? default;
             dto.ExerciceFiscalDebut = SafeGetByte(reader, "EXERCICE_FISCAL_DEBUT");
             dto.ExerciceFiscalFin = SafeGetByte(reader, "EXERCICE_FISCAL_FIN");
             dto.SourcesFinancement = SafeGetString(reader, "SOURCES_FINANCEMENT");
@@ -273,6 +272,11 @@ namespace Programmation.Infrastructure.Persistence
             {
                 return null;
             }
+        }
+
+        public Task SupprimerAsync(int idInformationsFinancieres)
+        {
+            throw new NotImplementedException();
         }
     }
 }

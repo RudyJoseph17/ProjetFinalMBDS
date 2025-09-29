@@ -15,5 +15,6 @@ namespace Programmation.Application.Interface
 
         // Retourne toutes les infos financières programmées pour un projet
         Task<List<InformationsFinancieresProgrammeesProjetDto>> ObtenirParProjetAsync(string idProjet);
+        Task SupprimerAsync(int idInformationsFinancieres);
     }
 }

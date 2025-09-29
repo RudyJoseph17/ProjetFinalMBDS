@@ -2,6 +2,7 @@
 using BanqueProjet.Application.Interfaces;
 using BanqueProjet.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Oracle.ManagedDataAccess.Client;
 
 namespace BanqueProjet.Infrastructure.Persistence
@@ -9,15 +10,20 @@ namespace BanqueProjet.Infrastructure.Persistence
     public class GrilleDdpProjetService : IGrilleDdpProjetService
     {
         private readonly BanquePDbContext _db;
+        private readonly ILogger<GrilleDdpProjetService> _logger;
 
-        public GrilleDdpProjetService(BanquePDbContext db)
+        public GrilleDdpProjetService(BanquePDbContext db,
+            ILogger<GrilleDdpProjetService> logger)
         {
             _db = db;
+            _logger = logger;
         }
 
         public async Task AjouterAsync(GrilleDdpProjetDto dto)
 {
-    var conn = _db.Database.GetDbConnection();
+            // -- 1) Log DTO reçu --
+            _logger.LogInformation("🔄 [SERVICE] AjouterAsync reçu DTO: {@Dto}", dto);
+            var conn = _db.Database.GetDbConnection();
 
     await using (conn)
     {
@@ -30,7 +36,10 @@ namespace BanqueProjet.Infrastructure.Persistence
             await using var seqCmd = conn.CreateCommand();
             seqCmd.CommandText = "SELECT SEQ_GRILLE_DDP.NEXTVAL FROM DUAL";
             dto.IdGrilleDdpProjet = Convert.ToByte(await seqCmd.ExecuteScalarAsync());
-        }
+
+                    // -- 2) Log avant binding des paramètres --
+        _logger.LogInformation("🔌 [SERVICE] Construction des paramètres pour AJOUTER_GRILLE_DDP_PROJET");
+                }
 
         await using var cmd = conn.CreateCommand();
         cmd.CommandText = "AJOUTER_GRILLE_DDP_PROJET";
@@ -58,9 +67,22 @@ namespace BanqueProjet.Infrastructure.Persistence
         // Lien avec le projet existant
         cmd.Parameters.Add(new OracleParameter("p_id_identification_projet", dto.IdIdentificationProjet));
 
-        await cmd.ExecuteNonQueryAsync();
-    }
-}
+
+                                // -- 3) Log tous les paramètres nom=valeur --
+                var allParams = cmd.Parameters
+                                    .Cast<OracleParameter>()
+                                    .Select(p => $"{p.ParameterName}={(p.Value ?? "NULL")}");
+                _logger.LogInformation("📤 [SERVICE] Appel AJAX AJOUTER_GRILLE_DDP_PROJET avec paramètres: {Params}",
+               string.Join(", ", allParams));
+
+
+                await cmd.ExecuteNonQueryAsync();
+
+                                // -- 4) Log fin d'appel --
+                _logger.LogInformation("✔️ [SERVICE] AJOUTER_GRILLE_DDP_PROJET exécuté avec succès pour Id={Id}", dto.IdGrilleDdpProjet);
+
+            }
+        }
 
 
         public async Task MettreAJourAsync(GrilleDdpProjetDto grilleDdpProjetDto)
@@ -77,15 +99,103 @@ namespace BanqueProjet.Infrastructure.Persistence
 
         public async Task<List<GrilleDdpProjetDto>> ObtenirTousAsync()
         {
-            // Ici récupérer via view ou table, mapper vers DTO
-            throw new NotImplementedException();
+            var entities = await _db.OViewGrilleDdpProjets
+         .AsNoTracking()
+         .ToListAsync();
+
+            // Mappez-les vers vos DTOs métier
+            return entities.Select(e => new GrilleDdpProjetDto
+            {
+                IdGrilleDdpProjet = (byte)e.IdGrilleDdpProjetProjet,
+                TitreProjet = e.TitreProjet,
+                Ministere = e.Ministere,
+                DateSoumission = e.DateSoumission,
+                DateDebutAnalyse = e.DateDebutAnalyse,
+                TitreProjetAol = e.TitreProjetAol,
+                ProjetLienPsdh = e.ProjetLienPsdh,
+                HistoriqueDecrit = e.HistoriqueDecrit,
+                JustificationDemontree = e.JustificationDemontree,
+                ProjetObjectifClair = e.ProjetObjectifClair,
+                EffetsAttendusCoherents = e.EffetsAttendusCoherents,
+                LocalisationDecrite = e.LocalisationDecrite,
+                DureeTotalProjetBienDefine = e.DureeTotalProjetBienDefine,
+                CoutTotalProjetBienDetermine = e.CoutTotalProjetBienDetermine,
+                EmploisCreesIdentifies = e.EmploisCreesIdentifies,
+                FacteurGenrePrisEnCompte = e.FacteurGenrePrisEnCompte,
+                EtudesSatisfaisantes = e.EtudesSatisfaisantes,
+                ActivitesEtResultatsDecrits = e.ActivitesEtResultatsDecrits,
+                DureeActiviteDansGantt = e.DureeActiviteDansGantt,
+                CalendrierFinancierCorrespondGantt = e.CalendrierFinancierCorrespondGantt,
+                DepensesPrevuesPermetActivites = e.DepensesPrevuesPermetActivites,
+                DepensesProjetIncluses = e.DepensesProjetIncluses,
+                SourcesFinancementIdentifiees = e.SourcesFinancementIdentifiees,
+                EntitesRolesClairementDefinis = e.EntitesRolesClairementDefinis,
+                StructureOrgaInclutEntites = e.StructureOrgaInclutEntites,
+                ObjectifGeneralSpecifiqueDefinis = e.ObjectifGeneralSpecifiqueDefinis,
+                DetailsSuffisantsAspJuridiques = e.DetailsSuffisantsAspJuridiques,
+                PassationDesMarchesRigoureux = e.PassationDesMarchesRigoureux,
+                CommentairesGeneraux = e.CommentairesGeneraux,
+                ResultatsAnalyse = e.ResultatsAnalyse,
+                Recommandations = e.Recommandations,
+                Decision = e.Decision,
+                DateAvis = e.DateAvis,
+                IdIdentificationProjet = e.IdIdentificationProjet
+            })
+    .ToList();
         }
 
-        public async Task<GrilleDdpProjetDto?> ObtenirParIdAsync(byte id)
+        public async Task<GrilleDdpProjetDto?> ObtenirParIdentificationProjetAsync(string idIdentificationProjet)
         {
-            // Ici récupérer via view ou table, mapper vers DTO
-            throw new NotImplementedException();
-        }
+            if (string.IsNullOrWhiteSpace(idIdentificationProjet))
+                return null;
+
+            // On interroge la vue Oracle via EF Core, filtrée sur la colonne IdIdentificationProjet
+            var e = await _db.OViewGrilleDdpProjets
+                .AsNoTracking()
+                .FirstOrDefaultAsync(e => e.IdIdentificationProjet == idIdentificationProjet);
+
+            if (e is null)
+                return null;
+
+            // On mappe chaque propriété de la vue vers le DTO
+            return new GrilleDdpProjetDto
+            {
+                IdGrilleDdpProjet = (byte)e.IdGrilleDdpProjetProjet,
+                TitreProjet = e.TitreProjet,
+                Ministere = e.Ministere,
+                DateSoumission = e.DateSoumission,
+                DateDebutAnalyse = e.DateDebutAnalyse,
+                TitreProjetAol = e.TitreProjetAol,
+                ProjetLienPsdh = e.ProjetLienPsdh,
+                HistoriqueDecrit = e.HistoriqueDecrit,
+                JustificationDemontree = e.JustificationDemontree,
+                ProjetObjectifClair = e.ProjetObjectifClair,
+                EffetsAttendusCoherents = e.EffetsAttendusCoherents,
+                LocalisationDecrite = e.LocalisationDecrite,
+                DureeTotalProjetBienDefine = e.DureeTotalProjetBienDefine,
+                CoutTotalProjetBienDetermine = e.CoutTotalProjetBienDetermine,
+                EmploisCreesIdentifies = e.EmploisCreesIdentifies,
+                FacteurGenrePrisEnCompte = e.FacteurGenrePrisEnCompte,
+                EtudesSatisfaisantes = e.EtudesSatisfaisantes,
+                ActivitesEtResultatsDecrits = e.ActivitesEtResultatsDecrits,
+                DureeActiviteDansGantt = e.DureeActiviteDansGantt,
+                CalendrierFinancierCorrespondGantt = e.CalendrierFinancierCorrespondGantt,
+                DepensesPrevuesPermetActivites = e.DepensesPrevuesPermetActivites,
+                DepensesProjetIncluses = e.DepensesProjetIncluses,
+                SourcesFinancementIdentifiees = e.SourcesFinancementIdentifiees,
+                EntitesRolesClairementDefinis = e.EntitesRolesClairementDefinis,
+                StructureOrgaInclutEntites = e.StructureOrgaInclutEntites,
+                ObjectifGeneralSpecifiqueDefinis = e.ObjectifGeneralSpecifiqueDefinis,
+                DetailsSuffisantsAspJuridiques = e.DetailsSuffisantsAspJuridiques,
+                PassationDesMarchesRigoureux = e.PassationDesMarchesRigoureux,
+                CommentairesGeneraux = e.CommentairesGeneraux,
+                ResultatsAnalyse = e.ResultatsAnalyse,
+                Recommandations = e.Recommandations,
+                Decision = e.Decision,
+                DateAvis = e.DateAvis,
+                IdIdentificationProjet = e.IdIdentificationProjet
+            };
+            }
 
         public async Task<GrilleDdpProjetDto?> ObtenirParProjetIdAsync(string idProjet)
         {
@@ -173,6 +283,11 @@ namespace BanqueProjet.Infrastructure.Persistence
             }
 
             return null;
+        }
+
+        public Task<GrilleDdpProjetDto?> ObtenirParIdAsync(byte id)
+        {
+            throw new NotImplementedException();
         }
 
 

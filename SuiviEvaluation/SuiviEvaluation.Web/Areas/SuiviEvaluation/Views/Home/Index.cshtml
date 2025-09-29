@@ -12,9 +12,8 @@
         <div class="card shadow mb-4">
             <div class="card-header py-3 d-flex justify-content-between align-items-center">
                 <h6 class="m-0 font-weight-bold text-primary">Projets enregistrés</h6>
-                <div>
-                    <a asp-area="SuiviEvaluation" asp-controller="Home" asp-action="Index" class="btn btn-sm btn-outline-secondary">Rafraîchir</a>
-                </div>
+                <a asp-area="SuiviEvaluation" asp-controller="Home" asp-action="Index"
+                   class="btn btn-sm btn-outline-secondary">Rafraîchir</a>
             </div>
             <div class="card-body">
                 @if (Model == null || !Model.Any())
@@ -29,23 +28,19 @@
                                 <tr>
                                     <th>Nom du projet</th>
                                     <th class="text-right">Total autorisations</th>
-                                    <th style="width:280px">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach (var item in Model)
                                 {
-                                    <tr>
+                                    <tr class="clickable-row"
+                                        data-href="@Url.Action(
+                                              action: "DetailsForSuivi",
+                                              controller: "IdentificationProjet",
+                                              values: new { area = "BanqueProjet", id = item.IdIdentificationProjet })"
+                                        style="cursor:pointer">
                                         <td>@item.NomProjet</td>
                                         <td class="text-right">@item.TotalAutorisation.ToString("N2")</td>
-                                        <td>
-                                            <div class="btn-group" role="group" aria-label="Actions pour @item.NomProjet">
-
-                                                <a class="btn btn-sm btn-secondary"
-                                                   href="@Url.Action("DetailsForSuivi", "IdentificationProjet", new { area = "BanqueProjet", id = item.IdIdentificationProjet })"
-                                                   title="Voir détails">Détails</a>
-                                            </div>
-                                        </td>
                                     </tr>
                                 }
                             </tbody>
@@ -59,9 +54,17 @@
 
 @section Scripts {
     <script>
-        function openCreate(controller, nomProjet) {
-            var url = '/' + 'SuiviEvaluation' + '/' + controller + '/Create?nomProjet=' + encodeURIComponent(nomProjet);
-            window.location.href = url;
-                }
+        // Lorsque l'utilisateur clique sur une ligne, on navigue vers la vue Détails
+        document.addEventListener('DOMContentLoaded', function () {
+            var rows = document.querySelectorAll('tr.clickable-row');
+            rows.forEach(function (row) {
+                row.addEventListener('click', function () {
+                    var url = this.getAttribute('data-href');
+                    if (url) {
+                        window.location.href = url;
+                    }
+                });
+            });
+        });
     </script>
 }

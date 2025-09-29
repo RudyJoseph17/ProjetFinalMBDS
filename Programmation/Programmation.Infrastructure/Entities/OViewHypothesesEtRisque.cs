@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Programmation.Infrastructure.Entities;
 
 [Keyless]
+[Table("O_VIEW_HYPOTHESES_ET_RISQUES")]
 public partial class OViewHypothesesEtRisque
 {
     [Column("ID_HYPOTHESES_ET_RISQUES")]

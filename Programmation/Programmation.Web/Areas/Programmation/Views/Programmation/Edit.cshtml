@@ -1,0 +1,53 @@
+﻿@model ProgrammationViewModel
+@{
+    ViewData["Title"] = "Create Programmation";
+}
+
+<h1>Create Programmation</h1>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="Programmation.IdIdentificationProjet"></label>
+        <input asp-for="Programmation.IdIdentificationProjet" class="form-control" readonly />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Programmation.NomProjet"></label>
+        <input asp-for="Programmation.NomProjet" class="form-control" />
+        <span asp-validation-for="Programmation.NomProjet" class="text-danger"></span>
+    </div>
+
+    <hr />
+
+    <h2>Hypothèses et risques</h2>
+    @Html.EditorFor(m => m.Hypotheses)
+
+    <hr />
+
+    <h2>Informations financières programmées</h2>
+    @Html.EditorFor(m => m.InformationsFinancieres)
+
+    <hr />
+
+    <h2>Livrables programmés</h2>
+    @Html.EditorFor(m => m.Livrables)
+
+    <hr />
+
+    <h2>Prévisions d'activités annuelles</h2>
+    @Html.EditorFor(m => m.Previsions)
+
+    <hr />
+
+    <h2>Gestion et suivi de projet</h2>
+    @Html.EditorFor(m => m.Gestion)
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

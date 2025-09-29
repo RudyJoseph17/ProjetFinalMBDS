@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Programmation.Application.Dtos.ProgrammationProjetDto>
+
+@{
+    ViewData["Title"] = "Programmation Index";
+}
+
+<h1>Programmation List</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Programmation</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Project ID</th>
+            <th>Project Name</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.IdIdentificationProjet</td>
+                <td>@item.NomProjet</td>
+                <td>
+                    <a asp-action="Details"
+                       asp-route-id="@item.IdIdentificationProjet"
+                       class="btn btn-sm btn-info">Details</a>
+                    <a asp-action="Edit"
+                       asp-route-id="@item.IdIdentificationProjet"
+                       class="btn btn-sm btn-warning">Edit</a>
+                    <a asp-action="Delete"
+                       asp-route-id="@item.IdIdentificationProjet"
+                       class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

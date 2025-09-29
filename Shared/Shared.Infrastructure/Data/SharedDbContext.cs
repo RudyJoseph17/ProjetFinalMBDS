@@ -12,6 +12,8 @@ public partial class SharedDbContext : DbContext
     {
     }
 
+    public virtual DbSet<OViewActivitesAnnuelle> OViewActivitesAnnuelles { get; set; }
+
     public virtual DbSet<OViewInformationsFinancieresT> OViewInformationsFinancieresTs { get; set; }
 
     public virtual DbSet<OViewLivrablesDuProjet> OViewLivrablesDuProjets { get; set; }
@@ -53,6 +55,11 @@ public partial class SharedDbContext : DbContext
         modelBuilder
             .HasDefaultSchema("JOSEPHRUDY")
             .UseCollation("USING_NLS_COMP");
+
+        modelBuilder.Entity<OViewActivitesAnnuelle>(entity =>
+        {
+            entity.ToView("O_VIEW_ACTIVITES_ANNUELLES");
+        });
 
         modelBuilder.Entity<OViewInformationsFinancieresT>(entity =>
         {

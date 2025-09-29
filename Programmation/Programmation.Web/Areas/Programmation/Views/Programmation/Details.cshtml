@@ -1,0 +1,121 @@
+﻿@model ProgrammationViewModel
+@{
+    ViewData["Title"] = "Programmation Details";
+}
+
+<h1>Details for @Model.Programmation.IdIdentificationProjet</h1>
+
+<dl class="row">
+    <dt class="col-sm-2">Project ID</dt>
+    <dd class="col-sm-10">@Model.Programmation.IdIdentificationProjet</dd>
+
+    <dt class="col-sm-2">Project Name</dt>
+    <dd class="col-sm-10">@Model.Programmation.NomProjet</dd>
+</dl>
+
+<hr />
+<h2>Hypothèses et risques</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Début</th>
+            <th>Fin</th>
+            <th>Description</th>
+            <th>Stratégies</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var h in Model.Hypotheses)
+        {
+            <tr>
+                <td>@h.ExerciceFiscaleDebut</td>
+                <td>@h.ExerciceFiscaleFin</td>
+                <td>@h.DescriptionDesConditionsPouvantImpacterLeProjet</td>
+                <td>@h.StrategiesPourAssurerUnImpactSurLeProjet</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<hr />
+<h2>Informations financières programmées</h2>
+<table class="table">
+    <thead>
+        <tr><th>Exercice Début</th><th>Exercice Fin</th><th>Article</th><th>Alinéa</th><th>Montant</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var f in Model.InformationsFinancieres)
+        {
+            <tr>
+                <td>@f.ExerciceFiscalDebut</td>
+                <td>@f.ExerciceFiscalFin</td>
+                <td>@f.Article</td>
+                <td>@f.Alinea</td>
+                <td>@f.MontantPrevu</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<hr />
+<h2>Livrables programmés</h2>
+<table class="table">
+    <thead>
+        <tr><th>Quantité à livrer</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var l in Model.Livrables)
+        {
+            <tr>
+                <td>@l.QuantiteALivrer</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<hr />
+<h2>Prévisions d'activités annuelles</h2>
+<table class="table">
+    <thead>
+        <tr><th>Date Début</th><th>Date Fin</th><th>Coût Annuel</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var p in Model.Previsions)
+        {
+            <tr>
+                <td>@p.DateDebut</td>
+                <td>@p.DateFin</td>
+                <td>@p.CoutAnnuelProgramme</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<hr />
+<h2>Gestion et suivi de projet</h2>
+<table class="table">
+    <thead>
+        <tr><th>Description rôle</th><th>Contrat</th><th>Méthodes</th><th>Agents</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var g in Model.Gestion)
+        {
+            <tr>
+                <td>@g.DescriptionRole</td>
+                <td>@g.CadreDeReferenceContrat</td>
+                <td>@g.DescriptionDesMethodes</td>
+                <td>@g.IdentificationDesAgentsImpliques</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<p>
+    <a asp-action="Edit" asp-route-id="@Model.Programmation.IdIdentificationProjet" class="btn btn-primary">Edit</a>
+    <a asp-action="Delete" asp-route-id="@Model.Programmation.IdIdentificationProjet" class="btn btn-danger">Delete</a>
+    <a asp-area="Programmation" asp-controller="Programmation" asp-action="Create" asp-route-projetId="@Model.Programmation.IdIdentificationProjet" asp-route-nomProjet="@Model.Programmation.NomProjet"
+       class="btn btn-primary">
+        Analyser une programmation
+    </a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</p>

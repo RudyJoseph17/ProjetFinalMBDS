@@ -1,4 +1,5 @@
-﻿using Shared.Domain.Dtos;
+﻿using Newtonsoft.Json;
+using Shared.Domain.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,9 @@ namespace Programmation.Application.Dtos
 {
     public class InformationsFinancieresProgrammeesProjetDto : InformationsFinancieresProjetDto
     {
-        public int IdActivite { get; set; }
+        [JsonProperty("IdIdentificationProjet")]
+        public int IdIdentificationProjet { get; set; }
+        public int IdInformationsFinancieres { get; set; }
         public byte? ExerciceFiscalDebut { get; set; }
         public byte? ExerciceFiscalFin { get; set; }
         public string? SourcesFinancement { get; set; }
@@ -43,13 +46,6 @@ namespace Programmation.Application.Dtos
         {
             return Items
                 .GroupBy(i => NormalizeKey(i.Article))
-                .ToDictionary(g => g.Key, g => g.Sum(i => i.MontantPrevuValue));
-        }
-
-        public IDictionary<int, decimal> MontantParActivite()
-        {
-            return Items
-                .GroupBy(i => i.IdActivite)
                 .ToDictionary(g => g.Key, g => g.Sum(i => i.MontantPrevuValue));
         }
 
@@ -108,46 +104,12 @@ namespace Programmation.Application.Dtos
         /// Vérifie que les agrégations (total, par article, par alinea, par activité)
         /// ne sont pas négatives. Retourne la liste des messages d'erreur (vide si ok).
         /// </summary>
-        public IEnumerable<string> ValidateAggregations()
-        {
-            var errors = new List<string>();
-
-            if (TotalMontantPrevu < 0)
-                errors.Add($"Total du projet négatif : {TotalMontantPrevu:N2}");
-
-            foreach (var kv in MontantParArticle())
-            {
-                if (kv.Value < 0)
-                    errors.Add($"Article '{kv.Key}' a un montant négatif : {kv.Value:N2}");
-            }
-
-            foreach (var kv in MontantParAlinea())
-            {
-                if (kv.Value < 0)
-                    errors.Add($"Alinéa '{kv.Key}' a un montant négatif : {kv.Value:N2}");
-            }
-
-            foreach (var kv in MontantParActivite())
-            {
-                if (kv.Value < 0)
-                    errors.Add($"Activité '{kv.Key}' a un montant négatif : {kv.Value:N2}");
-            }
-
-            return errors;
-        }
+       
 
         /// <summary>
         /// Lance une InvalidOperationException si des erreurs de validation existent.
         /// </summary>
-        public void ValidateOrThrow()
-        {
-            var errors = ValidateAggregations().ToList();
-            if (errors.Any())
-            {
-                var msg = "Validation des agrégations échouée : " + string.Join(" ; ", errors);
-                throw new InvalidOperationException(msg);
-            }
-        }
+      
     }
 
     // ----- DTOs d'affichage (Article -> Alinea) -----

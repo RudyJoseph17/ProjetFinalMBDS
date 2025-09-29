@@ -1,5 +1,7 @@
 ﻿using BanqueProjet.Application.Dtos;
 using BanqueProjet.Application.Interfaces;
+using BanqueProjet.Infrastructure.Data;
+using BanqueProjet.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using Oracle.ManagedDataAccess.Client;
 
@@ -9,10 +11,16 @@ namespace BanqueProjet.Web.Areas.BanqueProjet.Controllers
     public class GrilleDdpProjetController : Controller
     {
         private readonly IGrilleDdpProjetService _service;
+        private readonly BanquePDbContext _db;
+        private readonly ILogger<GrilleDdpProjetService> _logger;
 
-        public GrilleDdpProjetController(IGrilleDdpProjetService service)
+        public GrilleDdpProjetController(
+            IGrilleDdpProjetService service,
+            ILogger<GrilleDdpProjetService> logger)
         {
             _service = service;
+              _logger = logger;
+
         }
 
         // GET: Index
@@ -56,11 +64,13 @@ namespace BanqueProjet.Web.Areas.BanqueProjet.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(GrilleDdpProjetDto dto)
         {
+            _logger.LogInformation("🚀 [CTRL] Create POST appelé avec DTO: {@Dto}", dto);
             if (!ModelState.IsValid)
                 return View(dto);
 
             try
             {
+                _logger.LogInformation("⏳ [CTRL] Invocation service.AjouterAsync pour projet {ProjetId}", dto.IdIdentificationProjet);
                 await _service.AjouterAsync(dto);
                 TempData["SuccessMessage"] = "La grille DDP a été créée avec succès.";
                 return RedirectToAction(nameof(Index));

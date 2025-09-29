@@ -271,7 +271,6 @@ namespace Programmation.Infrastructure.Persistence
             return new InformationsFinancieresProgrammeesProjetDto
             {
                 IdInformationsFinancieres = SafeGetByte(reader, "ID_INFORMATION_FINANCIERE") ?? 0,
-                IdActivite = SafeGetInt(reader, "ID_ACTIVITE") ?? default,
                 ExerciceFiscalDebut = SafeGetByte(reader, "EXERCICE_FISCAL_DEBUT"),
                 ExerciceFiscalFin = SafeGetByte(reader, "EXERCICE_FISCAL_FIN"),
                 SourcesFinancement = SafeGetString(reader, "SOURCES_FINANCEMENT"),
